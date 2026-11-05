@@ -22,7 +22,10 @@ export function DeleteListingDialog({
       await deleteListing(listing.id);
     } catch (e) {
       throw new Error(
-        e instanceof ApiError ? e.body.message : "Could not delete the listing.",
+        e instanceof ApiError
+          ? e.body.message
+          : "Could not delete the listing.",
+        { cause: e },
       );
     }
     onDeleted(listing.id);
