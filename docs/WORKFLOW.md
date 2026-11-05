@@ -22,7 +22,7 @@ Proposed → Ready → In Progress → In Review → Done, tracked in [BACKLOG.m
 
 ```text
 Languages, versions, platforms:
-  Java 21 (Temurin), Spring Boot 4.1.x, Maven 3.9+ (Maven wrapper to be added, see tracked debt); Node 22 LTS, TypeScript, React, Vite;
+  Java 21 (Temurin), Spring Boot 4.1.x, Maven 3.9+ (Maven wrapper to be added, see tracked debt); Node 22 LTS, TypeScript 5.9, React 19, Vite 8, Vitest 5, ESLint 10;
   PostgreSQL 16; modern evergreen browsers, 360 px minimum width.
 Style, formatter, linter, commands:
   Backend: Spotless with google-java-format  ->  mvn spotless:check / mvn spotless:apply (check also runs in mvn verify)
@@ -34,13 +34,13 @@ Error handling, logging, state, concurrency:
   SLF4J logging without secrets, tokens, or passwords; stateless API (state lives in PostgreSQL);
   the in-memory rate limiter is the only shared mutable state and must be thread-safe.
 Dependency management:
-  Maven wrapper + pinned versions; package-lock.json committed. New runtime dependencies are noted in the PR (CODE-14).
+  Maven + pinned parent version; frontend package-lock.json committed and installed with `npm ci`. New runtime dependencies are noted in the PR (CODE-14).
 Tests and commands:
   Backend: JUnit 5 + Mockito (unit), Spring Boot Test + Testcontainers PostgreSQL (integration) -> mvn verify
   Frontend: Vitest + React Testing Library for components with logic -> npm test
   Requires Docker for integration tests.
 Required CI checks and branch protection:
-  CI (T-005): backend verify, frontend lint + build + test. Branch protection on main: to be configured by Khai
+  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main. Branch protection on main: to be configured by Khai
   and then verified against the actual GitHub settings; until verified, it is recorded as a gap.
 Review, merge, release, communication:
   Khai reviews and merges; deployments need Khai's approval each time. Chat with Khai is in Vietnamese;
@@ -55,4 +55,6 @@ Approved exceptions and tracked debt:
   workspace during T-003; add it when it is reachable (T-003 follow-up in BACKLOG).
   Debt: CI shows harmless warnings (Flyway POM metadata repositories return 401; Mockito/ByteBuddy
   dynamic agent warning). Revisit if they become errors on newer JDKs.
+  Debt: TypeScript kept on 5.9 (latest 7.x) until typescript-eslint supports it; @types/node kept on 22
+  to match the Node 22 runtime. CI prints `npm outdated` on every run.
 ```

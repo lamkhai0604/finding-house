@@ -5,9 +5,9 @@
 | Updated | 2026-11-05 |
 | Sprint | Sprint 0 — Preparation |
 | Repository | github.com/lamkhai0604/finding-house (`main` and `dev` created at `4de096d`) |
-| Active work | T-003 backend skeleton Done and merged into `dev`. Next: T-004 frontend skeleton. |
+| Active work | Sprint 0: T-001 to T-005 Done. Remaining: T-006 (LLM free tier + API key, Khai), T-007 (Maven wrapper, deferrable). |
 | Source revision | `dev` (see `git log dev`) |
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
-| Verification | Backend: GitHub Actions run 42069891558 on `4e5e9a3`, 2/2 tests passed, Spotless clean. Frontend: none yet. |
-| Blockers | None. Environment gap: Maven Central was unreachable from Claude's workspace (Khai is enabling it), so Java checks ran on GitHub Actions. |
-| Next action | T-004 on `chore/T-004-frontend-skeleton`, then the frontend CI job to finish T-005. |
+| Verification | Backend: run 42069891558 (2/2 tests). Frontend: run 42074077400 (3/3 tests, build OK). |
+| Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
+| Next action | Khai: review `dev` and open the first `dev → main` PR if satisfied. Then Sprint 0 review and Sprint 1 planning (T-101 auth). |
