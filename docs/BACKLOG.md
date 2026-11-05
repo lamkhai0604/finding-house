@@ -54,7 +54,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-201 | Browse/filter API with validation, sort, pagination | FR-03 | P2 | Ready |
+| T-201 | Browse/filter API with validation, sort, pagination | FR-03 | P2 | Done — commit `fb3c40f`, backend run 42128660324: 86 tests passed (12 new: each FR-03 criterion, combined filters, comma and repeated amenities, 9 invalid inputs, and at most 5 SQL statements for a 12-listing page); smoke run 42128660233 |
 | T-202 | Browse page with filter panel | FR-03 | P2 | Ready |
 | T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Ready |
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Ready |
