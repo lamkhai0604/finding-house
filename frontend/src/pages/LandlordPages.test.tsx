@@ -286,3 +286,77 @@ describe("My listings (FR-02 AC3, AC6)", () => {
     );
   });
 });
+
+describe("Delete a listing (FR-07)", () => {
+  const listing: Listing = listingDetail({
+    id: 5,
+    title: "Mistake room",
+  }).listing;
+
+  it("asks first, and cancelling deletes nothing", async () => {
+    const fetchMock = mockApi({
+      ...loggedInAs(landlordMaya),
+      "GET /api/v1/me/listings": () => Response.json([listing]),
+    });
+    renderApp("/my/listings");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Delete" }));
+    const dialog = screen.getByRole("dialog", { name: "Delete this listing?" });
+    expect(within(dialog).getByText("Mistake room")).toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Mistake room" }),
+    ).toBeInTheDocument();
+    const deletes = fetchMock.mock.calls.filter(
+      ([, init]) => init?.method === "DELETE",
+    );
+    expect(deletes).toHaveLength(0);
+  });
+
+  it("deletes after confirmation and removes the card", async () => {
+    mockApi({
+      ...loggedInAs(landlordMaya),
+      "GET /api/v1/me/listings": () => Response.json([listing]),
+      "DELETE /api/v1/listings/5": () => new Response(null, { status: 204 }),
+    });
+    renderApp("/my/listings");
+
+    fireEvent.click(await screen.findByRole("button", { name: "Delete" }));
+    fireEvent.click(screen.getByRole("button", { name: "Delete listing" }));
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("link", { name: "Mistake room" }),
+      ).not.toBeInTheDocument(),
+    );
+    expect(
+      screen.getByRole("heading", { name: "No listings yet" }),
+    ).toBeInTheDocument();
+  });
+
+  it("can be deleted from the edit page, then returns to My listings", async () => {
+    mockApi({
+      ...loggedInAs(landlordMaya),
+      "GET /api/v1/reference-data": () => Response.json(REFERENCE_DATA),
+      "GET /api/v1/listings/7": () => Response.json(listingDetail()),
+      "DELETE /api/v1/listings/7": () => new Response(null, { status: 204 }),
+      "GET /api/v1/me/listings": () => Response.json([]),
+    });
+    renderApp("/listings/7/edit");
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Delete listing" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(
+      within(dialog).getByRole("button", { name: "Delete listing" }),
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "My listings" }),
+    ).toBeInTheDocument();
+  });
+});

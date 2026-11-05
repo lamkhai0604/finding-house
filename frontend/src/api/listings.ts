@@ -36,3 +36,8 @@ export function changeListingStatus(
 ): Promise<Listing> {
   return apiRequest("PATCH", `/api/v1/listings/${id}/status`, { status });
 }
+
+/** FR-07: permanent delete by the owner (204, no body). */
+export async function deleteListing(id: number): Promise<void> {
+  await apiRequest<null>("DELETE", `/api/v1/listings/${id}`);
+}

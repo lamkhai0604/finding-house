@@ -41,7 +41,7 @@ export function setUnauthorizedHandler(handler: (() => void) | null): void {
 }
 
 export async function apiRequest<T>(
-  method: "GET" | "POST" | "PUT" | "PATCH",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   path: string,
   body?: unknown,
 ): Promise<T> {

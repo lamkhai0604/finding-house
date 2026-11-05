@@ -4,6 +4,7 @@ import { ApiError } from "../api/client";
 import { changeListingStatus, getMyListings } from "../api/listings";
 import type { Listing } from "../api/types";
 import { Button } from "../components/Button";
+import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
 import { StatusMessage } from "../components/StatusMessage";
@@ -16,6 +17,7 @@ export function MyListingsPage() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [toDelete, setToDelete] = useState<Listing | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -106,12 +108,34 @@ export function MyListingsPage() {
                   >
                     {listing.status === "ACTIVE" ? "Hide" : "Unhide"}
                   </Button>
+                  <Button
+                    variant="secondary"
+                    className="button-danger-outline"
+                    onClick={() => setToDelete(listing)}
+                  >
+                    Delete
+                  </Button>
                 </>
               }
             />
           ))}
         </div>
       )}
+      <DeleteListingDialog
+        listing={toDelete}
+        onCancel={() => setToDelete(null)}
+        onDeleted={(id) => {
+          setToDelete(null);
+          setLoaded((current) =>
+            current?.kind === "ready"
+              ? {
+                  kind: "ready",
+                  listings: current.listings.filter((l) => l.id !== id),
+                }
+              : current,
+          );
+        }}
+      />
     </section>
   );
 }

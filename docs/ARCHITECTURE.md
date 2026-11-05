@@ -117,6 +117,7 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | POST | `/api/v1/listings` | LANDLORD | FR-02 |
 | PUT | `/api/v1/listings/{id}` | owner | FR-02 |
 | PATCH | `/api/v1/listings/{id}/status` | owner | FR-02 |
+| DELETE | `/api/v1/listings/{id}` | owner; 204 | FR-07 |
 | GET | `/api/v1/me/listings` | LANDLORD | FR-02 |
 | GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |

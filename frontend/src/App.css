@@ -156,6 +156,20 @@ h2 {
   color: var(--text);
 }
 
+.button-danger {
+  background: #b42318;
+  color: #fff;
+}
+
+.button-danger:hover:not(:disabled) {
+  background: #912018;
+}
+
+.button-danger-outline {
+  border-color: #fda29b;
+  color: #b42318;
+}
+
 .button:disabled {
   opacity: 0.6;
   cursor: default;
@@ -391,6 +405,60 @@ a.button {
 .listing-card-price .muted {
   font-weight: 400;
   font-size: 0.875em;
+}
+
+.danger-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #fda29b;
+  border-radius: var(--radius);
+  background: #fffbfa;
+}
+
+.danger-zone h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.danger-zone p {
+  margin: 0;
+}
+
+/* Dialog */
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 0.45);
+  z-index: 100;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 28rem;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: 0 20px 40px rgb(15 23 42 / 0.25);
+}
+
+.dialog h2 {
+  margin-top: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
 }
 
 @media (max-width: 480px) {
