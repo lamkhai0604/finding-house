@@ -85,7 +85,7 @@ Then log in as `maya.landlord@example.com` / `sample-pass-maya` (other passwords
 
 ### Frontend
 
-Pages so far: home, sign up, log in, and listing detail (`/listings/:id`). Built from reusable components in `frontend/src/components` (D-023).
+Pages so far: home, sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`). Built from reusable components in `frontend/src/components` (D-023).
 
 Prerequisites: Node.js 22.
 
@@ -116,5 +116,6 @@ npm run build                   # type check + production build
 | FR-02 listing API: landlords create, edit, hide/unhide, and list their listings; tenants and other landlords get 403; field validation incl. https-only image links (max 5) and known Seattle neighborhoods | 30 new tests (19 integration over HTTP, 11 unit) via `mvn -B -ntp verify` on GitHub Actions | Commit `5d52800`, run 42098935164: 51 tests passed |
 | FR-04 listing detail: public view with landlord name and phone (never email); hidden listings are 404 for everyone except the owner, with the same body as a missing listing | 6 integration tests over HTTP | Commit `32df262`, run 42105905522 (attempt 2): 57 tests passed |
 | Sign-up, login/logout, session restore, and the listing detail page work in a real browser against the real backend: photos, placeholder for missing or broken photos, hidden listing visible only to its owner, mobile layout | 30 Vitest tests + `scripts/smoke/page-screenshots.mjs` (Playwright) in the `smoke` workflow, which also saves screenshots | Commits `c8f7187`; frontend run 42108090385, smoke run 42108682551 |
+| Landlords post, edit, hide, and unhide listings in the browser; tenants and visitors cannot open landlord pages | 58 Vitest tests + smoke page checks that post a real listing through the UI | Commit `e2d2759`; frontend run 42110970580, smoke run 42111365352 |
 | Sample data loads through the real API (12 listings, 5 users), all 8 invalid examples are rejected with the expected status and field errors, and a second load creates no duplicates | `smoke` workflow, `load_sample_data.py --check-invalid`, then a second run | Commit `998031a`, run 42103027735: passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |
