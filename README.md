@@ -32,11 +32,21 @@ Finding House is a full-stack web app where landlords post rooms and tenants sea
 Prerequisites: Java 21, Maven 3.9+, Docker (for the local database and for integration tests).
 
 ```bash
-cp .env.example .env            # optional: change local DB credentials
+cp .env.example .env            # then set JWT_SECRET (required): openssl rand -base64 48
 docker compose up -d postgres   # local PostgreSQL 16 on port 5432
 cd backend
 mvn spring-boot:run             # API on http://localhost:8080
 curl localhost:8080/actuator/health   # {"status":"UP"}
+```
+
+Try the auth API (FR-01):
+
+```bash
+curl -X POST localhost:8080/api/v1/auth/register -H 'Content-Type: application/json' \
+  -d '{"email":"ana@example.com","password":"correct-horse","displayName":"Ana","role":"LANDLORD"}'
+curl -X POST localhost:8080/api/v1/auth/login -H 'Content-Type: application/json' \
+  -d '{"email":"ana@example.com","password":"correct-horse"}'      # returns accessToken
+curl localhost:8080/api/v1/me -H "Authorization: Bearer <accessToken>"
 ```
 
 Run the checks CI runs (format check, build, tests with a throwaway PostgreSQL container):
@@ -74,3 +84,4 @@ npm run build                   # type check + production build
 | --- | --- | --- |
 | Backend starts on Spring Boot 4.1.1, Flyway applies migration V1, `/actuator/health` returns UP | `mvn -B -ntp verify` on GitHub Actions (ubuntu-latest, Temurin 21, Testcontainers `postgres:16-alpine`) | Commit `4e5e9a3`, run 42069891558: 2 tests, 0 failures; Spotless clean; BUILD SUCCESS |
 | Frontend lints, is Prettier-formatted, passes tests for the API health indicator (up / down / unreachable), and builds | `npm ci`, lint, format check, `npm test`, `npm run build` on GitHub Actions (ubuntu-latest, Node 22) | Commit `6d6721a`, run 42074077400: 3 tests passed; build OK |
+| FR-01 register / login / `/me`: field validation, case-insensitive duplicate email → 409, BCrypt-only storage, identical 401 for wrong password and unknown email, 401 for missing / malformed / expired / foreign-key / foreign-issuer tokens, app refuses weak JWT secrets | 21 tests (Testcontainers PostgreSQL) via `mvn -B -ntp verify` on GitHub Actions | Commit `6b6f324`, run 42095282281: 21 tests passed; Spotless clean |
