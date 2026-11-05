@@ -8,6 +8,8 @@ on:
       - ".github/workflows/frontend.yml"
   pull_request:
     branches: [main, dev]
+  # Lets the full suite run on an exact commit, e.g. a dev -> main merge candidate (T-112).
+  workflow_dispatch:
     paths:
       - "frontend/**"
       - ".github/workflows/frontend.yml"
@@ -31,6 +33,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies (exact versions from package-lock.json)
         run: npm ci --no-audit --no-fund
+      - name: Audit runtime dependencies (fails on high or critical)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Audit all dependencies (informational)
+        run: npm audit || true
       - name: Report newer versions (informational)
         run: npm outdated || true
       - name: Lint

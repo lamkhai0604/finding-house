@@ -41,11 +41,12 @@ Priority uses MoSCoW: **Must**, **Should**, **Could**. All requirements are **Ap
 A visitor can register as a Tenant or Landlord and log in.
 
 Acceptance criteria:
-1. Registration requires email, password (at least 8 characters), display name, and role (`TENANT` or `LANDLORD`). Landlords may add a contact phone number.
+1. Registration requires email, password (at least 8 characters and at most 72 bytes, BCrypt's limit), display name, and role (`TENANT` or `LANDLORD`). Landlords may add a contact phone number.
 2. Registering with an email that already exists returns HTTP 409 and creates no account.
 3. Passwords are stored only as a BCrypt hash.
 4. A valid login returns an access token. Invalid credentials return HTTP 401 with a generic message that does not reveal whether the email exists.
 5. Protected endpoints return 401 without a valid token and 403 when the role or ownership is wrong.
+6. After 5 failed logins for one email, or 20 from one client address, within 15 minutes, further login attempts for that email or address are refused with HTTP 429 and a Retry-After header until the window ends, even with the right password (D-024).
 
 ### FR-02 — Listing management (Must)
 
@@ -80,7 +81,7 @@ Acceptance criteria:
 2. A `HIDDEN` listing returns 404 to everyone except its owner.
 3. A non-existent listing ID returns 404.
 
-### FR-05 — AI natural-language search (Must)
+### FR-05 — AI natural-language search (Must; scheduled after the core features and UI, D-019)
 
 A user types a sentence. The system converts it into FR-03 filters and shows the results.
 
@@ -105,7 +106,7 @@ Acceptance criteria:
 
 | ID | Category | Requirement | Target |
 | --- | --- | --- | --- |
-| NFR-01 | Security | Passwords hashed with BCrypt. Secrets come only from environment variables; none are committed. Authorization is enforced on the server for every protected operation. | Pass/fail checklist in TESTING |
+| NFR-01 | Security | Passwords hashed with BCrypt. Secrets come only from environment variables; none are committed. Authorization is enforced on the server for every protected operation. Failed logins are throttled (D-024). The production frontend sends a Content Security Policy; runtime dependencies have no known high or critical advisories (CI gate). | Pass/fail checklist; see [review 2026-11-05](reviews/2026-11-05-pre-release-review.md) |
 | NFR-02 | Performance | FR-03 browse/filter response time | p95 < 500 ms with 10,000 seeded listings in the local Docker setup (**proposed target**) |
 | NFR-03 | Performance | FR-05 AI search end-to-end | ≤ 6 s including the 5 s LLM timeout |
 | NFR-04 | Reliability | An AI failure never prevents manual search (FR-05 AC5). | Covered by automated failure-path tests |

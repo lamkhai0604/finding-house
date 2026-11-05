@@ -8,6 +8,8 @@ on:
       - ".github/workflows/backend.yml"
   pull_request:
     branches: [main, dev]
+  # Lets the full suite run on an exact commit, e.g. a dev -> main merge candidate (T-112).
+  workflow_dispatch:
     paths:
       - "backend/**"
       - ".github/workflows/backend.yml"

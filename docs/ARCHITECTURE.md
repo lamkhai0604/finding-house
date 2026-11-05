@@ -88,10 +88,9 @@ erDiagram
         timestamptz updated_at
     }
     LISTING_IMAGES {
-        bigint id PK
-        bigint listing_id FK
-        varchar url
-        int position
+        bigint listing_id PK, FK
+        int position PK "0-4, keeps order"
+        varchar url "https link only (D-017)"
     }
     LISTING_AMENITIES {
         bigint listing_id PK, FK
@@ -114,14 +113,16 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | POST | `/api/v1/auth/login` | — | FR-01 |
 | GET | `/api/v1/me` | any user | FR-01 |
 | GET | `/api/v1/listings` | — | FR-03 |
-| GET | `/api/v1/listings/{id}` | — (owner for hidden) | FR-04 |
+| GET | `/api/v1/listings/{id}` | — (owner for hidden); returns `{listing, landlord: {displayName, phone}}`, never the landlord email | FR-04 |
 | POST | `/api/v1/listings` | LANDLORD | FR-02 |
 | PUT | `/api/v1/listings/{id}` | owner | FR-02 |
 | PATCH | `/api/v1/listings/{id}/status` | owner | FR-02 |
-| POST / DELETE | `/api/v1/listings/{id}/images[/{imageId}]` | owner | FR-02 |
 | GET | `/api/v1/me/listings` | LANDLORD | FR-02 |
+| GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |
 | GET / PUT / DELETE | `/api/v1/me/favorites[/{listingId}]` | TENANT | FR-06 |
+
+Listing image links are part of the listing body (`imageUrls`, up to 5) and are replaced on every edit; there are no separate image endpoints (D-021).
 
 Errors use one JSON shape: `{ "code": "...", "message": "...", "fieldErrors": [...] }`. Stack traces and internal details are never returned (CODE-06).
 

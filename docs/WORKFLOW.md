@@ -18,6 +18,10 @@ Status: **Approved** (D-011, D-012, D-014).
 
 Proposed → Ready → In Progress → In Review → Done, tracked in [BACKLOG.md](BACKLOG.md). A task is Done only when its acceptance criteria are met and evidence (command, environment, commit, result) is recorded. Merge and release are tracked separately.
 
+## Sprint reports (D-020)
+
+At the end of every sprint, Claude writes `docs/reports/sprint-N-report.md` in English, merges it into `dev`, and pushes it. Each report covers: goal and outcome, delivered work with evidence, what is implemented vs. verified vs. reviewed vs. merged, decisions, problems found, what is not done, metrics, and the next sprint. The sprint plan file (`docs/sprints/sprint-N.md`) links to it.
+
 ## Engineering profile (standard §16)
 
 ```text
@@ -29,6 +33,10 @@ Style, formatter, linter, commands:
   Frontend: ESLint + Prettier                ->  npm run lint / npm run format
 Architecture, boundaries, dependency direction:
   See ARCHITECTURE.md §1–2 (controller -> service -> repository; search -> QueryParser interface).
+Frontend structure (D-022, D-023):
+  src/api (typed HTTP client and endpoint functions), src/auth (session state), src/components
+  (reusable UI used by more than one page, each with tests), src/pages (route screens that compose
+  components), src/utils (pure helpers). Routing with React Router.
 Error handling, logging, state, concurrency:
   One JSON error shape via @RestControllerAdvice; no stack traces in responses;
   SLF4J logging without secrets, tokens, or passwords; stateless API (state lives in PostgreSQL);
@@ -40,7 +48,9 @@ Tests and commands:
   Frontend: Vitest + React Testing Library for components with logic -> npm test
   Requires Docker for integration tests.
 Required CI checks and branch protection:
-  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main. Branch protection on main: to be configured by Khai
+  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main;
+  `smoke` workflow (docker compose + backend jar + API script + Vite dev server + headless Chromium) on pushes
+  touching backend/frontend/compose, on every PR into dev/main, and on demand. Branch protection on main: to be configured by Khai
   and then verified against the actual GitHub settings; until verified, it is recorded as a gap.
 Review, merge, release, communication:
   Khai reviews and merges; deployments need Khai's approval each time. Chat with Khai is in Vietnamese;
@@ -57,4 +67,7 @@ Approved exceptions and tracked debt:
   dynamic agent warning). Revisit if they become errors on newer JDKs.
   Debt: TypeScript kept on 5.9 (latest 7.x) until typescript-eslint supports it; @types/node kept on 22
   to match the Node 22 runtime. CI prints `npm outdated` on every run.
+  Resolved (T-110): the smoke workflow used to download Chromium and its system packages on every
+  run (784 s in run 42103027735; a run near the 25-minute limit on 2026-11-05). It now uses the
+  runner's preinstalled Google Chrome.
 ```
