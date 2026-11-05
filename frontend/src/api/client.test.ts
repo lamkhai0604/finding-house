@@ -2,6 +2,19 @@ import { describe, expect, it } from "vitest";
 import { apiError, mockApi } from "../test/mockApi";
 import { ApiError, apiRequest, setAccessToken } from "./client";
 
+/** Awaits a request that must fail and returns its ApiError. */
+async function rejection(request: Promise<unknown>): Promise<ApiError> {
+  try {
+    await request;
+  } catch (e) {
+    if (e instanceof ApiError) {
+      return e;
+    }
+    throw e;
+  }
+  throw new Error("expected the request to fail");
+}
+
 describe("apiRequest", () => {
   it("sends JSON and the bearer token, and returns the parsed body", async () => {
     const fetchMock = mockApi({
@@ -39,11 +52,8 @@ describe("apiRequest", () => {
         ]),
     });
 
-    const error = await apiRequest("POST", "/api/v1/things", {}).catch(
-      (e) => e,
-    );
+    const error = await rejection(apiRequest("POST", "/api/v1/things", {}));
 
-    expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(400);
     expect(error.fieldErrors()).toEqual({
       email: "must be a well-formed email address",
@@ -57,9 +67,8 @@ describe("apiRequest", () => {
       },
     });
 
-    const error = await apiRequest("GET", "/api/v1/me").catch((e) => e);
+    const error = await rejection(apiRequest("GET", "/api/v1/me"));
 
-    expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(0);
     expect(error.body.code).toBe("NETWORK_ERROR");
   });
@@ -70,7 +79,7 @@ describe("apiRequest", () => {
         new Response("<html>Bad gateway</html>", { status: 502 }),
     });
 
-    const error = await apiRequest("GET", "/api/v1/me").catch((e) => e);
+    const error = await rejection(apiRequest("GET", "/api/v1/me"));
 
     expect(error.status).toBe(502);
     expect(error.body.code).toBe("UNKNOWN_ERROR");
