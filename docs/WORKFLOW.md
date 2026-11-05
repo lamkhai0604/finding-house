@@ -33,6 +33,10 @@ Style, formatter, linter, commands:
   Frontend: ESLint + Prettier                ->  npm run lint / npm run format
 Architecture, boundaries, dependency direction:
   See ARCHITECTURE.md §1–2 (controller -> service -> repository; search -> QueryParser interface).
+Frontend structure (D-022, D-023):
+  src/api (typed HTTP client and endpoint functions), src/auth (session state), src/components
+  (reusable UI used by more than one page, each with tests), src/pages (route screens that compose
+  components), src/utils (pure helpers). Routing with React Router.
 Error handling, logging, state, concurrency:
   One JSON error shape via @RestControllerAdvice; no stack traces in responses;
   SLF4J logging without secrets, tokens, or passwords; stateless API (state lives in PostgreSQL);
