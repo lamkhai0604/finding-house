@@ -19,5 +19,7 @@ export function parseDollarsToCents(input: string): number | null {
 export function centsToDollarsInput(cents: number): string {
   const dollars = Math.floor(cents / 100);
   const rest = cents % 100;
-  return rest === 0 ? String(dollars) : `${dollars}.${String(rest).padStart(2, "0")}`;
+  return rest === 0
+    ? String(dollars)
+    : `${dollars}.${String(rest).padStart(2, "0")}`;
 }

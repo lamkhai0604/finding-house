@@ -8,7 +8,8 @@ import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
 import { StatusMessage } from "../components/StatusMessage";
 
-type Loaded = { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
+type Loaded =
+  { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
 
 /** FR-02 AC3, AC6: a landlord's listings, including hidden ones, newest first. */
 export function MyListingsPage() {
@@ -20,13 +21,11 @@ export function MyListingsPage() {
     let active = true;
     getMyListings()
       .then((listings): Loaded => ({ kind: "ready", listings }))
-      .catch(
-        (e: unknown): Loaded => ({
-          kind: "error",
-          message:
-            e instanceof ApiError ? e.body.message : "Something went wrong.",
-        }),
-      )
+      .catch((e: unknown): Loaded => ({
+        kind: "error",
+        message:
+          e instanceof ApiError ? e.body.message : "Something went wrong.",
+      }))
       .then((value) => {
         if (active) setLoaded(value);
       });

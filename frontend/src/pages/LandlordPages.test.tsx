@@ -111,8 +111,14 @@ describe("Post a room (FR-02)", () => {
       "GET /api/v1/reference-data": () => Response.json(REFERENCE_DATA),
       "POST /api/v1/listings": () =>
         apiError(400, "VALIDATION_FAILED", "Request validation failed", [
-          { field: "monthlyPriceCents", message: "must be less than or equal to 10000000" },
-          { field: "imageUrls[0]", message: "must be an absolute https:// URL" },
+          {
+            field: "monthlyPriceCents",
+            message: "must be less than or equal to 10000000",
+          },
+          {
+            field: "imageUrls[0]",
+            message: "must be an absolute https:// URL",
+          },
         ]),
     });
     renderApp("/listings/new");
@@ -207,7 +213,10 @@ describe("Landlord-only pages", () => {
 });
 
 describe("My listings (FR-02 AC3, AC6)", () => {
-  const active: Listing = listingDetail({ id: 1, title: "Active room" }).listing;
+  const active: Listing = listingDetail({
+    id: 1,
+    title: "Active room",
+  }).listing;
   const hidden: Listing = listingDetail({
     id: 2,
     title: "Hidden room",

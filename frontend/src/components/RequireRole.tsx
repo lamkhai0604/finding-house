@@ -28,7 +28,10 @@ export function RequireRole({ role, children }: RequireRoleProps) {
       <StatusMessage
         title={role === "LANDLORD" ? "Landlords only" : "Tenants only"}
       >
-        <p>This page is for {role === "LANDLORD" ? "landlord" : "tenant"} accounts.</p>
+        <p>
+          This page is for {role === "LANDLORD" ? "landlord" : "tenant"}{" "}
+          accounts.
+        </p>
         <Link to="/">Back to home</Link>
       </StatusMessage>
     );

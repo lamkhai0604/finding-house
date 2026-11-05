@@ -1,7 +1,6 @@
 import { useId, type TextareaHTMLAttributes } from "react";
 
-interface TextAreaFieldProps
-  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
   hint?: string;
