@@ -1,6 +1,6 @@
 # Workflow and Engineering Profile — Finding House
 
-Status: branching and permissions **Approved** (D-012, D-014); the rest **Proposed** (D-011).
+Status: **Approved** (D-011, D-012, D-014).
 
 ## Branching and pull requests
 

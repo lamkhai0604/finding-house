@@ -2,13 +2,13 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1 (Sprint 0 draft) |
-| Status | **Proposed — awaiting baseline review by the Product Owner** |
+| Version | 1.0 (approved baseline) |
+| Status | **Approved baseline** (T-002, Khai, 2026-11-05) |
 | Product Owner | Khai (lamkhai0604) |
 | Standard | AI-Assisted Software Engineering Standard v1.3 |
 | Last updated | 2026-11-05 |
 
-> "Finding House" (from the repository name) is the working name; see OQ-03. Every requirement below is **Proposed** until the Product Owner records approval in [DECISIONS.md](DECISIONS.md).
+> "Finding House" (from the repository name) is the working name; see OQ-03. The requirements below were approved as the baseline on 2026-11-05 (D-010). Changes follow change control and are recorded in [DECISIONS.md](DECISIONS.md).
 
 ## 1. Purpose
 
@@ -34,7 +34,7 @@ In-app chat, map view, roommate matching, AI-generated listing text from photos,
 
 ## 3. Functional Requirements
 
-Priority uses MoSCoW: **Must**, **Should**, **Could**. All statuses are **Proposed**.
+Priority uses MoSCoW: **Must**, **Should**, **Could**. All requirements are **Approved** (baseline v1.0).
 
 ### FR-01 — Account registration and login (Must)
 
