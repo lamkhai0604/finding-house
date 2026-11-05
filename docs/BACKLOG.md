@@ -37,14 +37,26 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P3 | Proposed |
 | T-114 | Deployment security: forwarded headers for the real client address, HSTS and frame-ancestors headers at the host, request body size limit | NFR-01 | P2 | Proposed (Sprint 3, with T-401) |
 
-## Sprint 2 — "A tenant can find a room"
+## Sprint 2 — "A tenant can find a room" ([plan](sprints/sprint-2.md))
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-201 | Browse/filter API with validation, sort, pagination | FR-03 | P2 | Proposed |
-| T-202 | Browse page with filter panel | FR-03 | P2 | Proposed |
-| T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Proposed |
-| T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Proposed |
+| T-121 | Shorten access tokens to 2 hours | D-025 | P1 | Ready |
+| T-120 | Delete listing: owner-only API, confirmation dialog, buttons on My listings and Edit | FR-07 | P2 | Ready |
+| T-115 | Back button on detail, new, and edit pages; unsaved-changes warning | D-027 | P2 | Ready |
+| T-116 | Loading skeletons and busy-button spinners (delayed ~200 ms) | D-027 | P2 | Ready |
+| T-117 | Consistent buttons: navigation links styled as buttons, actions as `<button>` | D-027 | P2 | Ready |
+| T-118 | Footer on every page | D-027 | P2 | Ready |
+| T-119 | Header: avatar menu, Post a room button, mobile hamburger menu | D-027 | P2 | Ready |
+| T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Ready (after T-201) |
+
+
+| ID | Title | Req | Priority | Status |
+| --- | --- | --- | --- | --- |
+| T-201 | Browse/filter API with validation, sort, pagination | FR-03 | P2 | Ready |
+| T-202 | Browse page with filter panel | FR-03 | P2 | Ready |
+| T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Ready |
+| T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Ready |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
