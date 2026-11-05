@@ -110,6 +110,27 @@ try {
     page.getByRole("heading", { name: "My listings" }),
   );
 
+  // T-123: hovering a secondary button changes its background.
+  const editButton = page.getByRole("link", { name: "Edit", exact: true }).first();
+  const background = () =>
+    editButton.evaluate((el) => getComputedStyle(el).backgroundColor);
+  const before = await background();
+  await editButton.hover();
+  await page.waitForTimeout(250);
+  const after = await background();
+  if (before === after) {
+    failures += 1;
+    console.error(`FAIL 11b: hover did not change the Edit button (${before})`);
+  } else {
+    console.log(`ok   11b: hover changes the Edit button (${before} -> ${after})`);
+  }
+  await page.screenshot({
+    path: `${outDir}/11c-hover-edit-button.jpg`,
+    type: "jpeg",
+    quality: 70,
+    clip: { x: 0, y: 0, width: 1200, height: 420 },
+  });
+
   await page.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}/edit`);
   await shot(
     page,
