@@ -13,7 +13,7 @@ All diagrams are Mermaid source embedded in this file. GitHub renders them, and 
 ```mermaid
 flowchart LR
     U[Browser] --> FE[Web client<br/>React + Vite + TS]
-    FE -->|REST JSON /api/v1| API[API server<br/>Spring Boot 3, Java 21]
+    FE -->|REST JSON /api/v1| API[API server<br/>Spring Boot 4.1, Java 21]
     API --> DB[(PostgreSQL)]
     API -->|via QueryParser adapter| LLM[LLM provider<br/>free tier]
     U -.->|loads image links| IMG[External image hosts]

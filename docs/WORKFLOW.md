@@ -22,10 +22,10 @@ Proposed → Ready → In Progress → In Review → Done, tracked in [BACKLOG.m
 
 ```text
 Languages, versions, platforms:
-  Java 21 (Temurin), Spring Boot 3.x, Maven wrapper; Node 22 LTS, TypeScript, React, Vite;
+  Java 21 (Temurin), Spring Boot 4.1.x, Maven 3.9+ (Maven wrapper to be added, see tracked debt); Node 22 LTS, TypeScript, React, Vite;
   PostgreSQL 16; modern evergreen browsers, 360 px minimum width.
 Style, formatter, linter, commands:
-  Backend: Spotless with google-java-format  ->  ./mvnw spotless:check / spotless:apply
+  Backend: Spotless with google-java-format  ->  mvn spotless:check / mvn spotless:apply (check also runs in mvn verify)
   Frontend: ESLint + Prettier                ->  npm run lint / npm run format
 Architecture, boundaries, dependency direction:
   See ARCHITECTURE.md §1–2 (controller -> service -> repository; search -> QueryParser interface).
@@ -36,7 +36,7 @@ Error handling, logging, state, concurrency:
 Dependency management:
   Maven wrapper + pinned versions; package-lock.json committed. New runtime dependencies are noted in the PR (CODE-14).
 Tests and commands:
-  Backend: JUnit 5 + Mockito (unit), Spring Boot Test + Testcontainers PostgreSQL (integration) -> ./mvnw verify
+  Backend: JUnit 5 + Mockito (unit), Spring Boot Test + Testcontainers PostgreSQL (integration) -> mvn verify
   Frontend: Vitest + React Testing Library for components with logic -> npm test
   Requires Docker for integration tests.
 Required CI checks and branch protection:
@@ -50,5 +50,9 @@ Authorized delegation and permissions:
 Quality thresholds:
   No numeric coverage threshold (TEST-07). Every FR has integration tests for its acceptance criteria.
 Approved exceptions and tracked debt:
-  None yet.
+  No exceptions.
+  Debt: Maven wrapper (mvnw) not yet generated because Maven Central was unreachable from Claude's
+  workspace during T-003; add it when it is reachable (T-003 follow-up in BACKLOG).
+  Debt: CI shows harmless warnings (Flyway POM metadata repositories return 401; Mockito/ByteBuddy
+  dynamic agent warning). Revisit if they become errors on newer JDKs.
 ```
