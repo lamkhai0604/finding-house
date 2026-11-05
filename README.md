@@ -10,7 +10,7 @@ Finding House is a full-stack web app where landlords post rooms and tenants sea
 
 - **Backend:** Java 21, Spring Boot 4.1, Spring Security (JWT), Spring Data JPA, Flyway, PostgreSQL
 - **Frontend:** React, Vite, TypeScript
-- **AI:** LLM free tier behind a `QueryParser` adapter, with timeout and fallback to manual filters
+- **AI (planned last, after the core features):** LLM free tier behind a `QueryParser` adapter, with timeout and fallback to manual filters
 - **Quality:** JUnit 5, Testcontainers, GitHub Actions CI
 
 ## Documentation
@@ -23,6 +23,7 @@ Finding House is a full-stack web app where landlords post rooms and tenants sea
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Decision log |
 | [docs/BACKLOG.md](docs/BACKLOG.md) | Tasks and sprints |
 | [docs/STATUS.md](docs/STATUS.md) | Current checkpoint |
+| [docs/reports/](docs/reports/) | Sprint reports |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Branching, review, engineering profile |
 
 ## Setup and testing

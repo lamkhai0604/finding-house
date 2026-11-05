@@ -28,6 +28,8 @@ Initial SRS v0.1 and ARCHITECTURE v0.1 (use case, AI search sequence, ER).
 
 ## Sprint review (2026-11-05)
 
+Full report: [Sprint 0 report](../reports/sprint-0-report.md).
+
 | Task | Implemented | Verified | Reviewed | Merged to `dev` | Merged to `main` |
 | --- | --- | --- | --- | --- | --- |
 | T-001 repo + baseline docs | Yes | n/a (docs) | Khai (PR #1) | Yes | Yes (`954432d`) |

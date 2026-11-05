@@ -40,4 +40,4 @@ Delivers a vertical slice: database → API → UI for posting and viewing a lis
 
 ## Sprint review
 
-_To be filled at the end of the sprint._
+_To be filled at the end of the sprint; the full report goes to `docs/reports/sprint-1-report.md` (D-020)._
