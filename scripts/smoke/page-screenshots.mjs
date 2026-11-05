@@ -38,6 +38,17 @@ async function listingIdsByTitle() {
 const ids = await listingIdsByTitle();
 const browser = await chromium.launch();
 let failures = 0;
+const cspViolations = [];
+
+/** T-110: any Content Security Policy violation in the browser fails the run. */
+function watchForCspViolations(page) {
+  page.on("console", (message) => {
+    const text = message.text();
+    if (/Content Security Policy|Refused to (load|execute|apply|connect)/i.test(text)) {
+      cspViolations.push(text);
+    }
+  });
+}
 
 // `ready` (optional) is a locator that must appear first, so a check never passes on text left
 // over from the previous page while the next one is still loading.
@@ -58,6 +69,7 @@ async function shot(page, name, expectedText, ready) {
 try {
   const desktop = await browser.newContext({ viewport: { width: 1200, height: 800 } });
   const page = await desktop.newPage();
+  watchForCspViolations(page);
 
   await page.goto(`${frontend}/`);
   await shot(page, "01-home-logged-out", "Find a room in Seattle");
@@ -143,10 +155,19 @@ try {
 
   const mobile = await browser.newContext({ viewport: { width: 375, height: 740 }, isMobile: true });
   const phone = await mobile.newPage();
+  watchForCspViolations(phone);
   await phone.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}`);
   await shot(phone, "10-detail-mobile", "Sunny studio near UW");
 } finally {
   await browser.close();
+}
+
+if (cspViolations.length > 0) {
+  console.error(`FAIL ${cspViolations.length} CSP violation(s):`);
+  for (const text of cspViolations) console.error(`  ${text}`);
+  failures += 1;
+} else {
+  console.log("ok   no Content Security Policy violations");
 }
 
 if (failures > 0) {

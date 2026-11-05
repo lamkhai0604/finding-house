@@ -25,10 +25,19 @@ export class ApiError extends Error {
 }
 
 let currentToken: string | null = null;
+let onUnauthorized: (() => void) | null = null;
 
 /** Set by the auth session; every request sends this token when present. */
 export function setAccessToken(token: string | null): void {
   currentToken = token;
+}
+
+/**
+ * Called when a request that carried a token gets 401 (expired or revoked), so the session can
+ * end instead of looking logged in while every call fails.
+ */
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler;
 }
 
 export async function apiRequest<T>(
@@ -61,6 +70,9 @@ export async function apiRequest<T>(
   }
 
   const data: unknown = await readJson(response);
+  if (response.status === 401 && headers.Authorization) {
+    onUnauthorized?.();
+  }
   if (!response.ok) {
     throw new ApiError(response.status, toErrorBody(data));
   }

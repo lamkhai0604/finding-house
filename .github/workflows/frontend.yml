@@ -31,6 +31,10 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies (exact versions from package-lock.json)
         run: npm ci --no-audit --no-fund
+      - name: Audit runtime dependencies (fails on high or critical)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Audit all dependencies (informational)
+        run: npm audit || true
       - name: Report newer versions (informational)
         run: npm outdated || true
       - name: Lint

@@ -214,6 +214,22 @@ describe("Landlord-only pages", () => {
   });
 });
 
+describe("Expired session (T-110)", () => {
+  it("logs the user out when the server rejects their token", async () => {
+    mockApi({
+      ...loggedInAs(landlordMaya),
+      "GET /api/v1/me/listings": () =>
+        apiError(401, "UNAUTHORIZED", "Authentication required"),
+    });
+    renderApp("/my/listings");
+
+    expect(
+      await screen.findByRole("heading", { name: "Log in" }),
+    ).toBeInTheDocument();
+    expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
+  });
+});
+
 describe("My listings (FR-02 AC3, AC6)", () => {
   const active: Listing = listingDetail({
     id: 1,

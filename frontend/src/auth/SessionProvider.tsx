@@ -10,7 +10,7 @@ import {
   login as loginRequest,
   registerAccount,
 } from "../api/auth";
-import { setAccessToken } from "../api/client";
+import { setAccessToken, setUnauthorizedHandler } from "../api/client";
 import type { RegisterRequest, UserProfile } from "../api/types";
 import {
   readStoredToken,
@@ -42,6 +42,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setUser(profile);
     setStatus("authenticated");
   }, []);
+
+  // An expired token ends the session (T-110).
+  useEffect(() => {
+    setUnauthorizedHandler(clear);
+    return () => setUnauthorizedHandler(null);
+  }, [clear]);
 
   // Restore a session from an earlier page load in the same tab. State is only set in the
   // promise callbacks, never synchronously inside the effect.
