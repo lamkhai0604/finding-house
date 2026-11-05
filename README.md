@@ -50,6 +50,18 @@ curl -X POST localhost:8080/api/v1/auth/login -H 'Content-Type: application/json
 curl localhost:8080/api/v1/me -H "Authorization: Bearer <accessToken>"
 ```
 
+Post a listing as a landlord (FR-02; price in US cents):
+
+```bash
+curl -X POST localhost:8080/api/v1/listings -H "Authorization: Bearer <accessToken>" \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Sunny studio near UW","monthlyPriceCents":165000,"areaSqft":420,
+       "neighborhood":"University District","address":"4500 Brooklyn Ave NE",
+       "amenities":["WIFI"],"imageUrls":["https://example.com/a.jpg"]}'
+curl localhost:8080/api/v1/me/listings -H "Authorization: Bearer <accessToken>"
+curl localhost:8080/api/v1/reference-data          # neighborhoods and amenities
+```
+
 Run the checks CI runs (format check, build, tests with a throwaway PostgreSQL container):
 
 ```bash
@@ -86,4 +98,5 @@ npm run build                   # type check + production build
 | Backend starts on Spring Boot 4.1.1, Flyway applies migration V1, `/actuator/health` returns UP | `mvn -B -ntp verify` on GitHub Actions (ubuntu-latest, Temurin 21, Testcontainers `postgres:16-alpine`) | Commit `4e5e9a3`, run 42069891558: 2 tests, 0 failures; Spotless clean; BUILD SUCCESS |
 | Frontend lints, is Prettier-formatted, passes tests for the API health indicator (up / down / unreachable), and builds | `npm ci`, lint, format check, `npm test`, `npm run build` on GitHub Actions (ubuntu-latest, Node 22) | Commit `6d6721a`, run 42074077400: 3 tests passed; build OK |
 | FR-01 register / login / `/me`: field validation, case-insensitive duplicate email → 409, BCrypt-only storage, identical 401 for wrong password and unknown email, 401 for missing / malformed / expired / foreign-key / foreign-issuer tokens, app refuses weak JWT secrets | 21 tests (Testcontainers PostgreSQL) via `mvn -B -ntp verify` on GitHub Actions | Commit `6b6f324`, run 42095282281: 21 tests passed; Spotless clean |
+| FR-02 listing API: landlords create, edit, hide/unhide, and list their listings; tenants and other landlords get 403; field validation incl. https-only image links (max 5) and known Seattle neighborhoods | 30 new tests (19 integration over HTTP, 11 unit) via `mvn -B -ntp verify` on GitHub Actions | Commit `5d52800`, run 42098935164: 51 tests passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |

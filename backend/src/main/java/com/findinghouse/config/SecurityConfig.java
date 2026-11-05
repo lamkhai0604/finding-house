@@ -48,8 +48,14 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/actuator/health")
+                    .requestMatchers(HttpMethod.GET, "/actuator/health", "/api/v1/reference-data")
                     .permitAll()
+                    // FR-02: only landlords create listings or have a "my listings" page.
+                    // Editing and status changes are checked for ownership in ListingService.
+                    .requestMatchers(HttpMethod.POST, "/api/v1/listings")
+                    .hasRole("LANDLORD")
+                    .requestMatchers(HttpMethod.GET, "/api/v1/me/listings")
+                    .hasRole("LANDLORD")
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(
