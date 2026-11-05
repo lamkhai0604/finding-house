@@ -38,6 +38,6 @@ Delivers a vertical slice: database → API → UI for posting and viewing a lis
 
 - ER diagram unchanged (tables match ARCHITECTURE §4). API list unchanged.
 
-## Sprint review
+## Sprint review (2026-11-05)
 
-_To be filled at the end of the sprint; the full report goes to `docs/reports/sprint-1-report.md` (D-020)._
+Goal met on `dev` (`5d0bf80`): T-101 to T-106 done, plus T-008 and T-009. Full report: [Sprint 1 report](../reports/sprint-1-report.md).
