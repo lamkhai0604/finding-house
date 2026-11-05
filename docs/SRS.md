@@ -26,11 +26,11 @@ The project is a portfolio piece. Its goal is a small, working, well-tested prod
 | LLM provider | External system that converts search text into a JSON filter object. |
 
 **Inside the system:** web client, REST API, database, LLM integration adapter.
-**Outside the system:** LLM provider, image storage provider (OQ-02), hosting platform.
+**Outside the system:** LLM provider, external image hosts (listings link to images; D-017), hosting platform.
 
 ### Exclusions (not in MVP)
 
-In-app chat, map view, roommate matching, AI-generated listing text from photos, vector or semantic search, price-fairness estimates, payments, admin moderation tools, email verification, password reset. These may become backlog items later through change control.
+In-app chat, map view, roommate matching, AI-generated listing text from photos, image file upload (planned later as T-404), vector or semantic search, price-fairness estimates, payments, admin moderation tools, email verification, password reset. These may become backlog items later through change control.
 
 ## 3. Functional Requirements
 
@@ -52,12 +52,13 @@ Acceptance criteria:
 A Landlord can create, edit, hide, and unhide their own listings.
 
 Acceptance criteria:
-1. A listing has: title (5–100 chars), description (up to 2,000 chars), monthly price (positive integer), area in square feet (positive integer), city, neighborhood, street address, amenities (zero or more from the fixed set in §6), and 0–5 images.
-2. Images must be JPEG or PNG, at most 5 MB each. Other files are rejected with HTTP 400.
+1. A listing has: title (5–100 chars), description (up to 2,000 chars), monthly price (positive integer), area in square feet (positive integer), city, neighborhood, street address, amenities (zero or more from the fixed set in §6), and 0–5 image links.
+2. Each image link must be an absolute `https://` URL of at most 2,048 characters; anything else is rejected with HTTP 400. The server stores the link only and does not download the image (D-017).
 3. A new listing has status `ACTIVE`. The owner can switch it between `ACTIVE` and `HIDDEN`.
 4. Only the owning Landlord can edit, hide, or unhide a listing. Anyone else receives 403.
 5. All validation is enforced on the server. Client-side validation is only a convenience.
 6. A Landlord can see a list of all their own listings, including hidden ones.
+7. A listing with no images, or an image that fails to load, is shown with a placeholder frame in the list and detail views. Clicking a loaded image opens it at full size.
 
 ### FR-03 — Browse and filter listings (Must)
 
@@ -118,7 +119,7 @@ Acceptance criteria:
 
 - **REST API:** JSON over HTTPS, versioned under `/api/v1`. Endpoint list in [ARCHITECTURE.md](ARCHITECTURE.md#5-api-overview).
 - **LLM provider:** HTTPS API. Provider is proposed in D-008 and accessed only through the `QueryParser` adapter.
-- **Image storage:** to be decided (OQ-02).
+- **Images:** links to externally hosted images (D-017). File upload to a free storage service is a later backlog item (T-404).
 
 ## 6. Data
 
@@ -139,7 +140,7 @@ Price is a monthly rent in USD, stored as an integer number of cents. Neighborho
 | ID | Question | Blocks |
 | --- | --- | --- |
 | OQ-01 | ~~Target market~~ **Resolved:** US, Seattle WA, USD, English UI (D-015) | — |
-| OQ-02 | Image storage: Cloudinary free tier, or image URLs only for the MVP? | T-104 |
+| OQ-02 | ~~Image storage~~ **Resolved:** image links + placeholder for the MVP; upload later (D-017) | — |
 | OQ-03 | Final product name | README and branding only |
 | OQ-04 | ~~Repository~~ **Resolved:** `lamkhai0604/finding-house` | — |
 | OQ-05 | Hosting platform for the demo (free tier) | Sprint 4 |

@@ -17,10 +17,10 @@ Adoption: Approved by Khai (Product Owner), 2026-11-05 — see D-001 in `docs/DE
 
 Then verify the actual repository state (branch, latest commit, uncommitted changes, open PRs) before making changes. Never invent repository state, test results, or approvals.
 
-## Permissions (D-012, proposed)
+## Permissions (D-012, approved)
 
 Implementation: tasks marked Ready in BACKLOG.md, within their acceptance criteria
-Branch / commit / push / PR: Claude works on `dev` and task branches cut from `dev`; PRs target `dev` (D-012, D-014)
+Branch / commit / merge: one task branch per task, cut from `dev` and named per WORKFLOW.md; Claude merges it into `dev` when checks pass (D-012, D-014)
 `main`: Khai's branch; never push to it. Only Khai merges `dev → main`
 Merge / deployment / release: Khai only
 Paid services / destructive actions: not permitted without Khai's explicit approval (D-007)

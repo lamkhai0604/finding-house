@@ -1,17 +1,18 @@
 # Workflow and Engineering Profile — Finding House
 
-Status: **Proposed** (part of the Sprint 0 baseline, D-011 and D-012).
+Status: branching and permissions **Approved** (D-012, D-014); the rest **Proposed** (D-011).
 
 ## Branching and pull requests
 
 - **`main`** belongs to Khai and is always demo-ready. Nobody pushes to it directly. It changes only through a `dev → main` PR that Khai reviews and merges (D-014).
 - **`dev`** is the integration branch. Claude works here (D-012).
-- Proposed: each task gets a short-lived branch from `dev` (`feat/T-103-listing-api`, `fix/T-xxx-...`, `docs/...`, `chore/...`) and a PR into `dev`, so each task can be reviewed on its own.
+- Every task gets its own branch cut from the latest `dev`: `feat/T-103-listing-api`, `fix/T-xxx-short-name`, `docs/T-xxx-short-name`, `chore/T-xxx-short-name`, `test/T-xxx-short-name`.
+- When the task's checks pass (build, format/lint, tests; for docs, link and ID consistency), Claude merges the branch into `dev` with `--no-ff`, so each task shows up as one merge commit (D-012).
 - Commits follow Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`, `refactor:`) and mention the task ID.
-- One PR has one purpose and links to its task and requirement IDs. The description states the problem, the resulting behavior, how it was verified, and any security or data implications (standard §11).
-- The author reviews their own diff before asking for review.
-- Claude opens PRs into `dev` as **draft** and marks them ready after CI passes. Khai reviews them. Only Khai opens or merges `dev → main` PRs (D-012, D-014).
-- Review findings are classified Blocker / Major / Minor / Nit. Unresolved Blocker or Major findings prevent merge.
+- One task branch has one purpose. Its merge commit into `dev` states the task ID, the problem, the resulting behavior, how it was verified, any security or data implications, and that review was self-review.
+- The author reviews their own diff before merging into `dev`.
+- Khai reviews the accumulated work in a `dev → main` PR (independent review) and is the only one who merges it (D-014).
+- Review findings on the `dev → main` PR are classified Blocker / Major / Minor / Nit. Unresolved Blocker or Major findings prevent merge.
 
 ## Task flow
 
