@@ -15,6 +15,19 @@ describe("ListingImage (FR-02 AC7)", () => {
     );
   });
 
+  it("can show the photo without a link, e.g. inside a listing card", () => {
+    render(
+      <ListingImage
+        src="https://example.com/a.jpg"
+        alt="Studio"
+        linkToFullSize={false}
+      />,
+    );
+
+    expect(screen.getByRole("img", { name: "Studio" })).toBeInTheDocument();
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
   it("shows a placeholder when there is no link", () => {
     render(<ListingImage alt="Studio" />);
 
