@@ -224,7 +224,7 @@ Retry policy: **no automatic retry** on the LLM call. A retry would double the l
 
 ## 7. Cross-cutting Decisions
 
-- **Authentication:** stateless JWT (Spring Security resource server with an HMAC key from an environment variable). Token lifetime is 24 h; there is no refresh token in the MVP. The client keeps the token in memory and `sessionStorage`. Tradeoff: simpler than httpOnly cookies, but exposed if an XSS bug exists. Mitigations: React escaping by default, no `dangerouslySetInnerHTML`. Recorded in D-009.
+- **Authentication:** stateless JWT (Spring Security resource server with an HMAC key from an environment variable). Token lifetime is 2 h (D-025); there is no refresh token in the MVP, so users log in again after that. The client keeps the token in memory and `sessionStorage`. Tradeoff: simpler than httpOnly cookies, but exposed if an XSS bug exists. Mitigations: React escaping by default, no `dangerouslySetInnerHTML`. Recorded in D-009.
 - **Rate limiting:** an in-memory token bucket per client IP. This is acceptable for one instance and is documented as a known limitation.
 - **Configuration:** `application.yml` plus environment variables. `.env.example` is committed; `.env` is git-ignored.
 - **Testability (ARCH-05):** the LLM is behind `QueryParser`, and time is injected via `java.time.Clock` where token expiry and timestamps matter.

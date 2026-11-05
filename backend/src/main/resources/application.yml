@@ -31,7 +31,8 @@ app:
   jwt:
     # Required, at least 32 bytes. No default on purpose (D-009, CODE-08).
     secret: ${JWT_SECRET}
-    ttl: ${JWT_TTL:24h}
+    # D-025: 2 hours limits how long a stolen token stays useful.
+    ttl: ${JWT_TTL:2h}
     issuer: finding-house
   # D-024: failed logins allowed per window before that email or client address is blocked.
   login-throttle:
