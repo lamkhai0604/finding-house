@@ -37,9 +37,10 @@ export function HomePage() {
     if (!sessionKnown) return;
     let active = true;
     searchListings({ sort: "newest", size: NEWEST_COUNT })
-      .then(
-        (page): Newest => ({ kind: "ready", items: page.items.map(toSlide) }),
-      )
+      .then((page): Newest => ({
+        kind: "ready",
+        items: page.items.map(toSlide),
+      }))
       .catch((): Newest => ({ kind: "error" }))
       .then((value) => {
         if (active) setNewest(value);
