@@ -131,7 +131,7 @@ Price is a monthly rent in USD, stored as an integer number of cents. Neighborho
 
 ## 7. Constraints, Assumptions, Dependencies
 
-- **Constraints:** Java 21 + Spring Boot 3 backend (D-002). React + Vite + TypeScript frontend (D-003). Free tiers only (D-007).
+- **Constraints:** Java 21 + Spring Boot 4.1 backend (D-002, D-018). React + Vite + TypeScript frontend (D-003). Free tiers only (D-007).
 - **Assumptions:** The market is Seattle, WA only (D-015). Expected demo traffic is low (tens of users).
 - **Dependencies:** an LLM free-tier API key created by the PO; a GitHub repository (OQ-04).
 

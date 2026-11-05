@@ -2,13 +2,13 @@
 
 Find a room to rent by just describing it.
 
-> **Status: Sprint 0 (design baseline).** No application code exists yet. Everything below describes the *planned* product; the "Verified" section will list only what has actually been implemented and tested.
+> **Status: Sprint 0.** Design baseline approved; backend skeleton in place. Everything else below describes the *planned* product. The "Verified" section lists only what has actually been implemented and tested.
 
 Finding House is a full-stack web app where landlords post rooms and tenants search them with normal filters or with a plain-language request such as *"studio under $1,800 in Capitol Hill, pets allowed"*. An LLM turns the sentence into structured filters, which go through the same server-side validation as manual filters.
 
 ## Planned stack
 
-- **Backend:** Java 21, Spring Boot 3, Spring Security (JWT), Spring Data JPA, Flyway, PostgreSQL
+- **Backend:** Java 21, Spring Boot 4.1, Spring Security (JWT), Spring Data JPA, Flyway, PostgreSQL
 - **Frontend:** React, Vite, TypeScript
 - **AI:** LLM free tier behind a `QueryParser` adapter, with timeout and fallback to manual filters
 - **Quality:** JUnit 5, Testcontainers, GitHub Actions CI
@@ -27,8 +27,32 @@ Finding House is a full-stack web app where landlords post rooms and tenants sea
 
 ## Setup and testing
 
-Added in T-003 / T-004 once the skeleton exists.
+### Backend
+
+Prerequisites: Java 21, Maven 3.9+, Docker (for the local database and for integration tests).
+
+```bash
+cp .env.example .env            # optional: change local DB credentials
+docker compose up -d postgres   # local PostgreSQL 16 on port 5432
+cd backend
+mvn spring-boot:run             # API on http://localhost:8080
+curl localhost:8080/actuator/health   # {"status":"UP"}
+```
+
+Run the checks CI runs (format check, build, tests with a throwaway PostgreSQL container):
+
+```bash
+cd backend
+mvn verify
+mvn spotless:apply              # fix formatting if the check fails
+```
+
+### Frontend
+
+Added in T-004.
 
 ## Verified
 
-Nothing yet.
+| What | How | Evidence |
+| --- | --- | --- |
+| Backend starts on Spring Boot 4.1.1, Flyway applies migration V1, `/actuator/health` returns UP | `mvn -B -ntp verify` on GitHub Actions (ubuntu-latest, Temurin 21, Testcontainers `postgres:16-alpine`) | Commit `4e5e9a3`, run 42069891558: 2 tests, 0 failures; Spotless clean; BUILD SUCCESS |
