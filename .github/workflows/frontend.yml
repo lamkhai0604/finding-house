@@ -29,8 +29,20 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - name: Install dependencies (exact versions from package-lock.json)
-        run: npm ci --no-audit --no-fund
+      # Bootstrap (T-102): adding react-router (D-022) needs a new lockfile, which Claude's
+      # workspace cannot generate. Reverted to `npm ci` once the lockfile is committed.
+      - name: Install dependencies (bootstrap, resolves react-router@latest)
+        run: |
+          npm install --no-audit --no-fund
+          npm install --no-audit --no-fund react-router@latest
+      - name: Print package.json and lockfile (bootstrap, gzip + base64)
+        run: |
+          sha256sum package.json package-lock.json
+          for f in package.json package-lock.json; do
+            echo "FILE-BEGIN $f"
+            gzip -9 -c "$f" | base64 -w 1000
+            echo "FILE-END"
+          done
       - name: Report newer versions (informational)
         run: npm outdated || true
       - name: Lint
