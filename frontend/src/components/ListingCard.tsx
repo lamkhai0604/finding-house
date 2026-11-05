@@ -18,6 +18,7 @@ export function ListingCard({ listing, actions }: ListingCardProps) {
         src={listing.imageUrls[0]}
         alt={listing.title}
         className="listing-card-image"
+        linkToFullSize={false}
       />
       <div className="listing-card-body">
         <h2>

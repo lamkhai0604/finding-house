@@ -95,7 +95,9 @@ describe("Post a room (FR-02)", () => {
     expect(
       screen.getByText("Enter a whole number of square feet"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Choose a neighborhood")).toBeInTheDocument();
+    expect(screen.getByLabelText("Neighborhood")).toHaveAccessibleDescription(
+      "Choose a neighborhood",
+    );
     expect(
       screen.getByText("Use a link that starts with https://"),
     ).toBeInTheDocument();

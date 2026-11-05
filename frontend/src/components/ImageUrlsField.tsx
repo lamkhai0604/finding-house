@@ -37,6 +37,7 @@ export function ImageUrlsField({
             src={url.startsWith("https://") ? url : undefined}
             alt={`Preview of photo ${index + 1}`}
             className="image-url-preview"
+            linkToFullSize={false}
           />
           <TextField
             label={`Photo link ${index + 1}`}
