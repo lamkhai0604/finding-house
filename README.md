@@ -2,7 +2,7 @@
 
 Find a room to rent by just describing it.
 
-> **Status: Sprint 0.** Design baseline approved; backend skeleton in place. Everything else below describes the *planned* product. The "Verified" section lists only what has actually been implemented and tested.
+> **Status: Sprint 0.** Design baseline approved; backend and frontend skeletons with CI in place. Everything else below describes the *planned* product. The "Verified" section lists only what has actually been implemented and tested.
 
 Finding House is a full-stack web app where landlords post rooms and tenants search them with normal filters or with a plain-language request such as *"studio under $1,800 in Capitol Hill, pets allowed"*. An LLM turns the sentence into structured filters, which go through the same server-side validation as manual filters.
 
@@ -49,10 +49,28 @@ mvn spotless:apply              # fix formatting if the check fails
 
 ### Frontend
 
-Added in T-004.
+Prerequisites: Node.js 22.
+
+```bash
+cd frontend
+npm ci                          # exact versions from package-lock.json
+npm run dev                     # http://localhost:5173, proxies /api and /actuator to the backend on :8080
+```
+
+The page shows "API is up" when the backend is running. Set `BACKEND_URL` to point the dev proxy elsewhere.
+
+Checks CI runs:
+
+```bash
+npm run lint
+npm run format:check            # npm run format to fix
+npm test
+npm run build                   # type check + production build
+```
 
 ## Verified
 
 | What | How | Evidence |
 | --- | --- | --- |
 | Backend starts on Spring Boot 4.1.1, Flyway applies migration V1, `/actuator/health` returns UP | `mvn -B -ntp verify` on GitHub Actions (ubuntu-latest, Temurin 21, Testcontainers `postgres:16-alpine`) | Commit `4e5e9a3`, run 42069891558: 2 tests, 0 failures; Spotless clean; BUILD SUCCESS |
+| Frontend lints, is Prettier-formatted, passes tests for the API health indicator (up / down / unreachable), and builds | `npm ci`, lint, format check, `npm test`, `npm run build` on GitHub Actions (ubuntu-latest, Node 22) | Commit `6d6721a`, run 42074077400: 3 tests passed; build OK |
