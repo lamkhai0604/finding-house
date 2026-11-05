@@ -16,7 +16,7 @@ flowchart LR
     FE -->|REST JSON /api/v1| API[API server<br/>Spring Boot 3, Java 21]
     API --> DB[(PostgreSQL)]
     API -->|via QueryParser adapter| LLM[LLM provider<br/>free tier]
-    API -.->|OQ-02| IMG[Image storage]
+    U -.->|loads image links| IMG[External image hosts]
 ```
 
 **Selected style: layered monolith** (Controller → Service → Repository), organized by feature package. Rationale (ARCH-02):

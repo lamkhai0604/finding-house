@@ -19,8 +19,8 @@
 
 ## Verification approach
 
-- Docs: Khai's review on the draft PR, with decisions recorded in DECISIONS.md.
-- Skeleton: CI run on the PR (command, runner, commit SHA recorded in the task evidence).
+- Docs: Khai's review of the docs on `dev`, with decisions recorded in DECISIONS.md.
+- Skeleton: local checks before merging into `dev`, then the CI run on `dev` (command, runner, commit SHA recorded in the task evidence).
 
 ## Design updates in this sprint
 
