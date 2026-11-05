@@ -1,7 +1,7 @@
 # Project Contributor Entry Point
 
 Project: Finding House — AI-assisted room-rental search (portfolio project)
-Standard: AI-Assisted Software Engineering Standard, pinned version 1.3. Kept privately outside this repository (D-016); contributors get it from Khai. A local copy may be placed in `docs/standard/`, which is git-ignored.
+Standard: AI-Assisted Software Engineering Standard, pinned version 1.3. Kept in the private repository `lamkhai0604/engineering-standard` (D-016); contributors need access from Khai. A local copy may be placed in `docs/standard/`, which is git-ignored.
 Adoption: Approved by Khai (Product Owner), 2026-11-05 — see D-001 in `docs/DECISIONS.md`
 
 ## Read before work
