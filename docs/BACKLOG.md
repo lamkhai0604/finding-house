@@ -27,7 +27,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-102 | Auth UI: register and login pages | FR-01 | P2 | Ready (Sprint 1) |
 | T-103 | Listing API: create, edit, hide/unhide, my listings | FR-02 | P2 | Done — commit `5d52800`, backend run 42098935164 (ubuntu-latest, Temurin 21): 51 tests passed (19 listing integration, 11 image-link unit); smoke run 42098935759 green. FR-02 AC1–AC6 verified over HTTP; FR-01 AC5 403 verified (tenant create, non-owner edit/hide, tenant "my listings"). Refinements in D-021 |
 | T-104 | Listing image links + placeholder frame | FR-02 | P2 | API part Done in T-103 (https-only links, max 5, order kept); UI placeholder remains (with T-105/T-106) |
-| T-105 | Listing detail API + page | FR-04 | P2 | Ready (Sprint 1) |
+| T-105 | Listing detail API + page | FR-04 | P2 | In Progress — API Done: commit `32df262`, backend run 42105905522 attempt 2: 57 tests passed (6 new for FR-04 AC1–AC3). Attempt 1 failed before compiling: Maven Central returned HTTP 502 for `spring-boot-actuator:pom:4.1.1` (environment, not code; the smoke run on the same commit built fine), rerun once. Page remains: built with T-102 (both need client-side routing) |
 | T-106 | Landlord listing form UI | FR-02 | P2 | Ready (Sprint 1) |
 | T-108 | Decide on login rate limiting / brute-force protection (needs an SRS change if adopted) | NFR-01 | P3 | Proposed |
 

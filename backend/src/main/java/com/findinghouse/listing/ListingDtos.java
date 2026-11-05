@@ -81,6 +81,14 @@ public final class ListingDtos {
     }
   }
 
+  /**
+   * FR-04 detail view: the listing plus the landlord's public contact details. The landlord's email
+   * is never exposed.
+   */
+  public record ListingDetailResponse(ListingResponse listing, LandlordContact landlord) {}
+
+  public record LandlordContact(String displayName, String phone) {}
+
   /** Values the client needs to build forms and filters, so they are defined in one place. */
   public record ReferenceData(String city, List<String> neighborhoods, List<Amenity> amenities) {}
 

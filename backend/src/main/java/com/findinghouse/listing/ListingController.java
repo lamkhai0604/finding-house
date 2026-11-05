@@ -1,5 +1,9 @@
 package com.findinghouse.listing;
 
+import com.findinghouse.auth.UserAccount;
+import com.findinghouse.auth.UserAccountRepository;
+import com.findinghouse.listing.ListingDtos.LandlordContact;
+import com.findinghouse.listing.ListingDtos.ListingDetailResponse;
 import com.findinghouse.listing.ListingDtos.ListingRequest;
 import com.findinghouse.listing.ListingDtos.ListingResponse;
 import com.findinghouse.listing.ListingDtos.ReferenceData;
@@ -25,9 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ListingController {
 
   private final ListingService listingService;
+  private final UserAccountRepository users;
 
-  public ListingController(ListingService listingService) {
+  public ListingController(ListingService listingService, UserAccountRepository users) {
     this.listingService = listingService;
+    this.users = users;
+  }
+
+  /** Public. A valid token is optional and only matters for the owner viewing a hidden listing. */
+  @GetMapping("/listings/{id}")
+  public ListingDetailResponse detail(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
+    Listing listing = listingService.getVisible(id, jwt == null ? null : userId(jwt));
+    UserAccount landlord =
+        users
+            .findById(listing.getLandlordId())
+            .orElseThrow(() -> new IllegalStateException("Listing without landlord: " + id));
+    return new ListingDetailResponse(
+        ListingResponse.from(listing),
+        new LandlordContact(landlord.getDisplayName(), landlord.getPhone()));
   }
 
   @PostMapping("/listings")
