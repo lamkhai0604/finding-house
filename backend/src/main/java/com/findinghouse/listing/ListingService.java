@@ -49,6 +49,21 @@ public class ListingService {
     return listing;
   }
 
+  /**
+   * FR-04 AC2/AC3: a hidden listing is visible only to its owner; to everyone else it does not
+   * exist (404), so its existence is not revealed.
+   */
+  @Transactional(readOnly = true)
+  public Listing getVisible(long listingId, Long viewerId) {
+    Listing listing =
+        listings.findById(listingId).orElseThrow(() -> new NotFoundException("Listing not found"));
+    boolean ownerIsViewing = viewerId != null && listing.isOwnedBy(viewerId);
+    if (listing.getStatus() == ListingStatus.HIDDEN && !ownerIsViewing) {
+      throw new NotFoundException("Listing not found");
+    }
+    return listing;
+  }
+
   @Transactional(readOnly = true)
   public List<Listing> listOwnedBy(long landlordId) {
     return listings.findByLandlordIdOrderByCreatedAtDescIdDesc(landlordId);
