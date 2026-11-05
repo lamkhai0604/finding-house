@@ -16,16 +16,16 @@ Acceptance criteria for feature tasks are the referenced SRS criteria plus any l
 | T-006 | Verify LLM free tier and get API key | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Ready | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
 | T-007 | Add Maven wrapper (`mvnw`) and switch docs/CI to it | — | Claude | P3 | Proposed | Maven Central reachable from workspace | `./mvnw verify` passes locally and in CI |
 
-## Sprint 1 — "A landlord can post a room"
+## Sprint 1 — "A landlord can post a room" ([plan](sprints/sprint-1.md))
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-101 | Auth API: register, login, JWT, `/me` | FR-01 | P2 | Proposed |
-| T-102 | Auth UI: register and login pages | FR-01 | P2 | Proposed |
-| T-103 | Listing API: create, edit, hide/unhide, my listings | FR-02 | P2 | Proposed |
-| T-104 | Listing image links + placeholder frame | FR-02 | P2 | Proposed |
-| T-105 | Listing detail API + page | FR-04 | P2 | Proposed |
-| T-106 | Landlord listing form UI | FR-02 | P2 | Proposed |
+| T-101 | Auth API: register, login, JWT, `/me` | FR-01 | P2 | Ready (Sprint 1) |
+| T-102 | Auth UI: register and login pages | FR-01 | P2 | Ready (Sprint 1) |
+| T-103 | Listing API: create, edit, hide/unhide, my listings | FR-02 | P2 | Ready (Sprint 1) |
+| T-104 | Listing image links + placeholder frame | FR-02 | P2 | Ready (Sprint 1) |
+| T-105 | Listing detail API + page | FR-04 | P2 | Ready (Sprint 1) |
+| T-106 | Landlord listing form UI | FR-02 | P2 | Ready (Sprint 1) |
 
 ## Sprint 2 — "A tenant can find a room"
 
