@@ -33,3 +33,8 @@ app:
     secret: ${JWT_SECRET}
     ttl: ${JWT_TTL:24h}
     issuer: finding-house
+  # D-024: failed logins allowed per window before that email or client address is blocked.
+  login-throttle:
+    max-failures-per-email: ${LOGIN_MAX_FAILURES_PER_EMAIL:5}
+    max-failures-per-address: ${LOGIN_MAX_FAILURES_PER_ADDRESS:20}
+    window: ${LOGIN_THROTTLE_WINDOW:15m}

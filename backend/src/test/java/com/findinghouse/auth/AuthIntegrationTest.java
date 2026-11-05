@@ -194,6 +194,61 @@ class AuthIntegrationTest {
         .isEqualTo("INVALID_CREDENTIALS");
   }
 
+  // --- D-024: failed-login throttling ---------------------------------------------------------
+
+  @Test
+  void fiveFailedLoginsBlockTheEmailEvenForTheRightPassword() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Kai", "TENANT", null);
+    for (int i = 0; i < 5; i++) {
+      assertThat(login(email, "wrong-password-" + i).statusCode()).isEqualTo(401);
+    }
+
+    HttpResponse<String> blocked = login(email, PASSWORD);
+
+    assertThat(blocked.statusCode()).isEqualTo(429);
+    assertThat(JsonPath.<String>read(blocked.body(), "$.code")).isEqualTo("TOO_MANY_ATTEMPTS");
+    assertThat(blocked.headers().firstValue("Retry-After"))
+        .hasValueSatisfying(value -> assertThat(Long.parseLong(value)).isBetween(1L, 900L));
+  }
+
+  @Test
+  void throttlingAppliesToUnknownEmailsToo() {
+    String unknown = uniqueEmail();
+    for (int i = 0; i < 5; i++) {
+      login(unknown, "guess-" + i);
+    }
+
+    assertThat(login(unknown, "guess-6").statusCode()).isEqualTo(429);
+  }
+
+  @Test
+  void otherAccountsAreNotAffectedByAnotherEmailsFailures() {
+    String victim = uniqueEmail();
+    String other = uniqueEmail();
+    register(other, PASSWORD, "Lee", "TENANT", null);
+    for (int i = 0; i < 5; i++) {
+      login(victim, "guess-" + i);
+    }
+
+    assertThat(login(other, PASSWORD).statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void successfulLoginResetsTheEmailsFailures() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Max", "TENANT", null);
+    for (int i = 0; i < 4; i++) {
+      login(email, "wrong-" + i);
+    }
+    assertThat(login(email, PASSWORD).statusCode()).isEqualTo(200);
+    for (int i = 0; i < 4; i++) {
+      login(email, "wrong-again-" + i);
+    }
+
+    assertThat(login(email, PASSWORD).statusCode()).isEqualTo(200);
+  }
+
   // --- FR-01 AC5: protected endpoints need a valid token -------------------------------------
   // (403 for wrong role or ownership is verified with the first role-restricted endpoint, T-103.)
 

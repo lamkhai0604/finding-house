@@ -2,10 +2,12 @@ package com.findinghouse.common;
 
 import com.findinghouse.auth.AuthExceptions.EmailAlreadyRegisteredException;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
+import com.findinghouse.auth.AuthExceptions.TooManyLoginAttemptsException;
 import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +77,20 @@ public class ApiExceptionHandler {
   ResponseEntity<ApiError> emailTaken(EmailAlreadyRegisteredException e) {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(ApiError.of("EMAIL_TAKEN", e.getMessage()));
+  }
+
+  @ExceptionHandler(TooManyLoginAttemptsException.class)
+  ResponseEntity<ApiError> tooManyLoginAttempts(TooManyLoginAttemptsException e) {
+    long seconds = Math.max(1, (e.getRetryAfter().toMillis() + 999) / 1000);
+    long minutes = Math.max(1, (seconds + 59) / 60);
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+        .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
+        .body(
+            ApiError.of(
+                "TOO_MANY_ATTEMPTS",
+                "Too many failed login attempts. Try again in "
+                    + minutes
+                    + (minutes == 1 ? " minute." : " minutes.")));
   }
 
   @ExceptionHandler(InvalidCredentialsException.class)

@@ -5,6 +5,7 @@ import com.findinghouse.auth.AuthDtos.RegisterRequest;
 import com.findinghouse.auth.AuthDtos.TokenResponse;
 import com.findinghouse.auth.AuthDtos.UserResponse;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,9 +33,14 @@ public class AuthController {
     return UserResponse.from(authService.register(request));
   }
 
+  /**
+   * The client address is the TCP peer. Behind a reverse proxy (Sprint 3 deployment), forwarded
+   * headers must be configured so this is the real client and not the proxy.
+   */
   @PostMapping("/auth/login")
-  public TokenResponse login(@Valid @RequestBody LoginRequest request) {
-    TokenService.IssuedToken token = authService.login(request);
+  public TokenResponse login(
+      @Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+    TokenService.IssuedToken token = authService.login(request, httpRequest.getRemoteAddr());
     return new TokenResponse(token.value(), "Bearer", token.expiresInSeconds());
   }
 
