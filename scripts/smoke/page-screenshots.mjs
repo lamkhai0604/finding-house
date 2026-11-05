@@ -39,8 +39,11 @@ const ids = await listingIdsByTitle();
 const browser = await chromium.launch();
 let failures = 0;
 
-async function shot(page, name, expectedText) {
+// `ready` (optional) is a locator that must appear first, so a check never passes on text left
+// over from the previous page while the next one is still loading.
+async function shot(page, name, expectedText, ready) {
   try {
+    if (ready) await ready.waitFor({ timeout: 15000 });
     await page.getByText(expectedText, { exact: false }).first().waitFor({ timeout: 15000 });
     await page.waitForLoadState("networkidle").catch(() => {});
     await page.screenshot({ path: `${outDir}/${name}.jpg`, type: "jpeg", quality: 70, fullPage: true });
@@ -81,10 +84,20 @@ try {
 
   // T-106: landlord flows through the UI.
   await page.getByRole("link", { name: "My listings" }).click();
-  await shot(page, "11-my-listings", "Basement studio (paused)");
+  await shot(
+    page,
+    "11-my-listings",
+    "Basement studio (paused)",
+    page.getByRole("heading", { name: "My listings" }),
+  );
 
   await page.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}/edit`);
-  await shot(page, "12-edit-listing-form", "Edit listing");
+  await shot(
+    page,
+    "12-edit-listing-form",
+    "Edit listing",
+    page.getByLabel("Title"),
+  );
 
   await page.goto(`${frontend}/listings/new`);
   await page.getByLabel("Title").fill("Posted from the UI");
@@ -99,15 +112,24 @@ try {
   await page.getByLabel("Photo link 1").fill("https://picsum.photos/seed/fh-ui-1/800/600");
   await shot(page, "13-new-listing-form-filled", "Post a room");
   await page.getByRole("button", { name: "Post listing" }).click();
-  await shot(page, "14-new-listing-created", "$1,450.75");
+  await shot(
+    page,
+    "14-new-listing-created",
+    "$1,450.75",
+    page.getByRole("heading", { name: "Posted from the UI" }),
+  );
 
   await page.getByRole("link", { name: "My listings" }).click();
-  await page
+  const newCard = page
     .getByRole("article")
-    .filter({ hasText: "Posted from the UI" })
-    .getByRole("button", { name: "Hide" })
-    .click();
-  await shot(page, "15-my-listings-after-hide", "Unhide");
+    .filter({ hasText: "Posted from the UI" });
+  await newCard.getByRole("button", { name: "Hide" }).click();
+  await shot(
+    page,
+    "15-my-listings-after-hide",
+    "Posted from the UI",
+    newCard.getByRole("button", { name: "Unhide" }),
+  );
 
   await page.getByRole("button", { name: "Log out" }).click();
   await page.goto(`${frontend}/listings/${ids["Fremont room, no photos yet"]}`);
