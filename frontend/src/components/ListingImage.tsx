@@ -34,8 +34,13 @@ export function ListingImage({
   }
 
   const image = (
-    <img src={src} alt={alt} loading="lazy"
-      referrerPolicy="no-referrer" onError={() => setFailedSrc(src)} />
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setFailedSrc(src)}
+    />
   );
   if (!linkToFullSize) {
     return <div className={classes}>{image}</div>;
