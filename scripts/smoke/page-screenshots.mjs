@@ -51,6 +51,11 @@ function watchForCspViolations(page) {
   });
 }
 
+// D-027: My listings and Log out live in the avatar menu.
+async function openAccountMenu(page) {
+  await page.getByRole("button", { name: /Account menu/ }).click();
+}
+
 // `ready` (optional) is a locator that must appear first, so a check never passes on text left
 // over from the previous page while the next one is still loading.
 async function shot(page, name, expectedText, ready) {
@@ -96,6 +101,7 @@ try {
   await shot(page, "06-detail-hidden-owner-view", "Hidden — only you can see this");
 
   // T-106: landlord flows through the UI.
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
   await shot(
     page,
@@ -132,6 +138,7 @@ try {
     page.getByRole("heading", { name: "Posted from the UI" }),
   );
 
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
   const newCard = page
     .getByRole("article")
@@ -144,6 +151,22 @@ try {
     newCard.getByRole("button", { name: "Unhide" }),
   );
 
+  // T-120: delete asks first, then removes the card.
+  await newCard.getByRole("button", { name: "Delete" }).click();
+  await shot(
+    page,
+    "16-delete-confirm-dialog",
+    "cannot be undone",
+    page.getByRole("dialog", { name: "Delete this listing?" }),
+  );
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Delete listing" })
+    .click();
+  await newCard.waitFor({ state: "detached", timeout: 15000 });
+  console.log("ok   16b: deleted listing card removed");
+
+  await openAccountMenu(page);
   await page.getByRole("button", { name: "Log out" }).click();
   await page.goto(`${frontend}/listings/${ids["Fremont room, no photos yet"]}`);
   await shot(page, "07-detail-no-photos", "No photo yet");
@@ -159,6 +182,15 @@ try {
   watchForCspViolations(phone);
   await phone.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}`);
   await shot(phone, "10-detail-mobile", "Sunny studio near UW");
+
+  // D-027: mobile header menu.
+  await phone.getByRole("button", { name: "Menu" }).click();
+  await shot(
+    phone,
+    "17-mobile-menu-open",
+    "Sign up",
+    phone.getByRole("link", { name: "Sign up" }),
+  );
 } finally {
   await browser.close();
 }

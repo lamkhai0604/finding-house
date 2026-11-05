@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import { ApiError } from "../api/client";
 import { getListing } from "../api/listings";
 import { useSession } from "../auth/session";
 import type { ListingDetail } from "../api/types";
+import { BackButton } from "../components/BackButton";
+import { ButtonLink } from "../components/ButtonLink";
 import { ImageGallery } from "../components/ImageGallery";
+import { ListingDetailSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 import { formatAmenity, formatArea, formatPrice } from "../utils/format";
 
@@ -52,14 +55,14 @@ export function ListingDetailPage() {
 
   // A result for a previous listing or viewer means the current one is still loading.
   if (!result || result.key !== key) {
-    return <StatusMessage title="Loading listing…" />;
+    return <ListingDetailSkeleton />;
   }
   const { value } = result;
   if (value.kind === "not-found") {
     return (
       <StatusMessage title="Listing not found">
         <p>It may have been removed or hidden by its owner.</p>
-        <Link to="/">Back to home</Link>
+        <ButtonLink to="/">Back to home</ButtonLink>
       </StatusMessage>
     );
   }
@@ -74,6 +77,9 @@ export function ListingDetailPage() {
   const { listing, landlord } = value.detail;
   return (
     <article className="listing-detail">
+      <div className="page-toolbar">
+        <BackButton fallback="/" />
+      </div>
       <ImageGallery urls={listing.imageUrls} title={listing.title} />
       <div className="listing-header">
         <h1>{listing.title}</h1>
@@ -82,7 +88,9 @@ export function ListingDetailPage() {
         )}
         {user?.id === listing.landlordId && (
           <p>
-            <Link to={`/listings/${listing.id}/edit`}>Edit this listing</Link>
+            <ButtonLink to={`/listings/${listing.id}/edit`}>
+              Edit this listing
+            </ButtonLink>
           </p>
         )}
         <p className="price">

@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
-import { Link, Navigate, useLocation } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import type { Role } from "../api/types";
 import { useSession } from "../auth/session";
+import { ButtonLink } from "./ButtonLink";
+import { PageLoading } from "./Skeleton";
+import { Spinner } from "./Spinner";
 import { StatusMessage } from "./StatusMessage";
 
 interface RequireRoleProps {
@@ -18,7 +21,11 @@ export function RequireRole({ role, children }: RequireRoleProps) {
   const location = useLocation();
 
   if (status === "loading") {
-    return <StatusMessage title="Loading…" />;
+    return (
+      <PageLoading label="Loading">
+        <Spinner size="2rem" />
+      </PageLoading>
+    );
   }
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
@@ -32,7 +39,7 @@ export function RequireRole({ role, children }: RequireRoleProps) {
           This page is for {role === "LANDLORD" ? "landlord" : "tenant"}{" "}
           accounts.
         </p>
-        <Link to="/">Back to home</Link>
+        <ButtonLink to="/">Back to home</ButtonLink>
       </StatusMessage>
     );
   }

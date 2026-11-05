@@ -1,10 +1,10 @@
-import { Link } from "react-router";
+import { ButtonLink } from "../components/ButtonLink";
 import { StatusMessage } from "../components/StatusMessage";
 
 export function NotFoundPage() {
   return (
     <StatusMessage title="Page not found">
-      <Link to="/">Back to home</Link>
+      <ButtonLink to="/">Back to home</ButtonLink>
     </StatusMessage>
   );
 }
