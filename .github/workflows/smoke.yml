@@ -98,6 +98,12 @@ jobs:
         working-directory: /tmp/e2e
         run: node browser-smoke.mjs "API is up" /tmp/e2e/up.png
 
+      - name: Page checks and screenshots with sample data (T-102, T-105)
+        working-directory: /tmp/e2e
+        run: |
+          cp "$GITHUB_WORKSPACE/scripts/smoke/page-screenshots.mjs" .
+          node page-screenshots.mjs /tmp/e2e/pages
+
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e
         run: |
@@ -109,7 +115,7 @@ jobs:
       - name: Print screenshots (gzip + base64)
         if: always()
         run: |
-          for f in /tmp/e2e/up.png /tmp/e2e/down.png; do
+          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg; do
             [ -f "$f" ] || continue
             echo "SCREENSHOT-BEGIN $(basename "$f")"
             gzip -9 -c "$f" | base64 -w 1000
@@ -121,7 +127,9 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: smoke-screenshots
-          path: /tmp/e2e/*.png
+          path: |
+            /tmp/e2e/*.png
+            /tmp/e2e/pages/*.jpg
           if-no-files-found: ignore
 
       - name: Logs on failure
