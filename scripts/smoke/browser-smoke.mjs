@@ -15,7 +15,8 @@ const browser = await chromium.launch();
 try {
   const page = await browser.newPage({ viewport: { width: 1024, height: 640 } });
   await page.goto(url);
-  await page.getByRole("heading", { name: "Finding House" }).waitFor({ timeout: 15000 });
+  await page.getByRole("heading", { name: "Find a room in Seattle" }).waitFor({ timeout: 15000 });
+  await page.getByRole("link", { name: "Finding House" }).waitFor({ timeout: 15000 });
   const status = page.getByRole("status");
   const alternatives = expected.split("|").map((text) => text.replace(/[.*+?^${}()[\]\\]/g, "\\$&"));
   const pattern = new RegExp(`^(${alternatives.join("|")})$`);
