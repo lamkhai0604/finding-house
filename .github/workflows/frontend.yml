@@ -31,11 +31,12 @@ jobs:
       # versions and the generated lockfile is uploaded to be committed.
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Upload generated lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-lock
-          path: frontend/package-lock.json
+      - name: Print generated lockfile (bootstrap, gzip + base64)
+        run: |
+          sha256sum package-lock.json
+          echo "LOCKFILE-BEGIN"
+          gzip -9 -c package-lock.json | base64 -w 1000
+          echo "LOCKFILE-END"
       - name: Report newer versions (informational)
         run: npm outdated || true
       - name: Lint
