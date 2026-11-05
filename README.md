@@ -32,6 +32,8 @@ Finding House is a full-stack web app where landlords post rooms and tenants sea
 
 Prerequisites: Java 21, Maven 3.9+, Docker (for the local database and for integration tests).
 
+> **Windows:** use `copy .env.example .env` instead of `cp`, generate the secret in PowerShell with `$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)`, run Python as `py`, and keep the project outside OneDrive (e.g. `C:\dev\finding-house`) so `node_modules` and `target` are not synced.
+
 ```bash
 cp .env.example .env            # then set JWT_SECRET (required): openssl rand -base64 48
 docker compose up -d postgres   # local PostgreSQL 16 on port 5432
@@ -85,7 +87,7 @@ Then log in as `maya.landlord@example.com` / `sample-pass-maya` (other passwords
 
 ### Frontend
 
-Pages so far: home, sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`). Built from reusable components in `frontend/src/components` (D-023).
+Pages so far: home (with a neighborhood carousel using sample photos), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
 
 Prerequisites: Node.js 22.
 
@@ -119,5 +121,7 @@ npm run build                   # type check + production build
 | Landlords post, edit, hide, and unhide listings in the browser; tenants and visitors cannot open landlord pages | 58 Vitest tests + smoke page checks that post a real listing through the UI | Commit `e2d2759`; frontend run 42110970580, smoke run 42111365352 |
 | Failed logins are throttled (429 after 5 per email or 20 per address in 15 min); passwords over 72 bytes are a 400, not a 500 | 6 unit tests with a controllable clock + 8 integration tests | Backend run 42113180536: 69 tests passed |
 | The production frontend runs under a Content Security Policy with no violations; an expired token logs the user out; runtime npm dependencies have no high/critical advisories | Smoke page checks on the production build; Vitest; `npm audit` gate | Frontend run 42115527137 (62 tests), smoke run 42115527225 |
+| Landlords delete listings after confirming in a dialog; only owners can delete (403/404 otherwise); tokens last 2 hours | 5 backend integration tests, dialog and page tests, smoke deletes a listing through the UI | Backend run 42122526491; frontend run 42123750933; smoke run 42123751179 |
+| Back buttons, loading skeletons, avatar and mobile menus, footer, and the home carousel work in a real browser on the CSP build | 78 Vitest tests; 17 smoke page checks with screenshots | Frontend run 42123750933, smoke run 42123751179 |
 | Sample data loads through the real API (12 listings, 5 users), all 8 invalid examples are rejected with the expected status and field errors, and a second load creates no duplicates | `smoke` workflow, `load_sample_data.py --check-invalid`, then a second run | Commit `998031a`, run 42103027735: passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |

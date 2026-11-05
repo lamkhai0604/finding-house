@@ -41,14 +41,14 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-121 | Shorten access tokens to 2 hours | D-025 | P1 | Ready |
-| T-120 | Delete listing: owner-only API, confirmation dialog, buttons on My listings and Edit | FR-07 | P2 | Ready |
-| T-115 | Back button on detail, new, and edit pages; unsaved-changes warning | D-027 | P2 | Ready |
-| T-116 | Loading skeletons and busy-button spinners (delayed ~200 ms) | D-027 | P2 | Ready |
-| T-117 | Consistent buttons: navigation links styled as buttons, actions as `<button>` | D-027 | P2 | Ready |
-| T-118 | Footer on every page | D-027 | P2 | Ready |
-| T-119 | Header: avatar menu, Post a room button, mobile hamburger menu | D-027 | P2 | Ready |
-| T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Ready (after T-201) |
+| T-121 | Shorten access tokens to 2 hours | D-025 | P1 | Done — backend run 42122297693, smoke 42122297735 |
+| T-120 | Delete listing: owner-only API, confirmation dialog, buttons on My listings and Edit | FR-07 | P2 | Done — backend run 42122526491 (5 tests), frontend 42123201689, smoke 42123201730 |
+| T-115 | Back button on detail, new, and edit pages; unsaved-changes warning | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
+| T-116 | Loading skeletons and busy-button spinners (delayed ~200 ms) | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
+| T-117 | Consistent buttons: navigation links styled as buttons, actions as `<button>` | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
+| T-118 | Footer on every page | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
+| T-119 | Header: avatar menu, Post a room button, mobile hamburger menu | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 (desktop avatar menu, mobile menu) |
+| T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Component Done with labelled sample photos (Khai, 2026-11-05: sample data first); switch to newest listings after T-201 |
 
 
 | ID | Title | Req | Priority | Status |
