@@ -29,7 +29,13 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-104 | Listing image links + placeholder frame | FR-02 | P2 | Done — API in T-103; UI placeholder (no link or failed load) in `ListingImage`, unit-tested and verified in smoke run 42108682551 (screenshots 07, 08) |
 | T-105 | Listing detail API + page | FR-04 | P2 | Done — page: commit `c8f7187`, smoke run 42108682551 (screenshots 05–10, incl. hidden listing for owner vs. public, and mobile width). API: commit `32df262`, backend run 42105905522 attempt 2: 57 tests passed (6 new for FR-04 AC1–AC3). Attempt 1 failed before compiling: Maven Central returned HTTP 502 for `spring-boot-actuator:pom:4.1.1` (environment, not code; the smoke run on the same commit built fine), rerun once. Page remains: built with T-102 (both need client-side routing) |
 | T-106 | Landlord listing form UI | FR-02 | P2 | Done — commit `e2d2759`: frontend run 42110970580 (58 Vitest tests: create with cents conversion, client and server field errors, edit prefill + PUT, owner-only edit, landlord-only routes, my listings hide/unhide); smoke run 42111365352 (a listing posted, viewed, and hidden through the real UI; 15 page checks). Found and fixed: card photos linked to the raw image file instead of the listing |
-| T-108 | Decide on login rate limiting / brute-force protection (needs an SRS change if adopted) | NFR-01 | P3 | Proposed |
+| T-108 | Decide on login rate limiting / brute-force protection | NFR-01 | P1 | Done — decided in Khai's review (D-024), implemented in T-109 |
+| T-109 | Auth hardening: 72-byte password limit (was a 500) and failed-login throttling | FR-01, NFR-01 | P1 | Done — runs 42112969681 (bug reproduced), 42113180536 (69 tests), smoke 42113180689 |
+| T-110 | Frontend security: CSP in production build, 401 ends session, no-referrer photos, npm audit gate, smoke on CSP build; fix hidden-listing reload | NFR-01 | P1 | Done — frontend run 42115527137 (62 tests), smoke run 42115527225 |
+| T-111 | Review cleanup: remove tracked `__pycache__`, ignore rule, README points to STATUS.md | — | P2 | Done (this change) |
+| T-112 | Sync `main` into `dev` and verify CI on the merge candidate | — | P2 | Proposed |
+| T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P3 | Proposed |
+| T-114 | Deployment security: forwarded headers for the real client address, HSTS and frame-ancestors headers at the host, request body size limit | NFR-01 | P2 | Proposed (Sprint 3, with T-401) |
 
 ## Sprint 2 — "A tenant can find a room"
 

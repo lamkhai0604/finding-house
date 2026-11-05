@@ -2,7 +2,7 @@
 
 Find a room to rent by just describing it.
 
-> **Status: Sprint 0.** Design baseline approved; backend and frontend skeletons with CI in place. Everything else below describes the *planned* product. The "Verified" section lists only what has actually been implemented and tested.
+> **Status:** see [docs/STATUS.md](docs/STATUS.md), the single source for current progress. The "Verified" section below lists only what has actually been implemented and tested.
 
 Finding House is a full-stack web app where landlords post rooms and tenants search them with normal filters or with a plain-language request such as *"studio under $1,800 in Capitol Hill, pets allowed"*. An LLM turns the sentence into structured filters, which go through the same server-side validation as manual filters.
 
@@ -117,5 +117,7 @@ npm run build                   # type check + production build
 | FR-04 listing detail: public view with landlord name and phone (never email); hidden listings are 404 for everyone except the owner, with the same body as a missing listing | 6 integration tests over HTTP | Commit `32df262`, run 42105905522 (attempt 2): 57 tests passed |
 | Sign-up, login/logout, session restore, and the listing detail page work in a real browser against the real backend: photos, placeholder for missing or broken photos, hidden listing visible only to its owner, mobile layout | 30 Vitest tests + `scripts/smoke/page-screenshots.mjs` (Playwright) in the `smoke` workflow, which also saves screenshots | Commits `c8f7187`; frontend run 42108090385, smoke run 42108682551 |
 | Landlords post, edit, hide, and unhide listings in the browser; tenants and visitors cannot open landlord pages | 58 Vitest tests + smoke page checks that post a real listing through the UI | Commit `e2d2759`; frontend run 42110970580, smoke run 42111365352 |
+| Failed logins are throttled (429 after 5 per email or 20 per address in 15 min); passwords over 72 bytes are a 400, not a 500 | 6 unit tests with a controllable clock + 8 integration tests | Backend run 42113180536: 69 tests passed |
+| The production frontend runs under a Content Security Policy with no violations; an expired token logs the user out; runtime npm dependencies have no high/critical advisories | Smoke page checks on the production build; Vitest; `npm audit` gate | Frontend run 42115527137 (62 tests), smoke run 42115527225 |
 | Sample data loads through the real API (12 listings, 5 users), all 8 invalid examples are rejected with the expected status and field errors, and a second load creates no duplicates | `smoke` workflow, `load_sample_data.py --check-invalid`, then a second run | Commit `998031a`, run 42103027735: passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |

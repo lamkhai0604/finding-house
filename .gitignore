@@ -15,3 +15,7 @@ docs/standard/
 backend/target/
 frontend/node_modules/
 frontend/dist/
+
+# Python bytecode (generated)
+__pycache__/
+*.pyc
