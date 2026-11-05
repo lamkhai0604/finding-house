@@ -1,6 +1,9 @@
 spring:
   application:
     name: finding-house
+  config:
+    # Local development: read ../.env (repository root) when it exists.
+    import: optional:file:../.env[.properties]
   datasource:
     # Defaults match docker-compose.yml for local development only.
     # Real deployments must set DB_URL, DB_USERNAME and DB_PASSWORD.
@@ -23,3 +26,10 @@ management:
   endpoint:
     health:
       show-details: never
+
+app:
+  jwt:
+    # Required, at least 32 bytes. No default on purpose (D-009, CODE-08).
+    secret: ${JWT_SECRET}
+    ttl: ${JWT_TTL:24h}
+    issuer: finding-house
