@@ -1,6 +1,8 @@
 import { apiRequest } from "./client";
 import type {
   Listing,
+  ListingSearch,
+  Page,
   ListingDetail,
   ListingRequest,
   ListingStatus,
@@ -9,6 +11,28 @@ import type {
 
 export function getListing(id: string | number): Promise<ListingDetail> {
   return apiRequest("GET", `/api/v1/listings/${encodeURIComponent(id)}`);
+}
+
+/** Query string for a browse request; empty values are left out. */
+export function searchQuery(search: ListingSearch): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(search)) {
+    if (value === undefined || value === null || value === "") continue;
+    if (Array.isArray(value)) {
+      for (const item of value) params.append(key, String(item));
+    } else {
+      params.set(key, String(value));
+    }
+  }
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+/** FR-03: public browse of active listings. */
+export function searchListings(
+  search: ListingSearch = {},
+): Promise<Page<Listing>> {
+  return apiRequest("GET", `/api/v1/listings${searchQuery(search)}`);
 }
 
 export function getReferenceData(): Promise<ReferenceData> {

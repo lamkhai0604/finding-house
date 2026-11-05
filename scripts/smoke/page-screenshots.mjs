@@ -77,8 +77,24 @@ try {
   const page = await desktop.newPage();
   watchForCspViolations(page);
 
+  // T-122: the home carousel shows the newest real listings (never the hidden one), and a slide
+  // opens that listing.
   await page.goto(`${frontend}/`);
-  await shot(page, "01-home-logged-out", "Find a room in Seattle");
+  const newest = page.getByRole("region", { name: "Newest rooms" });
+  await shot(page, "01-home-logged-out", "/month ·", newest);
+  try {
+    if ((await newest.getByText("Basement studio (paused)").count()) > 0) {
+      throw new Error("the hidden listing is in the carousel");
+    }
+    const firstSlide = newest.getByRole("link").first();
+    const title = (await firstSlide.locator("strong").textContent()) ?? "";
+    await firstSlide.click();
+    await page.getByRole("heading", { level: 1, name: title }).waitFor({ timeout: 15000 });
+    console.log(`ok   01b-carousel-opens-listing: "${title}"`);
+  } catch (error) {
+    failures += 1;
+    console.error(`FAIL 01b-carousel-opens-listing: ${error.message.split("\n")[0]}`);
+  }
 
   await page.goto(`${frontend}/register`);
   await page.getByLabel("Account type").selectOption("LANDLORD");

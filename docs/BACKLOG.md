@@ -49,7 +49,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-118 | Footer on every page | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
 | T-119 | Header: avatar menu, Post a room button, mobile hamburger menu | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 (desktop avatar menu, mobile menu) |
 | T-123 | Hover, pressed, and keyboard-focus states for every interactive element | D-027 | P2 | Done — frontend run 42125141917; smoke run 42125141843 checks that hovering a secondary button changes its background (white → #f0f4f8) |
-| T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Component Done with labelled sample photos (Khai, 2026-11-05: sample data first); switch to newest listings after T-201 |
+| T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Done — shows the 8 newest active listings, each linking to its page; sample slides removed. Frontend run 42129758228: 84 tests passed (4 new home-page tests, 2 query-string tests); smoke run 42129758285: carousel shows real listings, never the hidden one, the first slide opens its listing, and the page still works with the API down |
 
 
 | ID | Title | Req | Priority | Status |

@@ -21,7 +21,8 @@ try {
     .getByRole("banner")
     .getByRole("link", { name: "Finding House" })
     .waitFor({ timeout: 15000 });
-  const status = page.getByRole("status");
+  // The health indicator lives in the footer; other parts of the page may also use role=status.
+  const status = page.getByRole("contentinfo").getByRole("status");
   const alternatives = expected.split("|").map((text) => text.replace(/[.*+?^${}()[\]\\]/g, "\\$&"));
   const pattern = new RegExp(`^(${alternatives.join("|")})$`);
   await status.filter({ hasText: pattern }).waitFor({ timeout: 15000 });
