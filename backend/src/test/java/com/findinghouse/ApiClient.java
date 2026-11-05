@@ -34,6 +34,20 @@ public final class ApiClient {
             .POST(HttpRequest.BodyPublishers.ofString(json)));
   }
 
+  public HttpResponse<String> put(String path, String json, String bearerToken) {
+    return send(
+        request(path, bearerToken)
+            .header("Content-Type", "application/json")
+            .PUT(HttpRequest.BodyPublishers.ofString(json)));
+  }
+
+  public HttpResponse<String> patch(String path, String json, String bearerToken) {
+    return send(
+        request(path, bearerToken)
+            .header("Content-Type", "application/json")
+            .method("PATCH", HttpRequest.BodyPublishers.ofString(json)));
+  }
+
   private HttpRequest.Builder request(String path, String bearerToken) {
     HttpRequest.Builder builder =
         HttpRequest.newBuilder(URI.create(baseUrl + path)).timeout(Duration.ofSeconds(10));

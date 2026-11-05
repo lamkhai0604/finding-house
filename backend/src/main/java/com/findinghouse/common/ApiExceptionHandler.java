@@ -14,6 +14,7 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /** Maps exceptions to {@link ApiError} responses. Never exposes stack traces (CODE-06). */
 @RestControllerAdvice
@@ -46,6 +47,28 @@ public class ApiExceptionHandler {
   ResponseEntity<ApiError> unreadable(HttpMessageNotReadableException e) {
     return ResponseEntity.badRequest()
         .body(ApiError.of("MALFORMED_REQUEST", "Request body is missing or not valid JSON"));
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  ResponseEntity<ApiError> typeMismatch(MethodArgumentTypeMismatchException e) {
+    return ResponseEntity.badRequest()
+        .body(
+            new ApiError(
+                "VALIDATION_FAILED",
+                "Request validation failed",
+                List.of(new ApiError.FieldError(e.getName(), "has an invalid value"))));
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  ResponseEntity<ApiError> notFound(NotFoundException e) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(ApiError.of("NOT_FOUND", e.getMessage()));
+  }
+
+  @ExceptionHandler(ForbiddenException.class)
+  ResponseEntity<ApiError> forbidden(ForbiddenException e) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ApiError.of("FORBIDDEN", e.getMessage()));
   }
 
   @ExceptionHandler(EmailAlreadyRegisteredException.class)
