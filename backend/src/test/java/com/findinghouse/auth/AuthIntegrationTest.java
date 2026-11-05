@@ -106,6 +106,29 @@ class AuthIntegrationTest {
     assertThat(JsonPath.<String>read(response.body(), "$.code")).isEqualTo("MALFORMED_REQUEST");
   }
 
+  // --- BCrypt only uses 72 bytes: longer passwords must be a clean 400 / 401, never a 500 ------
+
+  @Test
+  void registrationRejectsPasswordLongerThan72BytesEvenIfUnder72Characters() {
+    String multiByte = "é".repeat(40); // 40 characters, 80 bytes in UTF-8
+
+    HttpResponse<String> response = register(uniqueEmail(), multiByte, "Ana", "TENANT", null);
+
+    assertThat(response.statusCode()).isEqualTo(400);
+    assertThat(fieldErrors(response)).containsExactly("password");
+  }
+
+  @Test
+  void loginWithVeryLongPasswordIsInvalidCredentialsNotServerError() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Bo", "TENANT", null);
+
+    HttpResponse<String> response = login(email, "x".repeat(200));
+
+    assertThat(response.statusCode()).isEqualTo(401);
+    assertThat(JsonPath.<String>read(response.body(), "$.code")).isEqualTo("INVALID_CREDENTIALS");
+  }
+
   // --- FR-01 AC2: duplicate email ------------------------------------------------------------
 
   @Test
