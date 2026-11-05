@@ -18,6 +18,10 @@ Status: **Approved** (D-011, D-012, D-014).
 
 Proposed → Ready → In Progress → In Review → Done, tracked in [BACKLOG.md](BACKLOG.md). A task is Done only when its acceptance criteria are met and evidence (command, environment, commit, result) is recorded. Merge and release are tracked separately.
 
+## Sprint reports (D-020)
+
+At the end of every sprint, Claude writes `docs/reports/sprint-N-report.md` in English, merges it into `dev`, and pushes it. Each report covers: goal and outcome, delivered work with evidence, what is implemented vs. verified vs. reviewed vs. merged, decisions, problems found, what is not done, metrics, and the next sprint. The sprint plan file (`docs/sprints/sprint-N.md`) links to it.
+
 ## Engineering profile (standard §16)
 
 ```text

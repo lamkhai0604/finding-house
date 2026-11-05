@@ -80,7 +80,7 @@ Acceptance criteria:
 2. A `HIDDEN` listing returns 404 to everyone except its owner.
 3. A non-existent listing ID returns 404.
 
-### FR-05 — AI natural-language search (Must)
+### FR-05 — AI natural-language search (Must; scheduled after the core features and UI, D-019)
 
 A user types a sentence. The system converts it into FR-03 filters and shows the results.
 
