@@ -32,8 +32,8 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-108 | Decide on login rate limiting / brute-force protection | NFR-01 | P1 | Done — decided in Khai's review (D-024), implemented in T-109 |
 | T-109 | Auth hardening: 72-byte password limit (was a 500) and failed-login throttling | FR-01, NFR-01 | P1 | Done — runs 42112969681 (bug reproduced), 42113180536 (69 tests), smoke 42113180689 |
 | T-110 | Frontend security: CSP in production build, 401 ends session, no-referrer photos, npm audit gate, smoke on CSP build; fix hidden-listing reload | NFR-01 | P1 | Done — frontend run 42115527137 (62 tests), smoke run 42115527225 |
-| T-111 | Review cleanup: remove tracked `__pycache__`, ignore rule, README points to STATUS.md | — | P2 | Done (this change) |
-| T-112 | Sync `main` into `dev` and verify CI on the merge candidate | — | P2 | Proposed |
+| T-111 | Review cleanup: remove tracked `__pycache__`, ignore rule, README points to STATUS.md | — | P2 | Done — smoke run 42116124933 |
+| T-112 | Sync `main` into `dev` and verify CI on the merge candidate | — | P2 | Done — merging `main` changed no files; on candidate `4fdfc16`: backend run 42116716315, frontend run 42116716376, smoke run 42116715397, all green. Later commits on `dev` are docs only; the `dev → main` PR re-runs all three suites on the PR head |
 | T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P3 | Proposed |
 | T-114 | Deployment security: forwarded headers for the real client address, HSTS and frame-ancestors headers at the host, request body size limit | NFR-01 | P2 | Proposed (Sprint 3, with T-401) |
 
