@@ -82,8 +82,8 @@ All suites pass on the merge candidate (see §6). Nothing found blocks the `dev 
 | --- | --- | --- |
 | `fix/T-109-auth-hardening` | F1, F2 | `1139632` |
 | `chore/T-110-frontend-security` | F3, F4, F7, M1 mitigations | `f8bd3b6` |
-| `chore/T-111-review-cleanup` | F5, F6, decisions D-024 and D-025, this report | see `git log` |
-| `chore/T-112-sync-main` | Branch sync (§4) | see `git log` |
+| `chore/T-111-review-cleanup` | F5, F6, decisions D-024 and D-025, this report | `297282e` |
+| `chore/T-112-sync-main` | Branch sync (§4) | `4fdfc16` |
 
 ## 6. Verification
 
@@ -92,7 +92,7 @@ All suites pass on the merge candidate (see §6). Nothing found blocks the `dev 
 | Backend (69 tests, Spotless) | Passed | 42113180536 |
 | Frontend (62 tests, ESLint, Prettier, `tsc`, build, `npm audit` runtime gate) | Passed | 42115527137 |
 | Smoke (API, sample data, 15 browser checks on the production build with CSP, no CSP violations) | Passed | 42115527225 |
-| All suites on the final merge candidate | See the T-112 entry in [BACKLOG.md](../BACKLOG.md) | — |
+| All suites on the merge candidate `4fdfc16` | Passed | Backend 42116716315, frontend 42116716376, smoke 42116715397 |
 
 ## 7. Decisions and Actions for Khai
 
