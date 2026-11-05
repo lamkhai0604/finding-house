@@ -10,3 +10,8 @@ docs/standard/
 .DS_Store
 .idea/
 .vscode/
+
+# Build output
+backend/target/
+frontend/node_modules/
+frontend/dist/

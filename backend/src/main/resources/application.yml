@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: finding-house
+  datasource:
+    # Defaults match docker-compose.yml for local development only.
+    # Real deployments must set DB_URL, DB_USERNAME and DB_PASSWORD.
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/findinghouse}
+    username: ${DB_USERNAME:findinghouse}
+    password: ${DB_PASSWORD:findinghouse}
+  jpa:
+    # Schema is owned by Flyway (D-005); Hibernate only validates it.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
