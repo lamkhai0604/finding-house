@@ -288,8 +288,10 @@ describe("My listings (FR-02 AC3, AC6)", () => {
 });
 
 describe("Delete a listing (FR-07)", () => {
-  const listing: Listing = listingDetail({ id: 5, title: "Mistake room" })
-    .listing;
+  const listing: Listing = listingDetail({
+    id: 5,
+    title: "Mistake room",
+  }).listing;
 
   it("asks first, and cancelling deletes nothing", async () => {
     const fetchMock = mockApi({
@@ -305,7 +307,9 @@ describe("Delete a listing (FR-07)", () => {
     fireEvent.click(within(dialog).getByRole("button", { name: "Cancel" }));
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Mistake room" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Mistake room" }),
+    ).toBeInTheDocument();
     const deletes = fetchMock.mock.calls.filter(
       ([, init]) => init?.method === "DELETE",
     );
@@ -356,4 +360,3 @@ describe("Delete a listing (FR-07)", () => {
     ).toBeInTheDocument();
   });
 });
-

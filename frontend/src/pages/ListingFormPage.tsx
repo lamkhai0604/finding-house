@@ -98,7 +98,9 @@ export function ListingFormPage() {
         <div className="danger-zone">
           <div>
             <h2>Delete listing</h2>
-            <p className="muted">Removes it permanently. Use Hide to take it offline for a while.</p>
+            <p className="muted">
+              Removes it permanently. Use Hide to take it offline for a while.
+            </p>
           </div>
           <Button
             variant="secondary"
