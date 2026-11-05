@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { listingDetail } from "../test/fixtures";
+import { TOKEN_STORAGE_KEY } from "../auth/session";
+import { landlordMaya, listingDetail } from "../test/fixtures";
 import { apiError, mockApi } from "../test/mockApi";
 import { renderApp } from "../test/renderApp";
 
@@ -63,6 +64,27 @@ describe("Listing detail page (FR-04)", () => {
 
     expect(
       await screen.findByText("Hidden — only you can see this"),
+    ).toBeInTheDocument();
+  });
+
+  it("lets the owner open their hidden listing directly after a page reload", async () => {
+    // Regression: the page used to fetch before the session restored the token, so the
+    // server treated the owner as a stranger (smoke run 42115177435, check 06).
+    window.sessionStorage.setItem(TOKEN_STORAGE_KEY, "owner-token");
+    mockApi({
+      "GET /api/v1/me": () => Response.json(landlordMaya),
+      "GET /api/v1/listings/7": ({ headers }) =>
+        headers.Authorization === "Bearer owner-token"
+          ? Response.json(listingDetail({ status: "HIDDEN" }))
+          : apiError(404, "NOT_FOUND", "Listing not found"),
+    });
+    renderApp("/listings/7");
+
+    expect(
+      await screen.findByText("Hidden — only you can see this"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Edit this listing" }),
     ).toBeInTheDocument();
   });
 

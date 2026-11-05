@@ -86,23 +86,40 @@ jobs:
           done
           echo "frontend did not start"; exit 1
 
-      - name: Install Playwright (outside the app's dependencies)
+      - name: Build and serve the production frontend (with CSP)
+        working-directory: frontend
+        run: |
+          npm run build
+          grep -q 'http-equiv="Content-Security-Policy"' dist/index.html
+          nohup npx vite preview --port 4173 --strictPort > ../preview.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf localhost:4173 > /dev/null && echo "preview up after ${i}s" && exit 0
+            sleep 1
+          done
+          echo "preview did not start"; exit 1
+
+      # Uses the Google Chrome already installed on GitHub's runner image instead of downloading
+      # a browser and its system packages (that step took 13+ minutes and could time out).
+      - name: Install Playwright library (outside the app's dependencies)
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: |
           mkdir -p /tmp/e2e && cp scripts/smoke/browser-smoke.mjs /tmp/e2e/
           cd /tmp/e2e && npm init -y > /dev/null
           npm install --no-audit --no-fund playwright@1
           npx playwright --version
-          npx playwright install --with-deps chromium
+          google-chrome --version
 
       - name: Browser check with backend running
         working-directory: /tmp/e2e
         run: node browser-smoke.mjs "API is up" /tmp/e2e/up.png
 
-      - name: Page checks and screenshots with sample data (T-102, T-105)
+      - name: Page checks and screenshots with sample data (T-102, T-105, T-106, T-110)
         working-directory: /tmp/e2e
         run: |
           cp "$GITHUB_WORKSPACE/scripts/smoke/page-screenshots.mjs" .
-          node page-screenshots.mjs /tmp/e2e/pages
+          # Production build with CSP; the script fails on any CSP violation.
+          FRONTEND_URL=http://localhost:4173 node page-screenshots.mjs /tmp/e2e/pages
 
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e

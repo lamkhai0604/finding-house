@@ -16,12 +16,19 @@ type Result =
 /** FR-04: public listing page. */
 export function ListingDetailPage() {
   const { id = "" } = useParams();
-  const { user } = useSession();
-  const [result, setResult] = useState<{ id: string; value: Result } | null>(
+  const { status, user } = useSession();
+  // Who is looking matters: the owner may see a hidden listing (FR-04 AC2). Wait until the
+  // session is restored, and load again when the viewer changes (login, logout).
+  const viewer = status === "loading" ? null : String(user?.id ?? "anonymous");
+  const key = `${id}|${viewer}`;
+  const [result, setResult] = useState<{ key: string; value: Result } | null>(
     null,
   );
 
   useEffect(() => {
+    if (viewer === null) {
+      return;
+    }
     let active = true;
     getListing(id)
       .then((detail): Result => ({ kind: "loaded", detail }))
@@ -36,15 +43,15 @@ export function ListingDetailPage() {
         };
       })
       .then((value) => {
-        if (active) setResult({ id, value });
+        if (active) setResult({ key, value });
       });
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, viewer, key]);
 
-  // A result for a previous id means the new one is still loading.
-  if (!result || result.id !== id) {
+  // A result for a previous listing or viewer means the current one is still loading.
+  if (!result || result.key !== key) {
     return <StatusMessage title="Loading listing…" />;
   }
   const { value } = result;

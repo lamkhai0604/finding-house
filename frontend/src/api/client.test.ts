@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { apiError, mockApi } from "../test/mockApi";
-import { ApiError, apiRequest, setAccessToken } from "./client";
+import {
+  ApiError,
+  apiRequest,
+  setAccessToken,
+  setUnauthorizedHandler,
+} from "./client";
 
 /** Awaits a request that must fail and returns its ApiError. */
 async function rejection(request: Promise<unknown>): Promise<ApiError> {
@@ -83,5 +88,32 @@ describe("apiRequest", () => {
 
     expect(error.status).toBe(502);
     expect(error.body.code).toBe("UNKNOWN_ERROR");
+  });
+
+  it("reports a 401 on a request that carried a token (expired session)", async () => {
+    mockApi({
+      "GET /api/v1/me": () =>
+        apiError(401, "UNAUTHORIZED", "Authentication required"),
+    });
+    const handler = vi.fn();
+    setUnauthorizedHandler(handler);
+    setAccessToken("expired");
+
+    await rejection(apiRequest("GET", "/api/v1/me"));
+
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("does not report a 401 for a request without a token (wrong password)", async () => {
+    mockApi({
+      "POST /api/v1/auth/login": () =>
+        apiError(401, "INVALID_CREDENTIALS", "Invalid email or password"),
+    });
+    const handler = vi.fn();
+    setUnauthorizedHandler(handler);
+
+    await rejection(apiRequest("POST", "/api/v1/auth/login", {}));
+
+    expect(handler).not.toHaveBeenCalled();
   });
 });
