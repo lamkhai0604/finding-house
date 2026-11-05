@@ -20,12 +20,13 @@ Acceptance criteria for feature tasks are the referenced SRS criteria plus any l
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-101 | Auth API: register, login, JWT, `/me` | FR-01 | P2 | Ready (Sprint 1) |
+| T-101 | Auth API: register, login, JWT, `/me` | FR-01 | P2 | Done — commit `6b6f324`, run 42095282281 (ubuntu-latest, Temurin 21): 21 tests passed. FR-01 AC1–AC4 verified; AC5 verified for 401 (missing/malformed/expired/wrong key/wrong issuer); **403 is verified in T-103** with the first role-restricted endpoint. Assumptions: tenants cannot store a phone (400; DB check constraint); emails are stripped and lower-cased. Known risk: no login rate limiting or lockout (not in SRS) — see T-108 |
 | T-102 | Auth UI: register and login pages | FR-01 | P2 | Ready (Sprint 1) |
 | T-103 | Listing API: create, edit, hide/unhide, my listings | FR-02 | P2 | Ready (Sprint 1) |
 | T-104 | Listing image links + placeholder frame | FR-02 | P2 | Ready (Sprint 1) |
 | T-105 | Listing detail API + page | FR-04 | P2 | Ready (Sprint 1) |
 | T-106 | Landlord listing form UI | FR-02 | P2 | Ready (Sprint 1) |
+| T-108 | Decide on login rate limiting / brute-force protection (needs an SRS change if adopted) | NFR-01 | P3 | Proposed |
 
 ## Sprint 2 — "A tenant can find a room"
 
