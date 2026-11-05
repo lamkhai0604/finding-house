@@ -36,7 +36,8 @@ async function listingIdsByTitle() {
 }
 
 const ids = await listingIdsByTitle();
-const browser = await chromium.launch();
+// The runner's installed Google Chrome (see smoke.yml).
+const browser = await chromium.launch({ channel: "chrome" });
 let failures = 0;
 const cspViolations = [];
 

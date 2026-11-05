@@ -67,6 +67,7 @@ Approved exceptions and tracked debt:
   dynamic agent warning). Revisit if they become errors on newer JDKs.
   Debt: TypeScript kept on 5.9 (latest 7.x) until typescript-eslint supports it; @types/node kept on 22
   to match the Node 22 runtime. CI prints `npm outdated` on every run.
-  Debt: the smoke workflow installs Playwright and Chromium on every run; it took 784 s in run 42103027735.
-  Cache the browser or use a Playwright container image if this keeps slowing feedback.
+  Resolved (T-110): the smoke workflow used to download Chromium and its system packages on every
+  run (784 s in run 42103027735; a run near the 25-minute limit on 2026-11-05). It now uses the
+  runner's preinstalled Google Chrome.
 ```

@@ -11,7 +11,8 @@ if (!expected || !screenshotPath) {
   process.exit(2);
 }
 
-const browser = await chromium.launch();
+// The runner's installed Google Chrome (see smoke.yml).
+const browser = await chromium.launch({ channel: "chrome" });
 try {
   const page = await browser.newPage({ viewport: { width: 1024, height: 640 } });
   await page.goto(url);

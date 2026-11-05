@@ -98,13 +98,17 @@ jobs:
           done
           echo "preview did not start"; exit 1
 
-      - name: Install Playwright (outside the app's dependencies)
+      # Uses the Google Chrome already installed on GitHub's runner image instead of downloading
+      # a browser and its system packages (that step took 13+ minutes and could time out).
+      - name: Install Playwright library (outside the app's dependencies)
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: |
           mkdir -p /tmp/e2e && cp scripts/smoke/browser-smoke.mjs /tmp/e2e/
           cd /tmp/e2e && npm init -y > /dev/null
           npm install --no-audit --no-fund playwright@1
           npx playwright --version
-          npx playwright install --with-deps chromium
+          google-chrome --version
 
       - name: Browser check with backend running
         working-directory: /tmp/e2e
