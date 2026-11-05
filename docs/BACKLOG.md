@@ -48,6 +48,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-117 | Consistent buttons: navigation links styled as buttons, actions as `<button>` | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
 | T-118 | Footer on every page | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 |
 | T-119 | Header: avatar menu, Post a room button, mobile hamburger menu | D-027 | P2 | Done — frontend run 42123750933, smoke 42123751179 (desktop avatar menu, mobile menu) |
+| T-123 | Hover, pressed, and keyboard-focus states for every interactive element | D-027 | P2 | Done — frontend run 42125141917; smoke run 42125141843 checks that hovering a secondary button changes its background (white → #f0f4f8) |
 | T-122 | Home-page carousel of the newest listings (uses T-201) | D-027, FR-03 | P2 | Component Done with labelled sample photos (Khai, 2026-11-05: sample data first); switch to newest listings after T-201 |
 
 
