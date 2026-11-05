@@ -329,6 +329,29 @@ h2 {
   font-size: 0.875rem;
 }
 
+.carousel-skeleton {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(16rem, 32%);
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.carousel-skeleton-slide {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding-bottom: 0.5rem;
+}
+
+.carousel-skeleton-slide .skeleton-photo {
+  aspect-ratio: 16 / 10;
+  border-radius: 0;
+}
+
+.carousel-skeleton-slide .skeleton-line {
+  margin: 0.5rem 1rem;
+}
+
 /* Loading */
 
 .skeleton {

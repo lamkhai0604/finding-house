@@ -1,10 +1,53 @@
+import { useEffect, useState } from "react";
+import { searchListings } from "../api/listings";
+import type { Listing } from "../api/types";
 import { useSession } from "../auth/session";
 import { ButtonLink } from "../components/ButtonLink";
-import { Carousel } from "../components/Carousel";
-import { SAMPLE_SLIDES } from "../content/sampleSlides";
+import { Carousel, type CarouselItem } from "../components/Carousel";
+import { CarouselSkeleton } from "../components/Skeleton";
+import { formatPrice } from "../utils/format";
+
+/** How many of the newest listings the home page shows (T-122). */
+export const NEWEST_COUNT = 8;
+
+type Newest =
+  | { kind: "loading" }
+  | { kind: "ready"; items: CarouselItem[] }
+  | { kind: "error" };
+
+function toSlide(listing: Listing): CarouselItem {
+  const price = formatPrice(listing.monthlyPriceCents);
+  return {
+    id: String(listing.id),
+    imageUrl: listing.imageUrls[0],
+    title: listing.title,
+    subtitle: `${price}/month · ${listing.neighborhood}`,
+    href: `/listings/${listing.id}`,
+  };
+}
 
 export function HomePage() {
-  const { user } = useSession();
+  const { status, user } = useSession();
+  const [newest, setNewest] = useState<Newest>({ kind: "loading" });
+  // Wait until a stored token has been checked: an expired token would otherwise turn this public
+  // request into a 401 (the same reason the listing page waits).
+  const sessionKnown = status !== "loading";
+
+  useEffect(() => {
+    if (!sessionKnown) return;
+    let active = true;
+    searchListings({ sort: "newest", size: NEWEST_COUNT })
+      .then(
+        (page): Newest => ({ kind: "ready", items: page.items.map(toSlide) }),
+      )
+      .catch((): Newest => ({ kind: "error" }))
+      .then((value) => {
+        if (active) setNewest(value);
+      });
+    return () => {
+      active = false;
+    };
+  }, [sessionKnown]);
 
   return (
     <>
@@ -37,13 +80,23 @@ export function HomePage() {
 
       <section className="home-section">
         <div className="section-heading">
-          <h2>Explore Seattle neighborhoods</h2>
-          <p className="muted">
-            Sample photos for now — newest listings appear here once browsing
-            arrives in Sprint 2.
-          </p>
+          <h2>Newest rooms</h2>
+          <p className="muted">Recently posted by Seattle landlords.</p>
         </div>
-        <Carousel label="Seattle neighborhoods" items={SAMPLE_SLIDES} />
+        {newest.kind === "loading" && <CarouselSkeleton />}
+        {newest.kind === "error" && (
+          <p className="muted" role="status">
+            Could not load the newest rooms right now. Please try again later.
+          </p>
+        )}
+        {newest.kind === "ready" &&
+          (newest.items.length === 0 ? (
+            <p className="muted" role="status">
+              No rooms have been posted yet.
+            </p>
+          ) : (
+            <Carousel label="Newest rooms" items={newest.items} />
+          ))}
       </section>
     </>
   );

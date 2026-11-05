@@ -6,6 +6,7 @@ import {
   setAccessToken,
   setUnauthorizedHandler,
 } from "./client";
+import { searchQuery } from "./listings";
 
 /** Awaits a request that must fail and returns its ApiError. */
 async function rejection(request: Promise<unknown>): Promise<ApiError> {
@@ -115,5 +116,27 @@ describe("apiRequest", () => {
     await rejection(apiRequest("POST", "/api/v1/auth/login", {}));
 
     expect(handler).not.toHaveBeenCalled();
+  });
+});
+
+describe("searchQuery (FR-03)", () => {
+  it("repeats amenities and leaves out empty filters", () => {
+    expect(
+      searchQuery({
+        neighborhood: "Capitol Hill",
+        minPriceCents: 100000,
+        maxPriceCents: undefined,
+        amenities: ["WIFI", "KITCHEN"],
+        sort: "price_asc",
+        page: 0,
+      }),
+    ).toBe(
+      "?neighborhood=Capitol+Hill&minPriceCents=100000&amenities=WIFI&amenities=KITCHEN&sort=price_asc&page=0",
+    );
+  });
+
+  it("is empty when there are no filters", () => {
+    expect(searchQuery({})).toBe("");
+    expect(searchQuery({ neighborhood: "", amenities: [] })).toBe("");
   });
 });

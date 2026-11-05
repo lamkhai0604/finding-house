@@ -65,6 +65,29 @@ export interface ListingRequest {
   imageUrls: string[];
 }
 
+/** One page of results from GET /api/v1/listings (FR-03). */
+export interface Page<T> {
+  items: T[];
+  page: number;
+  size: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export type ListingSort = "newest" | "price_asc" | "price_desc";
+
+/** Browse filters (FR-03). All optional; prices in US cents; page starts at 0. */
+export interface ListingSearch {
+  minPriceCents?: number;
+  maxPriceCents?: number;
+  neighborhood?: string;
+  minAreaSqft?: number;
+  amenities?: Amenity[];
+  sort?: ListingSort;
+  page?: number;
+  size?: number;
+}
+
 export interface ReferenceData {
   city: string;
   neighborhoods: string[];
