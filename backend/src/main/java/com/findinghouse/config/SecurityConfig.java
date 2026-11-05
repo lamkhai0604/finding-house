@@ -52,6 +52,7 @@ public class SecurityConfig {
                         HttpMethod.GET,
                         "/actuator/health",
                         "/api/v1/reference-data",
+                        "/api/v1/listings",
                         "/api/v1/listings/{id}")
                     .permitAll()
                     // FR-02: only landlords create listings or have a "my listings" page.

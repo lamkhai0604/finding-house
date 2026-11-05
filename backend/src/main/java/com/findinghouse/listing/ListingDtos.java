@@ -62,7 +62,7 @@ public final class ListingDtos {
       Instant createdAt,
       Instant updatedAt) {
 
-    static ListingResponse from(Listing listing) {
+    public static ListingResponse from(Listing listing) {
       return new ListingResponse(
           listing.getId(),
           listing.getLandlordId(),

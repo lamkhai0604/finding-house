@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import org.hibernate.annotations.BatchSize;
 
 /** A room for rent (FR-02). Ownership and status rules live in {@link ListingService}. */
 @Entity
@@ -56,12 +57,16 @@ public class Listing {
   @Column(nullable = false, length = 10)
   private ListingStatus status;
 
+  // Loaded for up to 50 listings per query, so a page of results costs a few queries instead of
+  // two per listing (review finding O4).
+  @BatchSize(size = 50)
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "listing_amenities", joinColumns = @JoinColumn(name = "listing_id"))
   @Enumerated(EnumType.STRING)
   @Column(name = "amenity", nullable = false, length = 32)
   private Set<Amenity> amenities = EnumSet.noneOf(Amenity.class);
 
+  @BatchSize(size = 50)
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "listing_images", joinColumns = @JoinColumn(name = "listing_id"))
   @OrderColumn(name = "position")
