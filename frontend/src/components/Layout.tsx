@@ -14,6 +14,9 @@ export function Layout() {
         <nav aria-label="Account">
           {status === "authenticated" && user ? (
             <>
+              {user.role === "LANDLORD" && (
+                <NavLink to="/my/listings">My listings</NavLink>
+              )}
               <span className="signed-in-as">
                 {user.displayName} (
                 {user.role === "LANDLORD" ? "Landlord" : "Tenant"})

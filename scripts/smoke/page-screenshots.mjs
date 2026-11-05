@@ -79,6 +79,36 @@ try {
   await page.goto(`${frontend}/listings/${ids["Basement studio (paused)"]}`);
   await shot(page, "06-detail-hidden-owner-view", "Hidden — only you can see this");
 
+  // T-106: landlord flows through the UI.
+  await page.getByRole("link", { name: "My listings" }).click();
+  await shot(page, "11-my-listings", "Basement studio (paused)");
+
+  await page.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}/edit`);
+  await shot(page, "12-edit-listing-form", "Edit listing");
+
+  await page.goto(`${frontend}/listings/new`);
+  await page.getByLabel("Title").fill("Posted from the UI");
+  await page.getByLabel("Monthly rent (USD)").fill("1,450.75");
+  await page.getByLabel("Area (sq ft)").fill("380");
+  await page.getByLabel("Neighborhood").selectOption("Fremont");
+  await page.getByLabel("Street address").fill("3500 Example Ave N, Seattle, WA");
+  await page.getByLabel("Description (optional)").fill("Created by the smoke test.");
+  await page.getByLabel("Wi-Fi").check();
+  await page.getByLabel("Kitchen").check();
+  await page.getByRole("button", { name: "Add photo link" }).click();
+  await page.getByLabel("Photo link 1").fill("https://picsum.photos/seed/fh-ui-1/800/600");
+  await shot(page, "13-new-listing-form-filled", "Post a room");
+  await page.getByRole("button", { name: "Post listing" }).click();
+  await shot(page, "14-new-listing-created", "$1,450.75");
+
+  await page.getByRole("link", { name: "My listings" }).click();
+  await page
+    .getByRole("article")
+    .filter({ hasText: "Posted from the UI" })
+    .getByRole("button", { name: "Hide" })
+    .click();
+  await shot(page, "15-my-listings-after-hide", "Unhide");
+
   await page.getByRole("button", { name: "Log out" }).click();
   await page.goto(`${frontend}/listings/${ids["Fremont room, no photos yet"]}`);
   await shot(page, "07-detail-no-photos", "No photo yet");

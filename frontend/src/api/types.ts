@@ -53,6 +53,24 @@ export interface Listing {
   updatedAt: string;
 }
 
+/** Body for creating or replacing a listing (FR-02). Price in US cents. */
+export interface ListingRequest {
+  title: string;
+  description: string;
+  monthlyPriceCents: number;
+  areaSqft: number;
+  neighborhood: string;
+  address: string;
+  amenities: Amenity[];
+  imageUrls: string[];
+}
+
+export interface ReferenceData {
+  city: string;
+  neighborhoods: string[];
+  amenities: Amenity[];
+}
+
 export interface ListingDetail {
   listing: Listing;
   landlord: { displayName: string; phone: string | null };

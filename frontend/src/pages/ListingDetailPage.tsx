@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../api/client";
 import { getListing } from "../api/listings";
+import { useSession } from "../auth/session";
 import type { ListingDetail } from "../api/types";
 import { ImageGallery } from "../components/ImageGallery";
 import { StatusMessage } from "../components/StatusMessage";
@@ -15,6 +16,7 @@ type Result =
 /** FR-04: public listing page. */
 export function ListingDetailPage() {
   const { id = "" } = useParams();
+  const { user } = useSession();
   const [result, setResult] = useState<{ id: string; value: Result } | null>(
     null,
   );
@@ -70,6 +72,11 @@ export function ListingDetailPage() {
         <h1>{listing.title}</h1>
         {listing.status === "HIDDEN" && (
           <span className="badge">Hidden — only you can see this</span>
+        )}
+        {user?.id === listing.landlordId && (
+          <p>
+            <Link to={`/listings/${listing.id}/edit`}>Edit this listing</Link>
+          </p>
         )}
         <p className="price">
           {formatPrice(listing.monthlyPriceCents)}
