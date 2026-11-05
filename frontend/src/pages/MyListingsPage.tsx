@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import { ApiError } from "../api/client";
 import { changeListingStatus, getMyListings } from "../api/listings";
 import type { Listing } from "../api/types";
 import { Button } from "../components/Button";
+import { ButtonLink } from "../components/ButtonLink";
 import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
+import { ListingListSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 
 type Loaded =
@@ -64,7 +65,7 @@ export function MyListingsPage() {
   }
 
   if (!loaded) {
-    return <StatusMessage title="Loading your listings…" />;
+    return <ListingListSkeleton />;
   }
   if (loaded.kind === "error") {
     return (
@@ -78,9 +79,9 @@ export function MyListingsPage() {
     <section>
       <div className="page-heading">
         <h1>My listings</h1>
-        <Link to="/listings/new" className="button button-primary">
+        <ButtonLink to="/listings/new" variant="primary">
           Post a room
-        </Link>
+        </ButtonLink>
       </div>
       <FormAlert message={actionError} />
       {loaded.listings.length === 0 ? (
@@ -95,12 +96,9 @@ export function MyListingsPage() {
               listing={listing}
               actions={
                 <>
-                  <Link
-                    to={`/listings/${listing.id}/edit`}
-                    className="button button-secondary"
-                  >
+                  <ButtonLink to={`/listings/${listing.id}/edit`}>
                     Edit
-                  </Link>
+                  </ButtonLink>
                   <Button
                     variant="secondary"
                     busy={busyId === listing.id}

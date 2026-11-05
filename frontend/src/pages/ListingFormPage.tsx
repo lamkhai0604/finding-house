@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { ApiError } from "../api/client";
 import {
   createListing,
@@ -10,8 +10,10 @@ import {
 import type { Listing, ListingRequest, ReferenceData } from "../api/types";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
+import { ButtonLink } from "../components/ButtonLink";
 import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { ListingForm } from "../components/ListingForm";
+import { FormSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 
 type Loaded =
@@ -58,13 +60,13 @@ export function ListingFormPage() {
   }, [id, key, user?.id]);
 
   if (!loaded || loaded.key !== key) {
-    return <StatusMessage title="Loading…" />;
+    return <FormSkeleton />;
   }
   const { value } = loaded;
   if (value.kind === "not-found") {
     return (
       <StatusMessage title="Listing not found">
-        <Link to="/my/listings">Back to my listings</Link>
+        <ButtonLink to="/my/listings">Back to my listings</ButtonLink>
       </StatusMessage>
     );
   }
@@ -86,9 +88,10 @@ export function ListingFormPage() {
 
   return (
     <section className="card">
-      <h1>{editing ? "Edit listing" : "Post a room"}</h1>
       <ListingForm
         key={key}
+        heading={editing ? "Edit listing" : "Post a room"}
+        backTo={editing ? `/listings/${editing.id}` : "/my/listings"}
         referenceData={value.referenceData}
         listing={editing}
         submitLabel={editing ? "Save changes" : "Post listing"}

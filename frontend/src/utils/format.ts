@@ -36,3 +36,11 @@ export function formatAmenity(amenity: Amenity): string {
 export function formatArea(sqft: number): string {
   return `${sqft.toLocaleString("en-US")} sq ft`;
 }
+
+/** "Maya Chen" -> "MC"; "Ana" -> "A" (avatar letters). */
+export function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const letters =
+    parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : parts[0]?.[0];
+  return (letters ?? "?").toUpperCase();
+}

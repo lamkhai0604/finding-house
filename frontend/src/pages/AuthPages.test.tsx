@@ -61,10 +61,13 @@ describe("Login page (FR-01)", () => {
 
     expect(await screen.findByText("Maya Chen (Landlord)")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: /Account menu/ }));
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
     expect(
-      await screen.findByRole("link", { name: "Log in" }),
+      await within(screen.getByRole("banner")).findByRole("link", {
+        name: "Log in",
+      }),
     ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
   });
@@ -78,7 +81,9 @@ describe("Login page (FR-01)", () => {
     renderApp("/");
 
     expect(
-      await screen.findByRole("link", { name: "Log in" }),
+      await within(screen.getByRole("banner")).findByRole("link", {
+        name: "Log in",
+      }),
     ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
   });

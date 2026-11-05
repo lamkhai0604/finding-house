@@ -280,7 +280,11 @@ describe("My listings (FR-02 AC3, AC6)", () => {
     expect(
       await screen.findByRole("heading", { name: "No listings yet" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Post a room" })).toHaveAttribute(
+    expect(
+      within(screen.getByRole("main")).getByRole("link", {
+        name: "Post a room",
+      }),
+    ).toHaveAttribute(
       "href",
       "/listings/new",
     );
