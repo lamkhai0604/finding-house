@@ -32,7 +32,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
  * cookies or sessions: every request must carry an Authorization header.
  */
 @Configuration
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, LoginThrottleProperties.class})
 public class SecurityConfig {
 
   private static final String UNAUTHORIZED_BODY =

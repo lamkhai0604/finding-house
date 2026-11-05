@@ -106,6 +106,29 @@ class AuthIntegrationTest {
     assertThat(JsonPath.<String>read(response.body(), "$.code")).isEqualTo("MALFORMED_REQUEST");
   }
 
+  // --- BCrypt only uses 72 bytes: longer passwords must be a clean 400 / 401, never a 500 ------
+
+  @Test
+  void registrationRejectsPasswordLongerThan72BytesEvenIfUnder72Characters() {
+    String multiByte = "é".repeat(40); // 40 characters, 80 bytes in UTF-8
+
+    HttpResponse<String> response = register(uniqueEmail(), multiByte, "Ana", "TENANT", null);
+
+    assertThat(response.statusCode()).isEqualTo(400);
+    assertThat(fieldErrors(response)).containsExactly("password");
+  }
+
+  @Test
+  void loginWithVeryLongPasswordIsInvalidCredentialsNotServerError() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Bo", "TENANT", null);
+
+    HttpResponse<String> response = login(email, "x".repeat(200));
+
+    assertThat(response.statusCode()).isEqualTo(401);
+    assertThat(JsonPath.<String>read(response.body(), "$.code")).isEqualTo("INVALID_CREDENTIALS");
+  }
+
   // --- FR-01 AC2: duplicate email ------------------------------------------------------------
 
   @Test
@@ -169,6 +192,61 @@ class AuthIntegrationTest {
     assertThat(wrongPassword.body()).isEqualTo(unknownEmail.body());
     assertThat(JsonPath.<String>read(wrongPassword.body(), "$.code"))
         .isEqualTo("INVALID_CREDENTIALS");
+  }
+
+  // --- D-024: failed-login throttling ---------------------------------------------------------
+
+  @Test
+  void fiveFailedLoginsBlockTheEmailEvenForTheRightPassword() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Kai", "TENANT", null);
+    for (int i = 0; i < 5; i++) {
+      assertThat(login(email, "wrong-password-" + i).statusCode()).isEqualTo(401);
+    }
+
+    HttpResponse<String> blocked = login(email, PASSWORD);
+
+    assertThat(blocked.statusCode()).isEqualTo(429);
+    assertThat(JsonPath.<String>read(blocked.body(), "$.code")).isEqualTo("TOO_MANY_ATTEMPTS");
+    assertThat(blocked.headers().firstValue("Retry-After"))
+        .hasValueSatisfying(value -> assertThat(Long.parseLong(value)).isBetween(1L, 900L));
+  }
+
+  @Test
+  void throttlingAppliesToUnknownEmailsToo() {
+    String unknown = uniqueEmail();
+    for (int i = 0; i < 5; i++) {
+      login(unknown, "guess-" + i);
+    }
+
+    assertThat(login(unknown, "guess-6").statusCode()).isEqualTo(429);
+  }
+
+  @Test
+  void otherAccountsAreNotAffectedByAnotherEmailsFailures() {
+    String victim = uniqueEmail();
+    String other = uniqueEmail();
+    register(other, PASSWORD, "Lee", "TENANT", null);
+    for (int i = 0; i < 5; i++) {
+      login(victim, "guess-" + i);
+    }
+
+    assertThat(login(other, PASSWORD).statusCode()).isEqualTo(200);
+  }
+
+  @Test
+  void successfulLoginResetsTheEmailsFailures() {
+    String email = uniqueEmail();
+    register(email, PASSWORD, "Max", "TENANT", null);
+    for (int i = 0; i < 4; i++) {
+      login(email, "wrong-" + i);
+    }
+    assertThat(login(email, PASSWORD).statusCode()).isEqualTo(200);
+    for (int i = 0; i < 4; i++) {
+      login(email, "wrong-again-" + i);
+    }
+
+    assertThat(login(email, PASSWORD).statusCode()).isEqualTo(200);
   }
 
   // --- FR-01 AC5: protected endpoints need a valid token -------------------------------------

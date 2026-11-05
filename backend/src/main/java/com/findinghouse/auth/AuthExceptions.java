@@ -22,4 +22,18 @@ public final class AuthExceptions {
       super("Invalid email or password");
     }
   }
+
+  /** Login refused because of too many recent failures (HTTP 429, D-024). */
+  public static class TooManyLoginAttemptsException extends RuntimeException {
+    private final java.time.Duration retryAfter;
+
+    public TooManyLoginAttemptsException(java.time.Duration retryAfter) {
+      super("Too many failed login attempts");
+      this.retryAfter = retryAfter;
+    }
+
+    public java.time.Duration getRetryAfter() {
+      return retryAfter;
+    }
+  }
 }

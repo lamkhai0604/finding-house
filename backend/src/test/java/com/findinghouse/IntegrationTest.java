@@ -15,7 +15,11 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = IntegrationTest.TEST_JWT_SECRET_PROPERTY)
+    properties = {
+      IntegrationTest.TEST_JWT_SECRET_PROPERTY,
+      // All tests share one client address (localhost); the per-address limit is unit-tested.
+      "app.login-throttle.max-failures-per-address=100000"
+    })
 @Import(TestcontainersConfiguration.class)
 public @interface IntegrationTest {
 
