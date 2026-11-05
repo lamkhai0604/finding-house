@@ -40,7 +40,9 @@ Tests and commands:
   Frontend: Vitest + React Testing Library for components with logic -> npm test
   Requires Docker for integration tests.
 Required CI checks and branch protection:
-  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main. Branch protection on main: to be configured by Khai
+  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main;
+  `smoke` workflow (docker compose + backend jar + API script + Vite dev server + headless Chromium) on pushes
+  touching backend/frontend/compose, on every PR into dev/main, and on demand. Branch protection on main: to be configured by Khai
   and then verified against the actual GitHub settings; until verified, it is recorded as a gap.
 Review, merge, release, communication:
   Khai reviews and merges; deployments need Khai's approval each time. Chat with Khai is in Vietnamese;

@@ -42,7 +42,7 @@ Released: nothing deployed (deployment is Sprint 4).
 
 **Unmet / carried back to the backlog:** T-006 (not needed until Sprint 3), T-007 (blocked by environment). Not carried forward automatically; reprioritized in Sprint 1 planning.
 
-**Not verified:** running `docker compose` + `npm run dev` together on a developer machine.
+**Not verified at sprint end:** running `docker compose` + `npm run dev` together. Verified afterwards by T-008 (run 42096337624).
 
 **Improvement notes:**
 - Claude's workspace cannot reach Maven Central, the npm registry, or GitHub artifact storage, so every Java/JS check runs on GitHub Actions. `google-java-format` can be run locally (downloaded from GitHub releases), which catches formatting before CI.
