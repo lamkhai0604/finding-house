@@ -22,9 +22,7 @@ describe("BackButton (D-027)", () => {
           <Route path="/previous" element={<h1>Previous page</h1>} />
           <Route
             path="/current"
-            element={
-              <BackButton fallback="/" confirmLeave={confirmLeave} />
-            }
+            element={<BackButton fallback="/" confirmLeave={confirmLeave} />}
           />
         </Routes>
       </MemoryRouter>,
@@ -45,7 +43,9 @@ describe("BackButton (D-027)", () => {
     fireEvent.click(screen.getByRole("button", { name: /Back/ }));
     fireEvent.click(screen.getByRole("button", { name: "Keep editing" }));
 
-    expect(screen.queryByRole("heading", { name: "Home" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Home" }),
+    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Back/ }));
     fireEvent.click(screen.getByRole("button", { name: "Discard changes" }));
@@ -132,12 +132,16 @@ describe("Carousel (T-122)", () => {
 
     const carousel = screen.getByRole("region", { name: "Neighborhoods" });
     expect(within(carousel).getAllByRole("listitem")).toHaveLength(2);
-    expect(within(carousel).getByLabelText("1 of 2: Ballard")).toBeInTheDocument();
+    expect(
+      within(carousel).getByLabelText("1 of 2: Ballard"),
+    ).toBeInTheDocument();
     expect(within(carousel).getByRole("link")).toHaveAttribute(
       "href",
       "/listings/1",
     );
-    expect(within(carousel).getByRole("button", { name: "Previous" })).toBeDisabled();
+    expect(
+      within(carousel).getByRole("button", { name: "Previous" }),
+    ).toBeDisabled();
   });
 });
 

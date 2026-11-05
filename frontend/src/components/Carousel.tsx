@@ -37,11 +37,18 @@ export function Carousel({ label, items }: CarouselProps) {
     const track = trackRef.current;
     const card = track?.querySelector<HTMLElement>("li");
     if (!track || !card) return;
-    track.scrollBy({ left: direction * (card.offsetWidth + 16), behavior: "smooth" });
+    track.scrollBy({
+      left: direction * (card.offsetWidth + 16),
+      behavior: "smooth",
+    });
   }
 
   return (
-    <section className="carousel" aria-roledescription="carousel" aria-label={label}>
+    <section
+      className="carousel"
+      aria-roledescription="carousel"
+      aria-label={label}
+    >
       <div className="carousel-controls">
         <button
           type="button"

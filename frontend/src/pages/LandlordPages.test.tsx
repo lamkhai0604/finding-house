@@ -284,10 +284,7 @@ describe("My listings (FR-02 AC3, AC6)", () => {
       within(screen.getByRole("main")).getByRole("link", {
         name: "Post a room",
       }),
-    ).toHaveAttribute(
-      "href",
-      "/listings/new",
-    );
+    ).toHaveAttribute("href", "/listings/new");
   });
 });
 

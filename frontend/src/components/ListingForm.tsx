@@ -114,81 +114,81 @@ export function ListingForm({
         <BackButton fallback={backTo} confirmLeave={dirty} />
       </div>
       <h1>{heading}</h1>
-    <form className="listing-form" onSubmit={handleSubmit} noValidate>
-      <FormAlert message={alert} />
-      <TextField
-        label="Title"
-        maxLength={100}
-        placeholder="Sunny studio near UW"
-        value={values.title}
-        error={errors.title}
-        onChange={(e) => set("title", e.target.value)}
-      />
-      <div className="field-row">
+      <form className="listing-form" onSubmit={handleSubmit} noValidate>
+        <FormAlert message={alert} />
         <TextField
-          label="Monthly rent (USD)"
-          inputMode="decimal"
-          placeholder="1650"
-          value={values.price}
-          error={errors.price}
-          onChange={(e) => set("price", e.target.value)}
+          label="Title"
+          maxLength={100}
+          placeholder="Sunny studio near UW"
+          value={values.title}
+          error={errors.title}
+          onChange={(e) => set("title", e.target.value)}
+        />
+        <div className="field-row">
+          <TextField
+            label="Monthly rent (USD)"
+            inputMode="decimal"
+            placeholder="1650"
+            value={values.price}
+            error={errors.price}
+            onChange={(e) => set("price", e.target.value)}
+          />
+          <TextField
+            label="Area (sq ft)"
+            inputMode="numeric"
+            placeholder="420"
+            value={values.areaSqft}
+            error={errors.areaSqft}
+            onChange={(e) => set("areaSqft", e.target.value)}
+          />
+        </div>
+        <SelectField
+          label="Neighborhood"
+          options={[
+            { value: "", label: "Choose a neighborhood" },
+            ...referenceData.neighborhoods.map((n) => ({ value: n, label: n })),
+          ]}
+          value={values.neighborhood}
+          error={errors.neighborhood}
+          onChange={(e) => set("neighborhood", e.target.value)}
         />
         <TextField
-          label="Area (sq ft)"
-          inputMode="numeric"
-          placeholder="420"
-          value={values.areaSqft}
-          error={errors.areaSqft}
-          onChange={(e) => set("areaSqft", e.target.value)}
+          label="Street address"
+          maxLength={200}
+          hint={`City: ${referenceData.city}`}
+          value={values.address}
+          error={errors.address}
+          onChange={(e) => set("address", e.target.value)}
         />
-      </div>
-      <SelectField
-        label="Neighborhood"
-        options={[
-          { value: "", label: "Choose a neighborhood" },
-          ...referenceData.neighborhoods.map((n) => ({ value: n, label: n })),
-        ]}
-        value={values.neighborhood}
-        error={errors.neighborhood}
-        onChange={(e) => set("neighborhood", e.target.value)}
-      />
-      <TextField
-        label="Street address"
-        maxLength={200}
-        hint={`City: ${referenceData.city}`}
-        value={values.address}
-        error={errors.address}
-        onChange={(e) => set("address", e.target.value)}
-      />
-      <TextAreaField
-        label="Description (optional)"
-        rows={5}
-        maxLength={2000}
-        value={values.description}
-        error={errors.description}
-        onChange={(e) => set("description", e.target.value)}
-      />
-      <CheckboxGroup
-        legend="Amenities"
-        options={referenceData.amenities.map((a) => ({
-          value: a,
-          label: formatAmenity(a),
-        }))}
-        selected={values.amenities}
-        error={errors.amenities}
-        onChange={(selected) => set("amenities", selected)}
-      />
-      <ImageUrlsField
-        urls={values.imageUrls}
-        max={MAX_IMAGES}
-        errors={imageErrors}
-        error={errors.imageUrls}
-        onChange={(urls) => set("imageUrls", urls)}
-      />
-      <Button type="submit" busy={busy}>
-        {submitLabel}
-      </Button>
-    </form>
+        <TextAreaField
+          label="Description (optional)"
+          rows={5}
+          maxLength={2000}
+          value={values.description}
+          error={errors.description}
+          onChange={(e) => set("description", e.target.value)}
+        />
+        <CheckboxGroup
+          legend="Amenities"
+          options={referenceData.amenities.map((a) => ({
+            value: a,
+            label: formatAmenity(a),
+          }))}
+          selected={values.amenities}
+          error={errors.amenities}
+          onChange={(selected) => set("amenities", selected)}
+        />
+        <ImageUrlsField
+          urls={values.imageUrls}
+          max={MAX_IMAGES}
+          errors={imageErrors}
+          error={errors.imageUrls}
+          onChange={(urls) => set("imageUrls", urls)}
+        />
+        <Button type="submit" busy={busy}>
+          {submitLabel}
+        </Button>
+      </form>
     </>
   );
 }
