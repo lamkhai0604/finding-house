@@ -22,10 +22,13 @@ describe("apiRequest", () => {
 
   it("omits the Authorization header when logged out", async () => {
     mockApi({
-      "GET /api/v1/me": ({ headers }) => Response.json({ auth: headers.Authorization ?? null }),
+      "GET /api/v1/me": ({ headers }) =>
+        Response.json({ auth: headers.Authorization ?? null }),
     });
 
-    await expect(apiRequest("GET", "/api/v1/me")).resolves.toEqual({ auth: null });
+    await expect(apiRequest("GET", "/api/v1/me")).resolves.toEqual({
+      auth: null,
+    });
   });
 
   it("turns error responses into ApiError with field errors", async () => {
@@ -36,7 +39,9 @@ describe("apiRequest", () => {
         ]),
     });
 
-    const error = await apiRequest("POST", "/api/v1/things", {}).catch((e) => e);
+    const error = await apiRequest("POST", "/api/v1/things", {}).catch(
+      (e) => e,
+    );
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error.status).toBe(400);
@@ -61,7 +66,8 @@ describe("apiRequest", () => {
 
   it("handles an error response that is not JSON", async () => {
     mockApi({
-      "GET /api/v1/me": () => new Response("<html>Bad gateway</html>", { status: 502 }),
+      "GET /api/v1/me": () =>
+        new Response("<html>Bad gateway</html>", { status: 502 }),
     });
 
     const error = await apiRequest("GET", "/api/v1/me").catch((e) => e);

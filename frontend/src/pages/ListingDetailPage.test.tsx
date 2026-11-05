@@ -13,16 +13,23 @@ describe("Listing detail page (FR-04)", () => {
       await screen.findByRole("heading", { name: "Sunny studio near UW" }),
     ).toBeInTheDocument();
     expect(screen.getByText("$1,650")).toBeInTheDocument();
-    expect(screen.getByText("University District, Seattle · 420 sq ft")).toBeInTheDocument();
-    expect(screen.getByText("4500 Sample Ave NE, Seattle, WA")).toBeInTheDocument();
+    expect(
+      screen.getByText("University District, Seattle · 420 sq ft"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("4500 Sample Ave NE, Seattle, WA"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Wi-Fi")).toBeInTheDocument();
     expect(screen.getByText("Pets allowed")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Sunny studio near UW, photo 1" })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Sunny studio near UW, photo 2" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "(206) 555-0101" })).toHaveAttribute(
-      "href",
-      "tel:(206) 555-0101",
-    );
+    expect(
+      screen.getByRole("img", { name: "Sunny studio near UW, photo 1" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Sunny studio near UW, photo 2" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "(206) 555-0101" }),
+    ).toHaveAttribute("href", "tel:(206) 555-0101");
   });
 
   it("shows a placeholder and friendly text when details are missing", async () => {
@@ -42,21 +49,27 @@ describe("Listing detail page (FR-04)", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("No amenities listed.")).toBeInTheDocument();
     expect(screen.getByText("No phone number provided.")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "About this place" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "About this place" }),
+    ).not.toBeInTheDocument();
   });
 
   it("marks a hidden listing for its owner", async () => {
     mockApi({
-      "GET /api/v1/listings/7": () => Response.json(listingDetail({ status: "HIDDEN" })),
+      "GET /api/v1/listings/7": () =>
+        Response.json(listingDetail({ status: "HIDDEN" })),
     });
     renderApp("/listings/7");
 
-    expect(await screen.findByText("Hidden — only you can see this")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Hidden — only you can see this"),
+    ).toBeInTheDocument();
   });
 
   it("says 'not found' for a missing or hidden listing", async () => {
     mockApi({
-      "GET /api/v1/listings/99": () => apiError(404, "NOT_FOUND", "Listing not found"),
+      "GET /api/v1/listings/99": () =>
+        apiError(404, "NOT_FOUND", "Listing not found"),
     });
     renderApp("/listings/99");
 
@@ -74,8 +87,12 @@ describe("Listing detail page (FR-04)", () => {
     renderApp("/listings/7");
 
     expect(
-      await screen.findByRole("heading", { name: "Could not load this listing" }),
+      await screen.findByRole("heading", {
+        name: "Could not load this listing",
+      }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Could not reach the server. Please try again.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Could not reach the server. Please try again."),
+    ).toBeInTheDocument();
   });
 });

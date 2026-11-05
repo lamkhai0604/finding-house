@@ -1,5 +1,15 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { fetchCurrentUser, login as loginRequest, registerAccount } from "../api/auth";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  fetchCurrentUser,
+  login as loginRequest,
+  registerAccount,
+} from "../api/auth";
 import { setAccessToken } from "../api/client";
 import type { RegisterRequest, UserProfile } from "../api/types";
 import {
@@ -33,13 +43,31 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setStatus("authenticated");
   }, []);
 
-  // Restore a session from an earlier page load in the same tab.
+  // Restore a session from an earlier page load in the same tab. State is only set in the
+  // promise callbacks, never synchronously inside the effect.
   useEffect(() => {
     const token = readStoredToken();
-    if (token) {
-      startSession(token).catch(clear);
+    if (!token) {
+      return;
     }
-  }, [startSession, clear]);
+    let active = true;
+    setAccessToken(token);
+    fetchCurrentUser()
+      .then((profile) => {
+        if (active) {
+          setUser(profile);
+          setStatus("authenticated");
+        }
+      })
+      .catch(() => {
+        if (active) {
+          clear();
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [clear]);
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -63,6 +91,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <SessionContext.Provider value={session}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={session}>
+      {children}
+    </SessionContext.Provider>
   );
 }

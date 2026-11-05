@@ -1,7 +1,9 @@
 import { apiRequest } from "./client";
 import type { RegisterRequest, TokenResponse, UserProfile } from "./types";
 
-export function registerAccount(request: RegisterRequest): Promise<UserProfile> {
+export function registerAccount(
+  request: RegisterRequest,
+): Promise<UserProfile> {
   return apiRequest("POST", "/api/v1/auth/register", request);
 }
 

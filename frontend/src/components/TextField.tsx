@@ -20,7 +20,9 @@ export function TextField({ label, error, hint, id, ...rest }: TextFieldProps) {
         {...rest}
         id={inputId}
         aria-invalid={error ? true : undefined}
-        aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
+        aria-describedby={
+          [hintId, errorId].filter(Boolean).join(" ") || undefined
+        }
       />
       {hint && (
         <p id={hintId} className="field-hint">

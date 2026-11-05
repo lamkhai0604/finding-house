@@ -29,7 +29,8 @@ export function ListingDetailPage() {
         }
         return {
           kind: "error",
-          message: e instanceof ApiError ? e.body.message : "Something went wrong.",
+          message:
+            e instanceof ApiError ? e.body.message : "Something went wrong.",
         };
       })
       .then((value) => {
@@ -75,7 +76,8 @@ export function ListingDetailPage() {
           <span className="muted"> / month</span>
         </p>
         <p className="muted">
-          {listing.neighborhood}, {listing.city} · {formatArea(listing.areaSqft)}
+          {listing.neighborhood}, {listing.city} ·{" "}
+          {formatArea(listing.areaSqft)}
         </p>
         <p>{listing.address}</p>
       </div>

@@ -9,13 +9,18 @@ describe("ListingImage (FR-02 AC7)", () => {
 
     const image = screen.getByRole("img", { name: "Studio" });
     expect(image).toHaveAttribute("src", "https://example.com/a.jpg");
-    expect(screen.getByRole("link")).toHaveAttribute("href", "https://example.com/a.jpg");
+    expect(screen.getByRole("link")).toHaveAttribute(
+      "href",
+      "https://example.com/a.jpg",
+    );
   });
 
   it("shows a placeholder when there is no link", () => {
     render(<ListingImage alt="Studio" />);
 
-    expect(screen.getByRole("img", { name: "No photo available" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "No photo available" }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
@@ -24,7 +29,9 @@ describe("ListingImage (FR-02 AC7)", () => {
 
     fireEvent.error(screen.getByRole("img", { name: "Studio" }));
 
-    expect(screen.getByRole("img", { name: "No photo available" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "No photo available" }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -37,13 +44,19 @@ describe("ImageGallery", () => {
       />,
     );
 
-    expect(screen.getByRole("img", { name: "Loft, photo 1" })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Loft, photo 2" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Loft, photo 1" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Loft, photo 2" }),
+    ).toBeInTheDocument();
   });
 
   it("shows a single placeholder for a listing without photos", () => {
     render(<ImageGallery title="Room" urls={[]} />);
 
-    expect(screen.getAllByRole("img", { name: "No photo available" })).toHaveLength(1);
+    expect(
+      screen.getAllByRole("img", { name: "No photo available" }),
+    ).toHaveLength(1);
   });
 });

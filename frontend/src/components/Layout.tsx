@@ -15,7 +15,8 @@ export function Layout() {
           {status === "authenticated" && user ? (
             <>
               <span className="signed-in-as">
-                {user.displayName} ({user.role === "LANDLORD" ? "Landlord" : "Tenant"})
+                {user.displayName} (
+                {user.role === "LANDLORD" ? "Landlord" : "Tenant"})
               </span>
               <button type="button" className="link-button" onClick={logout}>
                 Log out

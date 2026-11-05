@@ -17,7 +17,11 @@ export function ImageGallery({ urls, title }: ImageGalleryProps) {
   const [first, ...rest] = urls;
   return (
     <div className="gallery">
-      <ListingImage src={first} alt={`${title}, photo 1`} className="gallery-main" />
+      <ListingImage
+        src={first}
+        alt={`${title}, photo 1`}
+        className="gallery-main"
+      />
       {rest.map((url, index) => (
         <ListingImage
           key={url}

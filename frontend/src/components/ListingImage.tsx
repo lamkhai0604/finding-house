@@ -16,7 +16,11 @@ export function ListingImage({ src, alt, className }: ListingImageProps) {
 
   if (!src || failedSrc === src) {
     return (
-      <div role="img" aria-label="No photo available" className={`${classes} placeholder`}>
+      <div
+        role="img"
+        aria-label="No photo available"
+        className={`${classes} placeholder`}
+      >
         <span aria-hidden="true">No photo yet</span>
       </div>
     );
@@ -24,7 +28,12 @@ export function ListingImage({ src, alt, className }: ListingImageProps) {
 
   return (
     <a href={src} target="_blank" rel="noopener noreferrer" className={classes}>
-      <img src={src} alt={alt} loading="lazy" onError={() => setFailedSrc(src)} />
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={() => setFailedSrc(src)}
+      />
     </a>
   );
 }
