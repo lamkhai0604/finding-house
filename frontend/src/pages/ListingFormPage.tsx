@@ -9,6 +9,8 @@ import {
 } from "../api/listings";
 import type { Listing, ListingRequest, ReferenceData } from "../api/types";
 import { useSession } from "../auth/session";
+import { Button } from "../components/Button";
+import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { ListingForm } from "../components/ListingForm";
 import { StatusMessage } from "../components/StatusMessage";
 
@@ -26,6 +28,7 @@ export function ListingFormPage() {
   const [loaded, setLoaded] = useState<{ key: string; value: Loaded } | null>(
     null,
   );
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -91,6 +94,26 @@ export function ListingFormPage() {
         submitLabel={editing ? "Save changes" : "Post listing"}
         onSubmit={save}
       />
+      {editing && (
+        <div className="danger-zone">
+          <div>
+            <h2>Delete listing</h2>
+            <p className="muted">Removes it permanently. Use Hide to take it offline for a while.</p>
+          </div>
+          <Button
+            variant="secondary"
+            className="button-danger-outline"
+            onClick={() => setConfirmingDelete(true)}
+          >
+            Delete listing
+          </Button>
+          <DeleteListingDialog
+            listing={confirmingDelete ? editing : null}
+            onCancel={() => setConfirmingDelete(false)}
+            onDeleted={() => navigate("/my/listings", { replace: true })}
+          />
+        </div>
+      )}
     </section>
   );
 }

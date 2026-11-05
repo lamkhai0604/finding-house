@@ -1,7 +1,8 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, Ref } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "danger";
+  ref?: Ref<HTMLButtonElement>;
   /** Disables the button and shows the label as busy while a request runs. */
   busy?: boolean;
 }

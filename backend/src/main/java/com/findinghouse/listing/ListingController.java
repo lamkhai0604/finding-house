@@ -14,6 +14,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,6 +71,12 @@ public class ListingController {
       @AuthenticationPrincipal Jwt jwt,
       @Valid @RequestBody StatusRequest request) {
     return ListingResponse.from(listingService.changeStatus(id, userId(jwt), request.status()));
+  }
+
+  @DeleteMapping("/listings/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
+    listingService.delete(id, userId(jwt));
   }
 
   @GetMapping("/me/listings")

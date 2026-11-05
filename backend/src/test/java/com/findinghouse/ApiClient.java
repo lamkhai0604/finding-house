@@ -23,6 +23,10 @@ public final class ApiClient {
     return send(request(path, bearerToken).GET());
   }
 
+  public HttpResponse<String> delete(String path, String bearerToken) {
+    return send(request(path, bearerToken).DELETE());
+  }
+
   public HttpResponse<String> post(String path, String json) {
     return post(path, json, null);
   }
