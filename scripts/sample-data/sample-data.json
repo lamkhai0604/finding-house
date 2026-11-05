@@ -1,0 +1,493 @@
+{
+  "about": "Synthetic sample data for manual and automated testing (T-009). All people, emails, phone numbers (555-01xx) and addresses are fictional; passwords are test-only. Prices are monthly rent in US cents (165000 = $1,650.00). Images come from picsum.photos (free placeholder photos).",
+  "users": [
+    {
+      "key": "landlord_maya",
+      "register": {
+        "email": "maya.landlord@example.com",
+        "password": "sample-pass-maya",
+        "displayName": "Maya Chen",
+        "role": "LANDLORD",
+        "phone": "(206) 555-0101"
+      }
+    },
+    {
+      "key": "landlord_omar",
+      "register": {
+        "email": "omar.landlord@example.com",
+        "password": "sample-pass-omar",
+        "displayName": "Omar Haddad",
+        "role": "LANDLORD",
+        "phone": "+1 206-555-0102"
+      }
+    },
+    {
+      "key": "landlord_lena",
+      "register": {
+        "email": "lena.landlord@example.com",
+        "password": "sample-pass-lena",
+        "displayName": "Lena Park",
+        "role": "LANDLORD",
+        "phone": null
+      }
+    },
+    {
+      "key": "tenant_alex",
+      "register": {
+        "email": "alex.tenant@example.com",
+        "password": "sample-pass-alex",
+        "displayName": "Alex Nguyen",
+        "role": "TENANT",
+        "phone": null
+      }
+    },
+    {
+      "key": "tenant_sam",
+      "register": {
+        "email": "sam.tenant@example.com",
+        "password": "sample-pass-sam",
+        "displayName": "Sam Rivera",
+        "role": "TENANT",
+        "phone": null
+      }
+    }
+  ],
+  "listings": [
+    {
+      "owner": "landlord_maya",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Sunny studio near UW",
+        "description": "Bright studio a 5-minute walk from campus. Quiet building, laundry in basement.",
+        "monthlyPriceCents": 165000,
+        "areaSqft": 420,
+        "neighborhood": "University District",
+        "address": "4500 Sample Ave NE, Seattle, WA",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-1-1/800/600",
+          "https://picsum.photos/seed/fh-1-2/800/600",
+          "https://picsum.photos/seed/fh-1-3/800/600"
+        ]
+      }
+    },
+    {
+      "owner": "landlord_maya",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Private room in shared house",
+        "description": "Large bedroom with private bathroom in a 4-bedroom house. Shared kitchen.",
+        "monthlyPriceCents": 115000,
+        "areaSqft": 180,
+        "neighborhood": "Ravenna",
+        "address": "2100 Example St NE, Seattle, WA",
+        "amenities": [
+          "PRIVATE_BATHROOM",
+          "KITCHEN",
+          "WIFI"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-2-1/800/600",
+          "https://picsum.photos/seed/fh-2-2/800/600"
+        ]
+      }
+    },
+    {
+      "note": "Has the maximum of 5 images.",
+      "owner": "landlord_maya",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Capitol Hill 1BR, pets welcome",
+        "description": "One-bedroom close to the light rail. Cats and small dogs OK.",
+        "monthlyPriceCents": 215000,
+        "areaSqft": 620,
+        "neighborhood": "Capitol Hill",
+        "address": "1500 Test Ave E, Seattle, WA",
+        "amenities": [
+          "PETS_ALLOWED",
+          "AIR_CONDITIONING",
+          "KITCHEN",
+          "WIFI"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-3-1/800/600",
+          "https://picsum.photos/seed/fh-3-2/800/600",
+          "https://picsum.photos/seed/fh-3-3/800/600",
+          "https://picsum.photos/seed/fh-3-4/800/600",
+          "https://picsum.photos/seed/fh-3-5/800/600"
+        ]
+      }
+    },
+    {
+      "note": "Hidden after creation: appears in the landlord's 'my listings' only.",
+      "owner": "landlord_maya",
+      "status": "HIDDEN",
+      "body": {
+        "title": "Basement studio (paused)",
+        "description": "Currently being renovated.",
+        "monthlyPriceCents": 125000,
+        "areaSqft": 350,
+        "neighborhood": "Wallingford",
+        "address": "3700 Placeholder Ave N, Seattle, WA",
+        "amenities": [
+          "KITCHEN"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-4-1/800/600"
+        ]
+      }
+    },
+    {
+      "owner": "landlord_omar",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Ballard loft with parking",
+        "description": "Open loft with high ceilings, one parking spot included.",
+        "monthlyPriceCents": 245000,
+        "areaSqft": 780,
+        "neighborhood": "Ballard",
+        "address": "5300 Sample Way NW, Seattle, WA",
+        "amenities": [
+          "PARKING",
+          "AIR_CONDITIONING",
+          "WASHING_MACHINE",
+          "KITCHEN",
+          "WIFI"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-5-1/800/600",
+          "https://picsum.photos/seed/fh-5-2/800/600",
+          "https://picsum.photos/seed/fh-5-3/800/600",
+          "https://picsum.photos/seed/fh-5-4/800/600"
+        ]
+      }
+    },
+    {
+      "note": "No images: the UI should show the placeholder frame.",
+      "owner": "landlord_omar",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Fremont room, no photos yet",
+        "description": "Furnished room in a quiet house near the canal.",
+        "monthlyPriceCents": 105000,
+        "areaSqft": 160,
+        "neighborhood": "Fremont",
+        "address": "3400 Example Ave N, Seattle, WA",
+        "amenities": [
+          "FURNISHED",
+          "WIFI"
+        ],
+        "imageUrls": []
+      }
+    },
+    {
+      "note": "Valid https link that fails to load: the UI should fall back to the placeholder.",
+      "owner": "landlord_omar",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Queen Anne view studio",
+        "description": "Small studio with a view of the Space Needle.",
+        "monthlyPriceCents": 175000,
+        "areaSqft": 400,
+        "neighborhood": "Queen Anne",
+        "address": "600 Sample St W, Seattle, WA",
+        "amenities": [
+          "AIR_CONDITIONING",
+          "WIFI"
+        ],
+        "imageUrls": [
+          "https://images.example.invalid/does-not-exist.jpg"
+        ]
+      }
+    },
+    {
+      "note": "Cheapest listing; no amenities.",
+      "owner": "landlord_omar",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Budget room in Northgate",
+        "description": "Simple room close to Northgate station. Utilities included.",
+        "monthlyPriceCents": 85000,
+        "areaSqft": 140,
+        "neighborhood": "Northgate",
+        "address": "10500 Example Way NE, Seattle, WA",
+        "amenities": [],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-8-1/800/600"
+        ]
+      }
+    },
+    {
+      "note": "Most expensive listing.",
+      "owner": "landlord_lena",
+      "status": "ACTIVE",
+      "body": {
+        "title": "West Seattle 2BR house",
+        "description": "Two bedrooms, small yard, washer and dryer. Pets negotiable.",
+        "monthlyPriceCents": 295000,
+        "areaSqft": 950,
+        "neighborhood": "West Seattle",
+        "address": "4200 Test Ave SW, Seattle, WA",
+        "amenities": [
+          "PETS_ALLOWED",
+          "PARKING",
+          "WASHING_MACHINE",
+          "KITCHEN",
+          "PRIVATE_BATHROOM"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-9-1/800/600",
+          "https://picsum.photos/seed/fh-9-2/800/600",
+          "https://picsum.photos/seed/fh-9-3/800/600"
+        ]
+      }
+    },
+    {
+      "owner": "landlord_lena",
+      "status": "ACTIVE",
+      "body": {
+        "title": "South Lake Union modern studio",
+        "description": "New building with gym and rooftop. Close to tech offices.",
+        "monthlyPriceCents": 230000,
+        "areaSqft": 480,
+        "neighborhood": "South Lake Union",
+        "address": "400 Placeholder Ave N, Seattle, WA",
+        "amenities": [
+          "AIR_CONDITIONING",
+          "WASHING_MACHINE",
+          "FURNISHED",
+          "WIFI"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-10-1/800/600",
+          "https://picsum.photos/seed/fh-10-2/800/600"
+        ]
+      }
+    },
+    {
+      "owner": "landlord_lena",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Beacon Hill garden room",
+        "description": "Room with its own entrance and garden access.",
+        "monthlyPriceCents": 120000,
+        "areaSqft": 200,
+        "neighborhood": "Beacon Hill",
+        "address": "2500 Sample Ave S, Seattle, WA",
+        "amenities": [
+          "PRIVATE_BATHROOM",
+          "PETS_ALLOWED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-11-1/800/600",
+          "https://picsum.photos/seed/fh-11-2/800/600"
+        ]
+      }
+    },
+    {
+      "note": "Has every amenity; price $1,995.00 shows cents handling.",
+      "owner": "landlord_lena",
+      "status": "ACTIVE",
+      "body": {
+        "title": "Green Lake one-bedroom",
+        "description": "Walk to the lake. All amenities included.",
+        "monthlyPriceCents": 199500,
+        "areaSqft": 560,
+        "neighborhood": "Green Lake",
+        "address": "7100 Example Ave NE, Seattle, WA",
+        "amenities": [
+          "AIR_CONDITIONING",
+          "PRIVATE_BATHROOM",
+          "WASHING_MACHINE",
+          "KITCHEN",
+          "PARKING",
+          "WIFI",
+          "FURNISHED",
+          "PETS_ALLOWED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-12-1/800/600",
+          "https://picsum.photos/seed/fh-12-2/800/600",
+          "https://picsum.photos/seed/fh-12-3/800/600"
+        ]
+      }
+    }
+  ],
+  "invalidExamples": [
+    {
+      "description": "Tenant tries to post a listing",
+      "as": "tenant_alex",
+      "method": "POST",
+      "path": "/api/v1/listings",
+      "body": {
+        "title": "Sunny studio near UW",
+        "description": "Bright studio a 5-minute walk from campus. Quiet building, laundry in basement.",
+        "monthlyPriceCents": 165000,
+        "areaSqft": 420,
+        "neighborhood": "University District",
+        "address": "4500 Sample Ave NE, Seattle, WA",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-1-1/800/600",
+          "https://picsum.photos/seed/fh-1-2/800/600",
+          "https://picsum.photos/seed/fh-1-3/800/600"
+        ]
+      },
+      "expectedStatus": 403
+    },
+    {
+      "description": "Title too short, price zero, negative area, empty address",
+      "as": "landlord_maya",
+      "method": "POST",
+      "path": "/api/v1/listings",
+      "body": {
+        "title": "Hi",
+        "monthlyPriceCents": 0,
+        "areaSqft": -5,
+        "neighborhood": "Fremont",
+        "address": ""
+      },
+      "expectedStatus": 400,
+      "expectedFieldErrors": [
+        "address",
+        "areaSqft",
+        "monthlyPriceCents",
+        "title"
+      ]
+    },
+    {
+      "description": "Unknown neighborhood",
+      "as": "landlord_maya",
+      "method": "POST",
+      "path": "/api/v1/listings",
+      "body": {
+        "title": "Sunny studio near UW",
+        "description": "Bright studio a 5-minute walk from campus. Quiet building, laundry in basement.",
+        "monthlyPriceCents": 165000,
+        "areaSqft": 420,
+        "neighborhood": "Gotham",
+        "address": "4500 Sample Ave NE, Seattle, WA",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-1-1/800/600",
+          "https://picsum.photos/seed/fh-1-2/800/600",
+          "https://picsum.photos/seed/fh-1-3/800/600"
+        ]
+      },
+      "expectedStatus": 400,
+      "expectedFieldErrors": [
+        "neighborhood"
+      ]
+    },
+    {
+      "description": "Image link is http, not https",
+      "as": "landlord_maya",
+      "method": "POST",
+      "path": "/api/v1/listings",
+      "body": {
+        "title": "Sunny studio near UW",
+        "description": "Bright studio a 5-minute walk from campus. Quiet building, laundry in basement.",
+        "monthlyPriceCents": 165000,
+        "areaSqft": 420,
+        "neighborhood": "University District",
+        "address": "4500 Sample Ave NE, Seattle, WA",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "http://example.com/a.jpg"
+        ]
+      },
+      "expectedStatus": 400,
+      "expectedFieldErrors": [
+        "imageUrls[0]"
+      ]
+    },
+    {
+      "description": "Six images (max is 5)",
+      "as": "landlord_maya",
+      "method": "POST",
+      "path": "/api/v1/listings",
+      "body": {
+        "title": "Sunny studio near UW",
+        "description": "Bright studio a 5-minute walk from campus. Quiet building, laundry in basement.",
+        "monthlyPriceCents": 165000,
+        "areaSqft": 420,
+        "neighborhood": "University District",
+        "address": "4500 Sample Ave NE, Seattle, WA",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://picsum.photos/seed/fh-99-1/800/600",
+          "https://picsum.photos/seed/fh-99-2/800/600",
+          "https://picsum.photos/seed/fh-99-3/800/600",
+          "https://picsum.photos/seed/fh-99-4/800/600",
+          "https://picsum.photos/seed/fh-99-5/800/600",
+          "https://picsum.photos/seed/fh-99-6/800/600"
+        ]
+      },
+      "expectedStatus": 400,
+      "expectedFieldErrors": [
+        "imageUrls"
+      ]
+    },
+    {
+      "description": "Register with an email that already exists (case-insensitive)",
+      "as": null,
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "body": {
+        "email": "MAYA.LANDLORD@example.com",
+        "password": "another-password",
+        "displayName": "Copy",
+        "role": "TENANT"
+      },
+      "expectedStatus": 409
+    },
+    {
+      "description": "Tenant adds a phone number",
+      "as": null,
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "body": {
+        "email": "phone.tenant@example.com",
+        "password": "sample-pass-x",
+        "displayName": "Pat",
+        "role": "TENANT",
+        "phone": "206-555-0199"
+      },
+      "expectedStatus": 400,
+      "expectedFieldErrors": [
+        "phone"
+      ]
+    },
+    {
+      "description": "Wrong password",
+      "as": null,
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "body": {
+        "email": "maya.landlord@example.com",
+        "password": "wrong-password"
+      },
+      "expectedStatus": 401
+    }
+  ]
+}

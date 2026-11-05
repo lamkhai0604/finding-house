@@ -70,6 +70,19 @@ mvn verify
 mvn spotless:apply              # fix formatting if the check fails
 ```
 
+### Sample data
+
+[`scripts/sample-data/sample-data.json`](scripts/sample-data/sample-data.json) holds fictional test data with every field the API accepts: 5 users (3 landlords, 2 tenants), 12 Seattle listings (all amenities, 0–5 images, one hidden, one with a broken image link, one without images), and 8 invalid requests with their expected errors.
+
+Load it into a running backend (Python 3, no extra packages):
+
+```bash
+python3 scripts/sample-data/load_sample_data.py                  # users + listings, safe to run twice
+python3 scripts/sample-data/load_sample_data.py --check-invalid  # also checks the invalid examples
+```
+
+Then log in as `maya.landlord@example.com` / `sample-pass-maya` (other passwords are in the JSON file).
+
 ### Frontend
 
 Prerequisites: Node.js 22.
@@ -99,4 +112,5 @@ npm run build                   # type check + production build
 | Frontend lints, is Prettier-formatted, passes tests for the API health indicator (up / down / unreachable), and builds | `npm ci`, lint, format check, `npm test`, `npm run build` on GitHub Actions (ubuntu-latest, Node 22) | Commit `6d6721a`, run 42074077400: 3 tests passed; build OK |
 | FR-01 register / login / `/me`: field validation, case-insensitive duplicate email → 409, BCrypt-only storage, identical 401 for wrong password and unknown email, 401 for missing / malformed / expired / foreign-key / foreign-issuer tokens, app refuses weak JWT secrets | 21 tests (Testcontainers PostgreSQL) via `mvn -B -ntp verify` on GitHub Actions | Commit `6b6f324`, run 42095282281: 21 tests passed; Spotless clean |
 | FR-02 listing API: landlords create, edit, hide/unhide, and list their listings; tenants and other landlords get 403; field validation incl. https-only image links (max 5) and known Seattle neighborhoods | 30 new tests (19 integration over HTTP, 11 unit) via `mvn -B -ntp verify` on GitHub Actions | Commit `5d52800`, run 42098935164: 51 tests passed |
+| Sample data loads through the real API (12 listings, 5 users), all 8 invalid examples are rejected with the expected status and field errors, and a second load creates no duplicates | `smoke` workflow, `load_sample_data.py --check-invalid`, then a second run | Commit `998031a`, run 42103027735: passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |

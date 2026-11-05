@@ -10,6 +10,7 @@ on:
       - "backend/**"
       - "frontend/**"
       - "scripts/smoke/**"
+      - "scripts/sample-data/**"
       - "docker-compose.yml"
       - ".github/workflows/smoke.yml"
   pull_request:
@@ -65,6 +66,14 @@ jobs:
 
       - name: API smoke test
         run: bash scripts/smoke/api-smoke.sh
+
+      - name: Load sample data and check invalid examples (T-009)
+        run: python3 scripts/sample-data/load_sample_data.py --check-invalid
+
+      - name: Load sample data again (must not create duplicates)
+        run: |
+          python3 scripts/sample-data/load_sample_data.py | tee /tmp/second-load.txt
+          grep -q "listings: 0 created, 12 already present" /tmp/second-load.txt
 
       - name: Start frontend dev server
         working-directory: frontend
