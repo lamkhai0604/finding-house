@@ -113,7 +113,7 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | POST | `/api/v1/auth/login` | — | FR-01 |
 | GET | `/api/v1/me` | any user | FR-01 |
 | GET | `/api/v1/listings` | — | FR-03 |
-| GET | `/api/v1/listings/{id}` | — (owner for hidden) | FR-04 |
+| GET | `/api/v1/listings/{id}` | — (owner for hidden); returns `{listing, landlord: {displayName, phone}}`, never the landlord email | FR-04 |
 | POST | `/api/v1/listings` | LANDLORD | FR-02 |
 | PUT | `/api/v1/listings/{id}` | owner | FR-02 |
 | PATCH | `/api/v1/listings/{id}/status` | owner | FR-02 |
