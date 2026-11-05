@@ -2,9 +2,9 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.1 (Sprint 0 draft) |
-| Status | **Proposed — awaiting baseline review** |
-| Requirements baseline | [SRS.md](SRS.md) v0.1 |
+| Version | 1.0 (approved baseline) |
+| Status | **Approved baseline** (T-002, Khai, 2026-11-05) |
+| Requirements baseline | [SRS.md](SRS.md) v1.0 |
 
 All diagrams are Mermaid source embedded in this file. GitHub renders them, and this file is their single editable source under version control.
 

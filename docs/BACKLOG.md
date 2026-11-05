@@ -9,11 +9,11 @@ Acceptance criteria for feature tasks are the referenced SRS criteria plus any l
 | ID | Title | Req | Owner | Priority | Status | Depends on | Acceptance criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | T-001 | Initialize repo `finding-house` (`main` + `dev`) and push baseline docs to `dev` | — | Khai (initialize `main`), Claude (push to `dev`) | P1 | Done — `main`/`dev` at `4de096d`; docs pushed to `dev` (see `git log dev`) | — | Repo exists; docs on `dev` |
-| T-002 | Review and approve SRS + architecture baseline | all | Khai | P1 | Awaiting Approval | T-001 | Each Proposed decision in DECISIONS.md is Approved, changed, or rejected |
-| T-003 | Backend skeleton | — | Claude | P1 | Proposed | T-001 | Spring Boot app starts; `GET /actuator/health` returns UP; Flyway baseline migration runs against Docker Postgres; Spotless check passes; one passing test |
-| T-004 | Frontend skeleton | — | Claude | P1 | Proposed | T-001 | Vite React TS app builds; ESLint + Prettier pass; calls backend health endpoint in dev |
-| T-005 | CI workflow | NFR-08 | Claude | P1 | Proposed | T-003, T-004 | GitHub Actions runs backend `mvn verify` and frontend lint + build on every push to `dev`, task branches, and PRs into `main`; result visible in GitHub Actions |
-| T-006 | Verify LLM free tier and get API key | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Proposed | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
+| T-002 | Review and approve SRS + architecture baseline | all | Khai | P1 | Done — all Sprint 0 decisions approved by Khai on 2026-11-05 except D-018 (raised during T-003) | T-001 | Each Proposed decision in DECISIONS.md is Approved, changed, or rejected |
+| T-003 | Backend skeleton | — | Claude | P1 | Awaiting Approval (D-018 Spring Boot version) | T-001 | Spring Boot app starts; `GET /actuator/health` returns UP; Flyway baseline migration runs against Docker Postgres; Spotless check passes; one passing test |
+| T-004 | Frontend skeleton | — | Claude | P1 | Ready | T-001 | Vite React TS app builds; ESLint + Prettier pass; calls backend health endpoint in dev |
+| T-005 | CI workflow | NFR-08 | Claude | P1 | Ready | T-003, T-004 | GitHub Actions runs backend `mvn verify` and frontend lint + build on every push to `dev`, task branches, and PRs into `main`; result visible in GitHub Actions |
+| T-006 | Verify LLM free tier and get API key | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Ready | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
 
 ## Sprint 1 — "A landlord can post a room"
 
