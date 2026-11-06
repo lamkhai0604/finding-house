@@ -40,6 +40,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableConfigurationProperties({
   JwtProperties.class,
   LoginThrottleProperties.class,
+  RegistrationThrottleProperties.class,
   HttpProperties.class
 })
 public class SecurityConfig {

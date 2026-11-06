@@ -3,6 +3,8 @@ package com.findinghouse.common;
 import com.findinghouse.auth.AuthExceptions.EmailAlreadyRegisteredException;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
 import com.findinghouse.auth.AuthExceptions.TooManyLoginAttemptsException;
+import com.findinghouse.auth.AuthExceptions.TooManyRegistrationsException;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import org.slf4j.Logger;
@@ -81,16 +83,23 @@ public class ApiExceptionHandler {
 
   @ExceptionHandler(TooManyLoginAttemptsException.class)
   ResponseEntity<ApiError> tooManyLoginAttempts(TooManyLoginAttemptsException e) {
-    long seconds = Math.max(1, (e.getRetryAfter().toMillis() + 999) / 1000);
+    return tooManyAttempts("Too many failed login attempts.", e.getRetryAfter());
+  }
+
+  @ExceptionHandler(TooManyRegistrationsException.class)
+  ResponseEntity<ApiError> tooManyRegistrations(TooManyRegistrationsException e) {
+    return tooManyAttempts("Too many sign-up attempts from your network.", e.getRetryAfter());
+  }
+
+  private static ResponseEntity<ApiError> tooManyAttempts(String reason, Duration retryAfter) {
+    long seconds = Math.max(1, (retryAfter.toMillis() + 999) / 1000);
     long minutes = Math.max(1, (seconds + 59) / 60);
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
         .body(
             ApiError.of(
                 "TOO_MANY_ATTEMPTS",
-                "Too many failed login attempts. Try again in "
-                    + minutes
-                    + (minutes == 1 ? " minute." : " minutes.")));
+                reason + " Try again in " + minutes + (minutes == 1 ? " minute." : " minutes.")));
   }
 
   @ExceptionHandler(InvalidCredentialsException.class)

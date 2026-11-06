@@ -26,7 +26,8 @@ import org.springframework.context.annotation.Import;
       IntegrationTest.TEST_JWT_SECRET_PROPERTY,
       "app.http.cors-allowed-origins=https://frontend.example.test",
       "app.http.client-ip-header=CF-Connecting-IP",
-      "app.login-throttle.max-failures-per-address=2"
+      "app.login-throttle.max-failures-per-address=2",
+      "app.registration-throttle.max-per-address=2"
     })
 @Import(TestcontainersConfiguration.class)
 class DeploymentEdgeIntegrationTest {
@@ -98,6 +99,34 @@ class DeploymentEdgeIntegrationTest {
 
     // Another real client is not affected.
     assertThat(failedLogin("203.0.113.8", "198.51.100.1").statusCode()).isEqualTo(401);
+  }
+
+  // --- Registration limit (T-113) ----------------------------------------------------------------
+
+  @Test
+  void signUpsArePausedPerClientAddressCountingDuplicates() throws Exception {
+    String email = "t113-" + UUID.randomUUID() + "@example.com";
+    assertThat(register("203.0.113.20", email).statusCode()).isEqualTo(201);
+    assertThat(register("203.0.113.20", email).statusCode()).isEqualTo(409);
+
+    HttpResponse<String> paused =
+        register("203.0.113.20", "t113-" + UUID.randomUUID() + "@example.com");
+    assertThat(paused.statusCode()).isEqualTo(429);
+    assertThat(paused.headers().firstValue("Retry-After")).isPresent();
+    assertThat(paused.body()).contains("TOO_MANY_ATTEMPTS");
+
+    assertThat(register("203.0.113.21", "t113-" + UUID.randomUUID() + "@example.com").statusCode())
+        .isEqualTo(201);
+  }
+
+  private HttpResponse<String> register(String cfConnectingIp, String email) throws Exception {
+    return send(
+        "POST",
+        "/api/v1/auth/register",
+        "{\"email\":\""
+            + email
+            + "\",\"password\":\"long-enough-password\",\"displayName\":\"T113\",\"role\":\"TENANT\"}",
+        Map.of("Content-Type", "application/json", "CF-Connecting-IP", cfConnectingIp));
   }
 
   // --- Request size -----------------------------------------------------------------------------
