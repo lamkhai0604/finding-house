@@ -153,7 +153,7 @@ Price is a monthly rent in USD, stored as an integer number of cents. Neighborho
 | OQ-02 | ~~Image storage~~ **Resolved:** image links + placeholder for the MVP; upload later (D-017) | — |
 | OQ-03 | Final product name | README and branding only |
 | OQ-04 | ~~Repository~~ **Resolved:** `lamkhai0604/finding-house` | — |
-| OQ-05 | Hosting platform for the demo (free tier) | Sprint 4 |
+| OQ-05 | Hosting platform for the demo (free tier) | Resolved: D-029 (Vercel, Render, Neon) |
 
 ## 9. Traceability
 

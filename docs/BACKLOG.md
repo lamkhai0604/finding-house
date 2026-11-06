@@ -34,8 +34,9 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-110 | Frontend security: CSP in production build, 401 ends session, no-referrer photos, npm audit gate, smoke on CSP build; fix hidden-listing reload | NFR-01 | P1 | Done — frontend run 42115527137 (62 tests), smoke run 42115527225 |
 | T-111 | Review cleanup: remove tracked `__pycache__`, ignore rule, README points to STATUS.md | — | P2 | Done — smoke run 42116124933 |
 | T-112 | Sync `main` into `dev` and verify CI on the merge candidate | — | P2 | Done — merging `main` changed no files; on candidate `4fdfc16`: backend run 42116716315, frontend run 42116716376, smoke run 42116715397, all green. Later commits on `dev` are docs only; the `dev → main` PR re-runs all three suites on the PR head |
-| T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P3 | Proposed |
-| T-114 | Deployment security: forwarded headers for the real client address, HSTS and frame-ancestors headers at the host, request body size limit | NFR-01 | P2 | Proposed (Sprint 3, with T-401) |
+| T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P2 | Ready (Sprint 3) |
+| T-114a | Backend deployment readiness: client address from `CF-Connecting-IP` when configured (D-030), CORS for the frontend origin, `PORT`, connection pool size, request size limit, Dockerfile, smoke runs the Docker image | NFR-01, NFR-05 | P1 | Ready (Sprint 3) |
+| T-114b | Frontend deployment readiness: API base URL at build time, CSP with that origin, `vercel.json` (SPA routing, security headers incl. `frame-ancestors`), cross-origin smoke on the production build | NFR-01, NFR-05 | P1 | Ready (Sprint 3) |
 
 ## Sprint 2 — "A tenant can find a room" ([plan](sprints/sprint-2.md))
 
@@ -65,7 +66,8 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-401 | Deploy demo on free hosting | NFR-05 | P2 | Proposed (blocked by OQ-05; needs Khai's approval per D-012) |
+| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | Ready (Sprint 3; Khai creates the accounts and approves go-live, D-012) |
+| T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | Ready (Sprint 3) |
 | T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | Proposed |
 | T-403 | Favorites | FR-06 | P3 | Proposed |
 | T-404 | Image file upload to a free storage service (free tier verified first, D-007) | FR-02 | P3 | Proposed |
