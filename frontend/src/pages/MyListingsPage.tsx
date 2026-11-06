@@ -100,8 +100,7 @@ export function MyListingsPage() {
       {loaded.listings.length === 0 ? (
         <EmptyState title="No listings yet">
           <p>
-            Post your first room so tenants can find it. It takes a few
-            minutes.
+            Post your first room so tenants can find it. It takes a few minutes.
           </p>
         </EmptyState>
       ) : (

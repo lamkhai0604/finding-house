@@ -18,48 +18,48 @@ export function AppRoutes() {
   return (
     <FavoritesProvider>
       <ToastProvider>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="browse" element={<BrowsePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="listings/:id" element={<ListingDetailPage />} />
-          <Route
-            path="listings/new"
-            element={
-              <RequireRole role="LANDLORD">
-                <ListingFormPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="listings/:id/edit"
-            element={
-              <RequireRole role="LANDLORD">
-                <ListingFormPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="my/listings"
-            element={
-              <RequireRole role="LANDLORD">
-                <MyListingsPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="my/saved"
-            element={
-              <RequireRole role="TENANT">
-                <SavedRoomsPage />
-              </RequireRole>
-            }
-          />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="browse" element={<BrowsePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="listings/:id" element={<ListingDetailPage />} />
+            <Route
+              path="listings/new"
+              element={
+                <RequireRole role="LANDLORD">
+                  <ListingFormPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="listings/:id/edit"
+              element={
+                <RequireRole role="LANDLORD">
+                  <ListingFormPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="my/listings"
+              element={
+                <RequireRole role="LANDLORD">
+                  <MyListingsPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="my/saved"
+              element={
+                <RequireRole role="TENANT">
+                  <SavedRoomsPage />
+                </RequireRole>
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
       </ToastProvider>
     </FavoritesProvider>
   );

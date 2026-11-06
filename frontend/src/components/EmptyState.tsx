@@ -31,7 +31,14 @@ export function EmptyState({
         <circle className="empty-stop" cx="40" cy="30" r="9" />
         <circle className="empty-stop" cx="95" cy="30" r="9" />
         <circle className="empty-stop here" cx="150" cy="30" r="11" />
-        <rect className="empty-end" x="200" y="16" width="6" height="28" rx="3" />
+        <rect
+          className="empty-end"
+          x="200"
+          y="16"
+          width="6"
+          height="28"
+          rx="3"
+        />
       </svg>
       <Heading className="display">{title}</Heading>
       {children}
