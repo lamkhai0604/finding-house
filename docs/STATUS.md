@@ -10,4 +10,4 @@
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
 | Verification | Backend: run 42169385441 (119 tests). Frontend: run 42169652230 (125/125). Smoke: run 42169798299 (Docker backend image, cross-origin production build with CSP). |
 | Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
-| Next action | T-216, then the Sprint 4 report in order; screenshots to Khai after each frontend task. AI search is Sprint 5. |
+| Next action | Khai: DEMO_PASSWORD secret and demo-data run; merge dev → main; approve the Sprint 5 plan (AI search) |
