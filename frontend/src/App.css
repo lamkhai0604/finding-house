@@ -1740,6 +1740,7 @@ a.line-stop:not(.button):hover {
 }
 
 .filter-clear {
+  align-self: flex-end;
   margin-left: auto;
 }
 
@@ -1825,5 +1826,13 @@ a.save-heart:not(.button):hover {
 
   .filter-submit {
     margin-top: 0;
+  }
+
+  .chip-list {
+    flex-basis: 100%;
+  }
+
+  .filter-clear {
+    margin-left: 0;
   }
 }
