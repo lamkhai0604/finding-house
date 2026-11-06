@@ -366,6 +366,31 @@ try {
   await page.getByRole("button", { name: /Account menu/ }).click();
   await page.getByRole("button", { name: "Log out" }).click();
 
+  // T-217: when the server is slow (the free backend waking up), a progress line runs along the
+  // top and, after 4 s, a notice explains why. Simulated by holding the browse request for 6 s.
+  try {
+    await page.route("**/api/v1/listings?*", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 6000));
+      await route.continue();
+    });
+    await page.goto(`${frontend}/browse`);
+    if ((await page.locator('.nav-progress[data-state="loading"]').count()) !== 1) {
+      throw new Error("no progress line while the page loads");
+    }
+    await page.getByText("Waking up the server").waitFor({ timeout: 5500 });
+    await page.screenshot({ path: `${outDir}/24-slow-server-notice.jpg`, type: "jpeg", quality: 70 });
+    await page.getByRole("article").first().waitFor({ timeout: 15000 });
+    if ((await page.getByText("Waking up the server").count()) !== 0) {
+      throw new Error("the notice stayed after the results arrived");
+    }
+    console.log("ok   24-slow-server-notice: progress line, notice after 4 s, gone once loaded");
+  } catch (error) {
+    failures += 1;
+    console.error(`FAIL 24-slow-server-notice: ${error.message.split("\n")[0]}`);
+  } finally {
+    await page.unroute("**/api/v1/listings?*");
+  }
+
   const mobile = await browser.newContext({ viewport: { width: 375, height: 740 }, isMobile: true });
   const phone = await mobile.newPage();
   watchForCspViolations(phone);
