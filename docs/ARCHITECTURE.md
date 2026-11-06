@@ -112,11 +112,12 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | POST | `/api/v1/auth/register` | — | FR-01 |
 | POST | `/api/v1/auth/login` | — | FR-01 |
 | GET | `/api/v1/me` | any user | FR-01 |
-| GET | `/api/v1/listings` | — | FR-03 |
+| GET | `/api/v1/listings` | — | FR-03: `minPriceCents`, `maxPriceCents`, `neighborhood`, `minAreaSqft`, `amenities` (all must match), `sort` (`newest`, `price_asc`, `price_desc`), `page`, `size` (max 50); returns `{items, page, size, totalItems, totalPages}` |
 | GET | `/api/v1/listings/{id}` | — (owner for hidden); returns `{listing, landlord: {displayName, phone}}`, never the landlord email | FR-04 |
 | POST | `/api/v1/listings` | LANDLORD | FR-02 |
 | PUT | `/api/v1/listings/{id}` | owner | FR-02 |
 | PATCH | `/api/v1/listings/{id}/status` | owner | FR-02 |
+| DELETE | `/api/v1/listings/{id}` | owner; 204 | FR-07 |
 | GET | `/api/v1/me/listings` | LANDLORD | FR-02 |
 | GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |
@@ -224,7 +225,7 @@ Retry policy: **no automatic retry** on the LLM call. A retry would double the l
 
 ## 7. Cross-cutting Decisions
 
-- **Authentication:** stateless JWT (Spring Security resource server with an HMAC key from an environment variable). Token lifetime is 24 h; there is no refresh token in the MVP. The client keeps the token in memory and `sessionStorage`. Tradeoff: simpler than httpOnly cookies, but exposed if an XSS bug exists. Mitigations: React escaping by default, no `dangerouslySetInnerHTML`. Recorded in D-009.
+- **Authentication:** stateless JWT (Spring Security resource server with an HMAC key from an environment variable). Token lifetime is 2 h (D-025); there is no refresh token in the MVP, so users log in again after that. The client keeps the token in memory and `sessionStorage`. Tradeoff: simpler than httpOnly cookies, but exposed if an XSS bug exists. Mitigations: React escaping by default, no `dangerouslySetInnerHTML`. Recorded in D-009.
 - **Rate limiting:** an in-memory token bucket per client IP. This is acceptable for one instance and is documented as a known limitation.
 - **Configuration:** `application.yml` plus environment variables. `.env.example` is committed; `.env` is git-ignored.
 - **Testability (ARCH-05):** the LLM is behind `QueryParser`, and time is injected via `java.time.Clock` where token expiry and timestamps matter.

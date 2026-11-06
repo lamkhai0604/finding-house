@@ -93,6 +93,15 @@ Acceptance criteria:
 5. If the LLM call fails, exceeds the timeout (5 s, configurable), or returns invalid JSON, the API responds with a defined "AI unavailable" result (not HTTP 500). The UI keeps the user's text and offers manual filters.
 6. Requests are rate-limited per client (default 10 per minute, configurable) to protect the free LLM quota. Exceeding the limit returns HTTP 429, and the UI suggests manual filters.
 
+### FR-07 — Delete a listing (Should)
+
+A Landlord can permanently delete their own listing (D-026).
+
+Acceptance criteria:
+1. Only the owning Landlord can delete a listing; anyone else receives 403, and a missing listing returns 404.
+2. A successful delete returns HTTP 204; afterwards the listing returns 404 for everyone, including the owner, and is gone from "my listings".
+3. The UI asks for confirmation in a dialog that names the listing and states that deletion cannot be undone; cancelling changes nothing.
+
 ### FR-06 — Favorites (Could)
 
 A logged-in Tenant can save listings and see a list of saved listings.
@@ -156,5 +165,6 @@ Price is a monthly rent in USD, stored as an integer number of cents. Neighborho
 | FR-04 | T-105 | Use case | Integration tests |
 | FR-05 | T-301–T-304 | Sequence (AI search) | Unit tests with fake parser + failure-path tests |
 | FR-06 | T-403 | ER | Integration tests |
+| FR-07 | T-120 | ER | Integration tests + UI tests |
 
 Task details live in [BACKLOG.md](BACKLOG.md).

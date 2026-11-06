@@ -33,7 +33,9 @@ describe("Login page (FR-01)", () => {
     expect(
       await within(header).findByText("Maya Chen (Landlord)"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Welcome back, Maya Chen.")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Welcome back, Maya Chen."),
+    ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBe("tok-1");
   });
 
@@ -61,10 +63,13 @@ describe("Login page (FR-01)", () => {
 
     expect(await screen.findByText("Maya Chen (Landlord)")).toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: /Account menu/ }));
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
 
     expect(
-      await screen.findByRole("link", { name: "Log in" }),
+      await within(screen.getByRole("banner")).findByRole("link", {
+        name: "Log in",
+      }),
     ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
   });
@@ -78,7 +83,9 @@ describe("Login page (FR-01)", () => {
     renderApp("/");
 
     expect(
-      await screen.findByRole("link", { name: "Log in" }),
+      await within(screen.getByRole("banner")).findByRole("link", {
+        name: "Log in",
+      }),
     ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
   });
@@ -112,7 +119,11 @@ describe("Register page (FR-01)", () => {
     expect(screen.getByText("Enter your name")).toBeInTheDocument();
     expect(screen.getByText("Enter your email")).toBeInTheDocument();
     expect(screen.getByText("Use at least 8 characters")).toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
+    // The footer's API status check may run; no account request may be sent.
+    const posts = fetchMock.mock.calls.filter(
+      ([, init]) => init?.method === "POST",
+    );
+    expect(posts).toHaveLength(0);
   });
 
   it("registers a landlord with a phone, then logs in", async () => {

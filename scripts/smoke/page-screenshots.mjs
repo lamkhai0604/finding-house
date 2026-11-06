@@ -51,6 +51,11 @@ function watchForCspViolations(page) {
   });
 }
 
+// D-027: My listings and Log out live in the avatar menu.
+async function openAccountMenu(page) {
+  await page.getByRole("button", { name: /Account menu/ }).click();
+}
+
 // `ready` (optional) is a locator that must appear first, so a check never passes on text left
 // over from the previous page while the next one is still loading.
 async function shot(page, name, expectedText, ready) {
@@ -72,8 +77,24 @@ try {
   const page = await desktop.newPage();
   watchForCspViolations(page);
 
+  // T-122: the home carousel shows the newest real listings (never the hidden one), and a slide
+  // opens that listing.
   await page.goto(`${frontend}/`);
-  await shot(page, "01-home-logged-out", "Find a room in Seattle");
+  const newest = page.getByRole("region", { name: "Newest rooms" });
+  await shot(page, "01-home-logged-out", "/month ·", newest);
+  try {
+    if ((await newest.getByText("Basement studio (paused)").count()) > 0) {
+      throw new Error("the hidden listing is in the carousel");
+    }
+    const firstSlide = newest.getByRole("link").first();
+    const title = (await firstSlide.locator("strong").textContent()) ?? "";
+    await firstSlide.click();
+    await page.getByRole("heading", { level: 1, name: title }).waitFor({ timeout: 15000 });
+    console.log(`ok   01b-carousel-opens-listing: "${title}"`);
+  } catch (error) {
+    failures += 1;
+    console.error(`FAIL 01b-carousel-opens-listing: ${error.message.split("\n")[0]}`);
+  }
 
   await page.goto(`${frontend}/register`);
   await page.getByLabel("Account type").selectOption("LANDLORD");
@@ -96,6 +117,7 @@ try {
   await shot(page, "06-detail-hidden-owner-view", "Hidden — only you can see this");
 
   // T-106: landlord flows through the UI.
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
   await shot(
     page,
@@ -103,6 +125,27 @@ try {
     "Basement studio (paused)",
     page.getByRole("heading", { name: "My listings" }),
   );
+
+  // T-123: hovering a secondary button changes its background.
+  const editButton = page.getByRole("link", { name: "Edit", exact: true }).first();
+  const background = () =>
+    editButton.evaluate((el) => getComputedStyle(el).backgroundColor);
+  const before = await background();
+  await editButton.hover();
+  await page.waitForTimeout(250);
+  const after = await background();
+  if (before === after) {
+    failures += 1;
+    console.error(`FAIL 11b: hover did not change the Edit button (${before})`);
+  } else {
+    console.log(`ok   11b: hover changes the Edit button (${before} -> ${after})`);
+  }
+  await page.screenshot({
+    path: `${outDir}/11c-hover-edit-button.jpg`,
+    type: "jpeg",
+    quality: 70,
+    clip: { x: 0, y: 0, width: 1200, height: 420 },
+  });
 
   await page.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}/edit`);
   await shot(
@@ -132,6 +175,7 @@ try {
     page.getByRole("heading", { name: "Posted from the UI" }),
   );
 
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
   const newCard = page
     .getByRole("article")
@@ -144,6 +188,22 @@ try {
     newCard.getByRole("button", { name: "Unhide" }),
   );
 
+  // T-120: delete asks first, then removes the card.
+  await newCard.getByRole("button", { name: "Delete" }).click();
+  await shot(
+    page,
+    "16-delete-confirm-dialog",
+    "cannot be undone",
+    page.getByRole("dialog", { name: "Delete this listing?" }),
+  );
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Delete listing" })
+    .click();
+  await newCard.waitFor({ state: "detached", timeout: 15000 });
+  console.log("ok   16b: deleted listing card removed");
+
+  await openAccountMenu(page);
   await page.getByRole("button", { name: "Log out" }).click();
   await page.goto(`${frontend}/listings/${ids["Fremont room, no photos yet"]}`);
   await shot(page, "07-detail-no-photos", "No photo yet");
@@ -159,6 +219,15 @@ try {
   watchForCspViolations(phone);
   await phone.goto(`${frontend}/listings/${ids["Sunny studio near UW"]}`);
   await shot(phone, "10-detail-mobile", "Sunny studio near UW");
+
+  // D-027: mobile header menu.
+  await phone.getByRole("button", { name: "Menu" }).click();
+  await shot(
+    phone,
+    "17-mobile-menu-open",
+    "Sign up",
+    phone.getByRole("link", { name: "Sign up" }),
+  );
 } finally {
   await browser.close();
 }

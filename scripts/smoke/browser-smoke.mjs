@@ -17,8 +17,12 @@ try {
   const page = await browser.newPage({ viewport: { width: 1024, height: 640 } });
   await page.goto(url);
   await page.getByRole("heading", { name: "Find a room in Seattle" }).waitFor({ timeout: 15000 });
-  await page.getByRole("link", { name: "Finding House" }).waitFor({ timeout: 15000 });
-  const status = page.getByRole("status");
+  await page
+    .getByRole("banner")
+    .getByRole("link", { name: "Finding House" })
+    .waitFor({ timeout: 15000 });
+  // The health indicator lives in the footer; other parts of the page may also use role=status.
+  const status = page.getByRole("contentinfo").getByRole("status");
   const alternatives = expected.split("|").map((text) => text.replace(/[.*+?^${}()[\]\\]/g, "\\$&"));
   const pattern = new RegExp(`^(${alternatives.join("|")})$`);
   await status.filter({ hasText: pattern }).waitFor({ timeout: 15000 });

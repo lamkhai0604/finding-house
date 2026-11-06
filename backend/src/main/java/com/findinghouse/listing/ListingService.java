@@ -64,6 +64,12 @@ public class ListingService {
     return listing;
   }
 
+  /** FR-07: permanent delete by the owner; amenities and photo links go with it. */
+  @Transactional
+  public void delete(long listingId, long actorId) {
+    listings.delete(findOwned(listingId, actorId));
+  }
+
   @Transactional(readOnly = true)
   public List<Listing> listOwnedBy(long landlordId) {
     return listings.findByLandlordIdOrderByCreatedAtDescIdDesc(landlordId);

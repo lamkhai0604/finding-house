@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ApiError } from "../api/client";
 import type {
   Amenity,
@@ -8,6 +8,7 @@ import type {
 } from "../api/types";
 import { formatAmenity } from "../utils/format";
 import { centsToDollarsInput, parseDollarsToCents } from "../utils/money";
+import { BackButton } from "./BackButton";
 import { Button } from "./Button";
 import { CheckboxGroup } from "./CheckboxGroup";
 import { FormAlert } from "./FormAlert";
@@ -32,6 +33,9 @@ interface FormValues {
 type Errors = Record<string, string>;
 
 interface ListingFormProps {
+  heading: string;
+  /** Where Back goes when there is no earlier page in the app. */
+  backTo: string;
   referenceData: ReferenceData;
   /** The listing being edited; omit to create a new one. */
   listing?: Listing;
@@ -41,12 +45,28 @@ interface ListingFormProps {
 
 /** Create/edit form for FR-02, shared by the "new" and "edit" pages. */
 export function ListingForm({
+  heading,
+  backTo,
   referenceData,
   listing,
   submitLabel,
   onSubmit,
 }: ListingFormProps) {
-  const [values, setValues] = useState<FormValues>(() => toValues(listing));
+  const [initialValues] = useState<FormValues>(() => toValues(listing));
+  const [values, setValues] = useState<FormValues>(initialValues);
+  const [saved, setSaved] = useState(false);
+  const dirty =
+    !saved && JSON.stringify(values) !== JSON.stringify(initialValues);
+
+  // Warn before closing the tab or reloading with unsaved changes (D-027).
+  useEffect(() => {
+    if (!dirty) return;
+    function onBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
   const [errors, setErrors] = useState<Errors>({});
   const [alert, setAlert] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -66,8 +86,10 @@ export function ListingForm({
     }
     setBusy(true);
     try {
+      setSaved(true);
       await onSubmit(request);
     } catch (e) {
+      setSaved(false);
       if (e instanceof ApiError && e.body.fieldErrors.length > 0) {
         setErrors(fromServerErrors(e.fieldErrors()));
         setAlert("Please fix the highlighted fields.");
@@ -87,81 +109,87 @@ export function ListingForm({
   }
 
   return (
-    <form className="listing-form" onSubmit={handleSubmit} noValidate>
-      <FormAlert message={alert} />
-      <TextField
-        label="Title"
-        maxLength={100}
-        placeholder="Sunny studio near UW"
-        value={values.title}
-        error={errors.title}
-        onChange={(e) => set("title", e.target.value)}
-      />
-      <div className="field-row">
-        <TextField
-          label="Monthly rent (USD)"
-          inputMode="decimal"
-          placeholder="1650"
-          value={values.price}
-          error={errors.price}
-          onChange={(e) => set("price", e.target.value)}
-        />
-        <TextField
-          label="Area (sq ft)"
-          inputMode="numeric"
-          placeholder="420"
-          value={values.areaSqft}
-          error={errors.areaSqft}
-          onChange={(e) => set("areaSqft", e.target.value)}
-        />
+    <>
+      <div className="page-toolbar">
+        <BackButton fallback={backTo} confirmLeave={dirty} />
       </div>
-      <SelectField
-        label="Neighborhood"
-        options={[
-          { value: "", label: "Choose a neighborhood" },
-          ...referenceData.neighborhoods.map((n) => ({ value: n, label: n })),
-        ]}
-        value={values.neighborhood}
-        error={errors.neighborhood}
-        onChange={(e) => set("neighborhood", e.target.value)}
-      />
-      <TextField
-        label="Street address"
-        maxLength={200}
-        hint={`City: ${referenceData.city}`}
-        value={values.address}
-        error={errors.address}
-        onChange={(e) => set("address", e.target.value)}
-      />
-      <TextAreaField
-        label="Description (optional)"
-        rows={5}
-        maxLength={2000}
-        value={values.description}
-        error={errors.description}
-        onChange={(e) => set("description", e.target.value)}
-      />
-      <CheckboxGroup
-        legend="Amenities"
-        options={referenceData.amenities.map((a) => ({
-          value: a,
-          label: formatAmenity(a),
-        }))}
-        selected={values.amenities}
-        error={errors.amenities}
-        onChange={(selected) => set("amenities", selected)}
-      />
-      <ImageUrlsField
-        urls={values.imageUrls}
-        max={MAX_IMAGES}
-        errors={imageErrors}
-        error={errors.imageUrls}
-        onChange={(urls) => set("imageUrls", urls)}
-      />
-      <Button type="submit" busy={busy}>
-        {submitLabel}
-      </Button>
-    </form>
+      <h1>{heading}</h1>
+      <form className="listing-form" onSubmit={handleSubmit} noValidate>
+        <FormAlert message={alert} />
+        <TextField
+          label="Title"
+          maxLength={100}
+          placeholder="Sunny studio near UW"
+          value={values.title}
+          error={errors.title}
+          onChange={(e) => set("title", e.target.value)}
+        />
+        <div className="field-row">
+          <TextField
+            label="Monthly rent (USD)"
+            inputMode="decimal"
+            placeholder="1650"
+            value={values.price}
+            error={errors.price}
+            onChange={(e) => set("price", e.target.value)}
+          />
+          <TextField
+            label="Area (sq ft)"
+            inputMode="numeric"
+            placeholder="420"
+            value={values.areaSqft}
+            error={errors.areaSqft}
+            onChange={(e) => set("areaSqft", e.target.value)}
+          />
+        </div>
+        <SelectField
+          label="Neighborhood"
+          options={[
+            { value: "", label: "Choose a neighborhood" },
+            ...referenceData.neighborhoods.map((n) => ({ value: n, label: n })),
+          ]}
+          value={values.neighborhood}
+          error={errors.neighborhood}
+          onChange={(e) => set("neighborhood", e.target.value)}
+        />
+        <TextField
+          label="Street address"
+          maxLength={200}
+          hint={`City: ${referenceData.city}`}
+          value={values.address}
+          error={errors.address}
+          onChange={(e) => set("address", e.target.value)}
+        />
+        <TextAreaField
+          label="Description (optional)"
+          rows={5}
+          maxLength={2000}
+          value={values.description}
+          error={errors.description}
+          onChange={(e) => set("description", e.target.value)}
+        />
+        <CheckboxGroup
+          legend="Amenities"
+          options={referenceData.amenities.map((a) => ({
+            value: a,
+            label: formatAmenity(a),
+          }))}
+          selected={values.amenities}
+          error={errors.amenities}
+          onChange={(selected) => set("amenities", selected)}
+        />
+        <ImageUrlsField
+          urls={values.imageUrls}
+          max={MAX_IMAGES}
+          errors={imageErrors}
+          error={errors.imageUrls}
+          onChange={(urls) => set("imageUrls", urls)}
+        />
+        <Button type="submit" busy={busy}>
+          {submitLabel}
+        </Button>
+      </form>
+    </>
   );
 }
 

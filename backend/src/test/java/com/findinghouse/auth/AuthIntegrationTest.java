@@ -170,7 +170,7 @@ class AuthIntegrationTest {
 
     assertThat(login.statusCode()).isEqualTo(200);
     assertThat(JsonPath.<String>read(login.body(), "$.tokenType")).isEqualTo("Bearer");
-    assertThat(JsonPath.<Integer>read(login.body(), "$.expiresIn")).isEqualTo(24 * 60 * 60);
+    assertThat(JsonPath.<Integer>read(login.body(), "$.expiresIn")).isEqualTo(2 * 60 * 60);
 
     HttpResponse<String> me = api.get("/api/v1/me", accessToken(login));
 
