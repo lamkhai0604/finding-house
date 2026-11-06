@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Updated | 2026-11-05 |
-| Sprint | Sprint 2 — "A tenant can find a room" (Sprint 1 merged to `main` in PR #2, `620d7f3`) |
+| Sprint | Sprint 3 — "Go live" (approved 2026-11-05). Sprint 2 merged to `main` in PR #4 (`362a598`). |
 | Repository | github.com/lamkhai0604/finding-house (`main` and `dev` created at `4de096d`) |
-| Active work | Sprint 2: T-121, T-120, T-115 to T-119 Done; T-201 browse/filter API, T-122 newest listings on the home page, and T-202 browse page, T-205 folding phone filters, T-203 synthetic data, and T-204 performance check (p95 40.8 ms with 10,000 listings) Done. Sprint 2 report written (`docs/reports/sprint-2-report.md`). |
+| Active work | Sprint 3: T-114a, T-114b, and T-113 Done. T-401 deploy waits for Khai (dev -> main PR, then docs/DEPLOYMENT.md). |
 | Source revision | `dev` (see `git log dev`) |
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
-| Verification | Backend: run 42142023037 (94 tests). Frontend: run 42141051469 (102/102). Smoke: run 42141051453 (all page checks, CSP build). |
+| Verification | Backend: run 42154962043 (111 tests). Frontend: run 42154962010 (106/106). Smoke: run 42154962116 (Docker backend image, cross-origin production build with CSP). |
 | Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
-| Next action | Khai merged PR #3 (up to T-122). Next: Khai reviews a `dev -> main` PR for T-202 onwards and the Sprint 3 hosting proposal (report §6, §8). |
+| Next action | Khai: dev -> main PR, then deploy following docs/DEPLOYMENT.md; Claude: T-405 live checks once the URLs exist; meanwhile Khai creates the Vercel, Render, and Neon accounts. |

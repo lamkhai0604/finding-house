@@ -34,8 +34,9 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-110 | Frontend security: CSP in production build, 401 ends session, no-referrer photos, npm audit gate, smoke on CSP build; fix hidden-listing reload | NFR-01 | P1 | Done — frontend run 42115527137 (62 tests), smoke run 42115527225 |
 | T-111 | Review cleanup: remove tracked `__pycache__`, ignore rule, README points to STATUS.md | — | P2 | Done — smoke run 42116124933 |
 | T-112 | Sync `main` into `dev` and verify CI on the merge candidate | — | P2 | Done — merging `main` changed no files; on candidate `4fdfc16`: backend run 42116716315, frontend run 42116716376, smoke run 42116715397, all green. Later commits on `dev` are docs only; the `dev → main` PR re-runs all three suites on the PR head |
-| T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P3 | Proposed |
-| T-114 | Deployment security: forwarded headers for the real client address, HSTS and frame-ancestors headers at the host, request body size limit | NFR-01 | P2 | Proposed (Sprint 3, with T-401) |
+| T-113 | Rate-limit registration per client address (limits email enumeration and spam accounts) | NFR-01 | P2 | Done — D-031 (10 attempts per address per hour); backend run 42154962043: 111 tests passed (5 new: throttle rules, and 201 → 409 → 429 from one address while another still signs up); frontend run 42154962010: 106 tests (sign-up page shows the 429 message); smoke run 42154962116 |
+| T-114a | Backend deployment readiness: client address from `CF-Connecting-IP` when configured (D-030), CORS for the frontend origin, `PORT`, connection pool size, request size limit, Dockerfile, smoke runs the Docker image | NFR-01, NFR-05 | P1 | Done — commit `241b150`; backend run 42153629641: 106 tests passed (12 new: address resolver, origin rules, and a deployment-like context checking CORS allow/deny, the login limit following CF-Connecting-IP while ignoring forged X-Forwarded-For, and 413); smoke run 42153629649 builds and runs `backend/Dockerfile` with a 512 MB limit (healthy after 8 s) |
+| T-114b | Frontend deployment readiness: API base URL at build time, CSP with that origin, `vercel.json` (SPA routing, security headers incl. `frame-ancestors`), cross-origin smoke on the production build | NFR-01, NFR-05 | P1 | Done — frontend run 42154410104: 105 tests passed (3 new), deployed-style build puts the API origin in the CSP, a URL with a path stops the build, `vercel.json` checked; smoke run 42154410160: production build on :4173 calls the API on :8080 with CORS limited to :4173, every page check passes in Chrome with no CSP violation |
 
 ## Sprint 2 — "A tenant can find a room" ([plan](sprints/sprint-2.md))
 
@@ -59,12 +60,14 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Done — dev-profile loader (D-028); backend run 42141631858: 93 tests passed (7 new: generator rules and variety, 300 loaded in 211 ms, idempotent, browsable, synthetic landlords cannot log in, loader absent outside dev); smoke run 42141631910 |
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Done — backend run 42142023037: 94 tests passed; 10,000 listings, 400 timed requests over HTTP: p50 12.8 ms, **p95 40.8 ms** (target < 500 ms), max 52.4 ms; slowest type: two amenities (p95 46.2 ms). Plans: sequential scans of 10,000 rows take 2–4 ms, so no index added (CODE-15). Details in the Sprint 2 report |
 | T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
+| T-206 | Unique CI check names (`backend`, `frontend`, `smoke`) so they can be required on `main` | Review O3 | P2 | Done — runs 42142824394 (frontend) and 42142824388 (backend) report checks named `frontend` and `backend`; smoke already reports `smoke` |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-401 | Deploy demo on free hosting | NFR-05 | P2 | Proposed (blocked by OQ-05; needs Khai's approval per D-012) |
+| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | In progress — guide `docs/DEPLOYMENT.md` written; waiting for Khai's accounts and dashboard steps |
+| T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | In progress — scripts and `live-smoke` workflow ready; self-tested in smoke run 42155362272 (all HTTP and browser checks pass against the local stack); live run after T-401 |
 | T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | Proposed |
 | T-403 | Favorites | FR-06 | P3 | Proposed |
 | T-404 | Image file upload to a free storage service (free tier verified first, D-007) | FR-02 | P3 | Proposed |

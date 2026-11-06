@@ -56,8 +56,8 @@ All suites pass on the merge candidate (see §6). Nothing found blocks the `dev 
 | # | Severity | Finding | Plan |
 | --- | --- | --- | --- |
 | O1 | Major (before going public) | Behind a reverse proxy the backend sees the proxy's address, which would make the per-address login limit apply to everyone at once. HSTS and `frame-ancestors` must be HTTP headers from the host. JSON request bodies have no size limit before parsing. | T-114 with deployment (Sprint 3). |
-| O2 | Minor | No automated dependency alerts for the backend (Maven). | Khai: enable GitHub Dependabot alerts in repository settings (free). |
-| O3 | Minor | Branch protection on `main` is not configured. | Khai: require the `backend`, `frontend`, and `smoke` checks before merging into `main`. |
+| O2 | Minor | No automated dependency alerts for the backend (Maven). | **Resolved 2026-11-05**: Khai enabled Dependabot alerts (confirmed by Khai; Claude's token cannot read the alerts API). Dependabot security-update PRs left off so changes still go through `dev`. |
+| O3 | Minor | Branch protection on `main` is not configured. | **Resolved 2026-11-05**: ruleset `protect-main` (id 26663656, active, default branch): pull request required (0 approvals), required checks `backend`, `frontend`, `smoke` (made unique in T-206), deletion and force push blocked, no bypass. Read back through the rulesets API. |
 | O4 | Info | "My listings" loads amenities and photos with 2 extra queries per listing. | **Resolved in T-201**: collections load in batches of 50; a test asserts at most 5 statements for a page of 12 listings. |
 
 ## 3. Areas Checked Without Findings

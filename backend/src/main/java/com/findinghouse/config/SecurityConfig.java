@@ -2,6 +2,8 @@ package com.findinghouse.config;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
+import java.time.Duration;
+import java.util.List;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,13 +28,21 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Stateless bearer-token security (D-009). CSRF protection is disabled because the API uses no
  * cookies or sessions: every request must carry an Authorization header.
  */
 @Configuration
-@EnableConfigurationProperties({JwtProperties.class, LoginThrottleProperties.class})
+@EnableConfigurationProperties({
+  JwtProperties.class,
+  LoginThrottleProperties.class,
+  RegistrationThrottleProperties.class,
+  HttpProperties.class
+})
 public class SecurityConfig {
 
   private static final String UNAUTHORIZED_BODY =
@@ -41,8 +51,11 @@ public class SecurityConfig {
       "{\"code\":\"FORBIDDEN\",\"message\":\"Not allowed\",\"fieldErrors\":[]}";
 
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain securityFilterChain(
+      HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
+        // D-030: browsers may call the API only from the configured frontend origins.
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
@@ -73,6 +86,29 @@ public class SecurityConfig {
                 e.authenticationEntryPoint(unauthorizedEntryPoint())
                     .accessDeniedHandler(forbiddenHandler()));
     return http.build();
+  }
+
+  /**
+   * CORS for the deployed frontend (D-030). Tokens travel in the Authorization header, so no
+   * cookies or credentials are allowed. With no configured origins, no cross-origin call is
+   * allowed.
+   */
+  @Bean
+  CorsConfigurationSource corsConfigurationSource(HttpProperties properties) {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    if (properties.corsAllowedOrigins().isEmpty()) {
+      return source;
+    }
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(properties.corsAllowedOrigins());
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    config.setExposedHeaders(List.of("Retry-After"));
+    config.setAllowCredentials(false);
+    config.setMaxAge(Duration.ofHours(1));
+    source.registerCorsConfiguration("/api/**", config);
+    source.registerCorsConfiguration("/actuator/health", config);
+    return source;
   }
 
   @Bean

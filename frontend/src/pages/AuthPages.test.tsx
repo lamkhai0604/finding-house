@@ -188,4 +188,25 @@ describe("Register page (FR-01)", () => {
       "true",
     );
   });
+
+  it("explains when sign-ups from this network are paused (T-113)", async () => {
+    mockApi({
+      "POST /api/v1/auth/register": () =>
+        apiError(
+          429,
+          "TOO_MANY_ATTEMPTS",
+          "Too many sign-up attempts from your network. Try again in 42 minutes.",
+        ),
+    });
+    renderApp("/register");
+
+    fill("Name", "Ana");
+    fill("Email", "ana@example.com");
+    fill("Password", "long-enough-password");
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Too many sign-up attempts from your network. Try again in 42 minutes.",
+    );
+  });
 });
