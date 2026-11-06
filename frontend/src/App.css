@@ -24,6 +24,7 @@
   --danger: #912018;
   --danger-bg: #fee4e2;
   --radius: 12px;
+  --wide: 75rem;
   --font-text: "Public Sans Variable", system-ui, sans-serif;
   --font-display:
     "Archivo Variable", "Public Sans Variable", system-ui, sans-serif;
@@ -79,14 +80,20 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 50;
+  background: rgb(255 255 255 / 0.96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.625rem 1.25rem;
-  background: rgb(255 255 255 / 0.95);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--border);
+  max-width: var(--wide);
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
 }
 
 .brand {
@@ -113,7 +120,7 @@ h2 {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .menu-toggle {
@@ -187,7 +194,7 @@ h2 {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 12px 24px rgb(15 23 42 / 0.12);
+  box-shadow: 0 12px 24px rgb(11 43 41 / 0.12);
 }
 
 .account-dropdown a,
@@ -205,7 +212,7 @@ h2 {
 
 .account-dropdown a:hover,
 .account-dropdown button:hover {
-  background: #f0f4f8;
+  background: var(--hover);
 }
 
 .account-email {
@@ -232,38 +239,67 @@ h2 {
 /* Footer */
 
 .site-footer {
-  border-top: 1px solid var(--border);
-  background: var(--card);
+  background: var(--footer);
+  color: #e6efed;
   font-size: 0.875rem;
 }
 
 .footer-inner,
 .footer-bottom {
-  max-width: 56rem;
+  max-width: var(--wide);
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 1.25rem 1rem;
+  padding: 2.5rem 1.5rem 1.5rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.site-footer .brand {
+  color: #fff;
+}
+
+.site-footer .brand-stop {
+  stroke: #fff;
+  fill: var(--footer);
 }
 
 .footer-brand p {
-  margin: 0.5rem 0 0;
-  max-width: 22rem;
+  margin: 0.625rem 0 0;
+  max-width: 40ch;
+  line-height: 1.5;
 }
 
 .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.25rem;
   align-items: flex-start;
+}
+
+.site-footer a:not(.brand) {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgb(255 255 255 / 0.35);
+  text-underline-offset: 3px;
+}
+
+.site-footer a:not(.brand):hover {
+  color: #fff;
+  text-decoration-color: var(--line);
 }
 
 .footer-bottom {
   align-items: center;
-  padding-top: 0;
-  color: var(--muted);
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  color: #b9cfcb;
+}
+
+.site-footer .health {
+  margin: 0;
 }
 
 /* Home */
@@ -575,7 +611,7 @@ h2 {
 }
 
 .button-ghost:hover:not(:disabled) {
-  background: #f0f4f8;
+  background: var(--hover);
 }
 
 .back-button {
@@ -610,7 +646,7 @@ h2 {
 /* T-123: every interactive element reacts to hover, press, and keyboard focus. */
 
 .button-secondary:hover:not(:disabled) {
-  background: #f0f4f8;
+  background: var(--hover);
   border-color: #9fb3c8;
 }
 
@@ -646,7 +682,7 @@ a:not(.button):hover {
 
 .account-button:hover,
 .menu-toggle:hover {
-  background: #f0f4f8;
+  background: var(--hover);
   border-color: #9fb3c8;
 }
 
@@ -663,7 +699,7 @@ a:not(.button):hover {
 
 .listing-card:hover {
   border-color: #9fb3c8;
-  box-shadow: 0 4px 14px rgb(15 23 42 / 0.08);
+  box-shadow: 0 4px 14px rgb(11 43 41 / 0.08);
 }
 
 .carousel-slide {
@@ -673,7 +709,7 @@ a:not(.button):hover {
 }
 
 .carousel-slide:hover {
-  box-shadow: 0 6px 18px rgb(15 23 42 / 0.12);
+  box-shadow: 0 6px 18px rgb(11 43 41 / 0.12);
   transform: translateY(-2px);
 }
 
@@ -725,7 +761,8 @@ input[type="checkbox"]:focus-visible {
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.875rem;
-  background: #e4e7eb;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
 }
 
 .health-up {
@@ -769,7 +806,7 @@ input[type="checkbox"]:focus-visible {
   justify-content: center;
   color: var(--muted);
   border: 2px dashed var(--border);
-  background: #f0f4f8;
+  background: var(--hover);
 }
 
 .gallery-main {
@@ -965,7 +1002,7 @@ a.button {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgb(15 23 42 / 0.45);
+  background: rgb(11 43 41 / 0.45);
   z-index: 100;
 }
 
@@ -975,7 +1012,7 @@ a.button {
   padding: 1.5rem;
   border-radius: var(--radius);
   background: var(--card);
-  box-shadow: 0 20px 40px rgb(15 23 42 / 0.25);
+  box-shadow: 0 20px 40px rgb(11 43 41 / 0.25);
 }
 
 .dialog h2 {
@@ -1169,8 +1206,9 @@ a.button {
 }
 
 @media (max-width: 640px) {
-  .site-header {
+  .header-inner {
     flex-wrap: wrap;
+    padding: 0.625rem 1rem;
   }
 
   .menu-toggle {
@@ -1210,7 +1248,7 @@ a.button {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .site-header {
+  .header-inner {
     flex-wrap: wrap;
   }
 

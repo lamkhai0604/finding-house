@@ -17,45 +17,47 @@ export function Layout() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <BrandMark />
-        <button
-          type="button"
-          className="menu-toggle"
-          aria-expanded={menuOpen}
-          aria-controls="site-nav"
-          onClick={() => setMenuOpenOn(menuOpen ? null : location.key)}
-        >
-          <span aria-hidden="true">{menuOpen ? "✕" : "☰"}</span>
-          <span className="sr-only">Menu</span>
-        </button>
-        <nav
-          id="site-nav"
-          aria-label="Main"
-          className={menuOpen ? "header-actions open" : "header-actions"}
-        >
-          <ButtonLink to="/browse" variant="ghost">
-            Browse rooms
-          </ButtonLink>
-          {status === "authenticated" && user ? (
-            <>
-              {user.role === "LANDLORD" && (
-                <ButtonLink to="/listings/new" variant="primary">
-                  Post a room
+        <div className="header-inner">
+          <BrandMark />
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-expanded={menuOpen}
+            aria-controls="site-nav"
+            onClick={() => setMenuOpenOn(menuOpen ? null : location.key)}
+          >
+            <span aria-hidden="true">{menuOpen ? "✕" : "☰"}</span>
+            <span className="sr-only">Menu</span>
+          </button>
+          <nav
+            id="site-nav"
+            aria-label="Main"
+            className={menuOpen ? "header-actions open" : "header-actions"}
+          >
+            <ButtonLink to="/browse" variant="ghost">
+              Browse rooms
+            </ButtonLink>
+            {status === "authenticated" && user ? (
+              <>
+                {user.role === "LANDLORD" && (
+                  <ButtonLink to="/listings/new" variant="primary">
+                    Post a room
+                  </ButtonLink>
+                )}
+                <AccountMenu user={user} onLogout={logout} />
+              </>
+            ) : (
+              <>
+                <ButtonLink to="/login" variant="ghost">
+                  Log in
                 </ButtonLink>
-              )}
-              <AccountMenu user={user} onLogout={logout} />
-            </>
-          ) : (
-            <>
-              <ButtonLink to="/login" variant="ghost">
-                Log in
-              </ButtonLink>
-              <ButtonLink to="/register" variant="primary">
-                Sign up
-              </ButtonLink>
-            </>
-          )}
-        </nav>
+                <ButtonLink to="/register" variant="primary">
+                  Sign up
+                </ButtonLink>
+              </>
+            )}
+          </nav>
+        </div>
       </header>
       <main className="page">
         <Outlet />
