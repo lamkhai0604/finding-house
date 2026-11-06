@@ -7,7 +7,7 @@
 | Period | 2026-11-05 (planned 2026-11-05 → 2026-11-19; finished early) |
 | Product Owner / reviewer | Khai (lamkhai0604) |
 | Implementer | Claude |
-| Result | **Goal met on `dev`** at `74c6114`. Not yet in `main`: waiting for Khai's `dev → main` review |
+| Result | **Goal met on `dev`** at `74c6114`. Partly in `main`: Khai merged PR #3 (`e3bee15`, up to T-122); T-202 onwards waits for the next `dev → main` review |
 
 ## 1. Summary
 
@@ -15,18 +15,18 @@ The goal was that a tenant can browse and filter active listings, and that the a
 
 The performance target was measured, not assumed: with 10,000 listings, the 95th-percentile browse response is **40.8 ms** against a target of 500 ms (NFR-02). The plans show that PostgreSQL scans 10,000 rows in 2–4 ms, so no index was added.
 
-All planned tasks are done, plus two added at Khai's request (T-123 hover states, T-205 folding the filters on phones). Independent review has not happened yet: every merge into `dev` was self-reviewed, as recorded in each merge commit. Khai's review of the `dev → main` PR is this sprint's independent review.
+All planned tasks are done, plus two added at Khai's request (T-123 hover states, T-205 folding the filters on phones). Independent review has not happened yet: every merge into `dev` was self-reviewed, as recorded in each merge commit. Khai reviewed and merged PR #3 (everything up to T-122) during the sprint; the next `dev → main` PR completes this sprint's independent review.
 
 ## 2. Delivered Work
 
 | Task | What was delivered | Requirement | Verified | Merged to `dev` | In `main` |
 | --- | --- | --- | --- | --- | --- |
-| T-121 | Access tokens last 2 hours instead of 24 | D-025 | Backend run 42122297693 | Yes | No |
-| T-120 | Owner-only permanent delete; confirmation dialog that names the listing | FR-07, D-026 | Backend 42122526491, frontend 42123201689, smoke 42123201730 | Yes | No |
-| T-115–T-119 | Back button (warns about unsaved changes), loading skeletons and busy spinners, consistent buttons, footer, header with avatar menu and phone menu | D-027 | Frontend 42123750933, smoke 42123751179 | Yes | No |
-| T-123 | Hover, pressed, and keyboard-focus states on every clickable element (added) | D-027 | Frontend 42125141917, smoke 42125141843 | Yes | No |
-| T-201 | Public `GET /api/v1/listings`: price, neighborhood, area, and amenity filters; three sorts; pagination with totals; field-level 400s | FR-03 | Backend 42128660324 | Yes | No |
-| T-122 | Home carousel shows the 8 newest real listings, each linking to its page | FR-03, D-027 | Frontend 42129758228, smoke 42129758285 | Yes | No |
+| T-121 | Access tokens last 2 hours instead of 24 | D-025 | Backend run 42122297693 | Yes | Yes (PR #3) |
+| T-120 | Owner-only permanent delete; confirmation dialog that names the listing | FR-07, D-026 | Backend 42122526491, frontend 42123201689, smoke 42123201730 | Yes | Yes (PR #3) |
+| T-115–T-119 | Back button (warns about unsaved changes), loading skeletons and busy spinners, consistent buttons, footer, header with avatar menu and phone menu | D-027 | Frontend 42123750933, smoke 42123751179 | Yes | Yes (PR #3) |
+| T-123 | Hover, pressed, and keyboard-focus states on every clickable element (added) | D-027 | Frontend 42125141917, smoke 42125141843 | Yes | Yes (PR #3) |
+| T-201 | Public `GET /api/v1/listings`: price, neighborhood, area, and amenity filters; three sorts; pagination with totals; field-level 400s | FR-03 | Backend 42128660324 | Yes | Yes (PR #3) |
+| T-122 | Home carousel shows the 8 newest real listings, each linking to its page | FR-03, D-027 | Frontend 42129758228, smoke 42129758285 | Yes | Yes (PR #3) |
 | T-202 | `/browse` page: filter panel, sort, pages, filters in the URL, errors explained before sending | FR-03 | Frontend 42135480928, smoke 42135480822 | Yes | No |
 | T-205 | On phones the filters fold behind a "Filters (N active)" button so results come first (added) | FR-03, D-027 | Frontend 42141051469, smoke 42141051453 | Yes | No |
 | T-203 | Dev-profile generator for up to 100,000 synthetic listings, deterministic, safe outside dev | NFR-02, D-028 | Backend 42141631858 | Yes | No |
@@ -105,8 +105,8 @@ Process slip carried from the start of the sprint: one docs commit (`0e48902`) w
 | --- | --- |
 | Planned tasks done | 11 of 11 (plus 2 added: T-123, T-205) |
 | Branches merged into `dev` | 12 (10 task branches + 2 docs) |
-| Non-merge commits since `main` | 29 |
-| Files changed since `main` | 73 (+4,588 / −179 lines) |
+| Non-merge commits in the sprint (since Sprint 1 in `main`, `620d7f3`) | 29 |
+| Files changed in the sprint | 73 (+4,588 / −179 lines) |
 | Automated tests | 196 (backend 94, frontend 102), plus 27 browser checks and the API smoke script; up from 115 |
 | CI runs during the sprint | 62 (50 passed, 10 failed on task branches, 2 still running at count time); all completed runs on `dev` passed |
 | NFR-02 | p95 40.8 ms with 10,000 listings (target < 500 ms) |
@@ -116,6 +116,6 @@ Process slip carried from the start of the sprint: one docs commit (`0e48902`) w
 **Sprint 3 — "Go live"** (proposed, needs Khai's approval): T-114 deployment security, then deploy the frontend, backend, and database on free tiers; run the smoke checks against the live URL; T-113 registration rate limit. After that, Sprint 4 is AI search (FR-05, D-019).
 
 Before Sprint 3 starts, Khai's actions:
-1. Review `dev` and merge the `dev → main` PR (this sprint's independent review).
+1. Review `dev` and merge a `dev → main` PR for the rest of the sprint (T-202 onwards).
 2. Approve or change the hosting proposal in §6, and create the Vercel, Render, and Neon accounts (Claude cannot sign up on Khai's behalf).
 3. Optional: enable Dependabot alerts and branch protection on `main`.

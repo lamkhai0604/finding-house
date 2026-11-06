@@ -10,4 +10,4 @@
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
 | Verification | Backend: run 42142023037 (94 tests). Frontend: run 42141051469 (102/102). Smoke: run 42141051453 (all page checks, CSP build). |
 | Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
-| Next action | Khai reviews the `dev -> main` PR and the Sprint 3 hosting proposal (report §6, §8). |
+| Next action | Khai merged PR #3 (up to T-122). Next: Khai reviews a `dev -> main` PR for T-202 onwards and the Sprint 3 hosting proposal (report §6, §8). |
