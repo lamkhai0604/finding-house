@@ -204,6 +204,38 @@ describe("Browse rooms (FR-03, T-202)", () => {
     );
   });
 
+  it("folds the filters behind a button on small screens (T-205)", async () => {
+    browseApi(() => Response.json(page([listing(7, "A")])));
+    renderApp("/browse?neighborhood=Ballard&amenities=WIFI");
+    await screen.findByText("1 room found");
+
+    const toggle = screen.getByRole("button", {
+      name: "Filters (2 active)",
+    });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls", "browse-filters");
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(toggle).toHaveTextContent("Hide filters (2 active)");
+
+    // Applying new filters folds the panel again.
+    fill("Min rent ($)", "900");
+    fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
+    expect(
+      await screen.findByRole("button", { name: "Filters (3 active)" }),
+    ).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("keeps the filters open while they are invalid (T-205)", async () => {
+    browseApi(() => Response.json(page([])));
+    renderApp("/browse?minPrice=lots");
+
+    expect(
+      await screen.findByRole("button", { name: /Hide filters/ }),
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
   it("is linked from the header", async () => {
     browseApi(() => Response.json(page([])));
     renderApp("/");

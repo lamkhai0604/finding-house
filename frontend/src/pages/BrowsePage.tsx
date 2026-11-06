@@ -11,6 +11,7 @@ import {
   type FilterErrors,
   type FilterValues,
 } from "../browse/filters";
+import { Button } from "../components/Button";
 import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
 import { ListingFilters } from "../components/ListingFilters";
@@ -46,6 +47,9 @@ export function BrowsePage() {
     return { ...fromUrl, search: checked.search, errors };
   }, [queryKey]);
 
+  // T-205: on small screens the panel folds behind a "Filters" button. It belongs to the URL it was
+  // opened on, so applying filters (a new URL) folds it again; invalid filters keep it open.
+  const [filtersOpenOn, setFiltersOpenOn] = useState<string | null>(null);
   const [reference, setReference] = useState<ReferenceData | null>(null);
   const [results, setResults] = useState<Results | null>(null);
 
@@ -96,22 +100,42 @@ export function BrowsePage() {
 
   const current = results?.key === queryKey ? results : null;
   const invalid = Object.keys(parsed.errors).length > 0;
+  const filtersOpen = invalid || filtersOpenOn === queryKey;
+  const { values } = parsed;
+  const activeFilters =
+    [values.neighborhood, values.minPrice, values.maxPrice, values.minArea]
+      .filter((v) => v.trim() !== "").length + values.amenities.length;
 
   return (
     <section className="browse">
       <div className="page-heading">
         <h1>Browse rooms</h1>
       </div>
+      <Button
+        variant="secondary"
+        className="filter-toggle"
+        aria-expanded={filtersOpen}
+        aria-controls="browse-filters"
+        onClick={() => setFiltersOpenOn(filtersOpen ? null : queryKey)}
+      >
+        {filtersOpen ? "Hide filters" : "Filters"}
+        {activeFilters > 0 && ` (${activeFilters} active)`}
+      </Button>
       <div className="browse-layout">
-        <ListingFilters
-          // A new URL (Back, a pasted link, or "Clear") resets the form to match it.
-          key={queryKey}
-          initial={parsed.values}
-          initialErrors={parsed.errors}
-          neighborhoods={reference?.neighborhoods ?? []}
-          amenities={reference?.amenities ?? parsed.values.amenities}
-          onApply={apply}
-        />
+        <div
+          id="browse-filters"
+          className={filtersOpen ? "filter-wrap open" : "filter-wrap"}
+        >
+          <ListingFilters
+            // A new URL (Back, a pasted link, or "Clear") resets the form to match it.
+            key={queryKey}
+            initial={parsed.values}
+            initialErrors={parsed.errors}
+            neighborhoods={reference?.neighborhoods ?? []}
+            amenities={reference?.amenities ?? parsed.values.amenities}
+            onApply={apply}
+          />
+        </div>
         <div className="browse-results">
           {invalid ? (
             <FormAlert message="Some filters are not valid. Fix them and press Show rooms." />

@@ -275,8 +275,14 @@ try {
     phone.getByRole("link", { name: "Sign up" }),
   );
 
+  // T-205: on a phone the filters start folded behind a button, so results come first.
   await phone.goto(`${frontend}/browse`);
   await shot(phone, "21-browse-mobile", "rooms found", phone.getByRole("heading", { name: "Browse rooms" }));
+  await check("21b: phone filters start folded", async () => {
+    if (await phone.getByLabel("Max rent ($)").isVisible()) throw new Error("filter panel is open");
+  });
+  await phone.getByRole("button", { name: "Filters" }).click();
+  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent ($)"));
 } finally {
   await browser.close();
 }
