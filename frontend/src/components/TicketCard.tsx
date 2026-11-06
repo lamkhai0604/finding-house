@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router";
 import type { Listing } from "../api/types";
 import { formatAmenity, formatArea, formatPrice } from "../utils/format";
@@ -8,13 +9,19 @@ interface TicketCardProps {
   listing: Listing;
   /** Heading level of the title inside the surrounding page. */
   headingLevel?: 2 | 3;
+  /** Shown over the photo's top-right corner, e.g. the save heart. */
+  action?: ReactNode;
 }
 
 /**
  * D-033: a listing shaped like a transit ticket. Photo on top, a dashed tear line, then the
  * price, the title (the link to the listing), the neighborhood stop and up to two amenities.
  */
-export function TicketCard({ listing, headingLevel = 3 }: TicketCardProps) {
+export function TicketCard({
+  listing,
+  headingLevel = 3,
+  action,
+}: TicketCardProps) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
   return (
     <article className="ticket">
@@ -25,6 +32,7 @@ export function TicketCard({ listing, headingLevel = 3 }: TicketCardProps) {
           linkToFullSize={false}
         />
         {isNew(listing) && <span className="badge-new">New</span>}
+        {action && <div className="ticket-action">{action}</div>}
       </div>
       <div className="ticket-stub">
         <p className="ticket-price">

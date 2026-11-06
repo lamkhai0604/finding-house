@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../api/client";
 import { getReferenceData, searchListings } from "../api/listings";
-import type { Listing, Page, ReferenceData } from "../api/types";
+import type { Listing, ListingSort, Page, ReferenceData } from "../api/types";
 import { useSession } from "../auth/session";
 import {
   filtersFromParams,
   filtersToParams,
+  SORT_OPTIONS,
   toSearch,
   type FilterErrors,
   type FilterValues,
@@ -14,10 +15,11 @@ import {
 import { Button } from "../components/Button";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { FormAlert } from "../components/FormAlert";
-import { ListingCard } from "../components/ListingCard";
+import { SelectField } from "../components/SelectField";
+import { TicketCard } from "../components/TicketCard";
 import { ListingFilters } from "../components/ListingFilters";
 import { Pagination } from "../components/Pagination";
-import { ListingListSkeleton } from "../components/Skeleton";
+import { TicketGridSkeleton } from "../components/Skeleton";
 import { usePageTitle } from "../hooks/usePageTitle";
 
 type Results =
@@ -50,9 +52,9 @@ export function BrowsePage() {
     return { ...fromUrl, search: checked.search, errors };
   }, [queryKey]);
 
-  // T-205: on small screens the panel folds behind a "Filters" button. It belongs to the URL it was
-  // opened on, so applying filters (a new URL) folds it again; invalid filters keep it open.
-  const [filtersOpenOn, setFiltersOpenOn] = useState<string | null>(null);
+  // T-205: on small screens the panel folds behind a "Filters" button. "Show rooms" folds it again;
+  // a stop or chip picked inside the panel leaves it open; invalid filters keep it open.
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [reference, setReference] = useState<ReferenceData | null>(null);
   const [results, setResults] = useState<Results | null>(null);
 
@@ -88,10 +90,11 @@ export function BrowsePage() {
     };
   }, [sessionKnown, parsed.search, queryKey]);
 
-  function apply(values: FilterValues): FilterErrors {
+  function apply(values: FilterValues, submitted = true): FilterErrors {
     const { errors } = toSearch(values);
     if (Object.keys(errors).length === 0) {
       setParams(filtersToParams(values));
+      if (submitted) setFiltersOpen(false);
     }
     return errors;
   }
@@ -103,7 +106,7 @@ export function BrowsePage() {
 
   const current = results?.key === queryKey ? results : null;
   const invalid = Object.keys(parsed.errors).length > 0;
-  const filtersOpen = invalid || filtersOpenOn === queryKey;
+  const panelOpen = invalid || filtersOpen;
   const { values } = parsed;
   const activeFilters =
     [
@@ -113,41 +116,75 @@ export function BrowsePage() {
       values.minArea,
     ].filter((v) => v.trim() !== "").length + values.amenities.length;
 
+  // Sort and page live in the band and the pager, not the panel: changing them must not reset
+  // what the visitor has typed in the panel but not applied yet.
+  const panelParams = new URLSearchParams(queryKey);
+  panelParams.delete("sort");
+  panelParams.delete("page");
+  const panelKey = panelParams.toString();
+
+  const count =
+    current?.kind === "ready" && current.page.totalItems > 0
+      ? current.page.totalItems
+      : null;
+
   return (
     <section className="browse">
-      <div className="page-heading">
-        <h1>Browse rooms</h1>
+      <div className="browse-band">
+        <div className="wide browse-band-inner">
+          <div>
+            <h1 className="display">Browse rooms</h1>
+            {count !== null && (
+              <p className="results-count" role="status">
+                {count === 1 ? "1 room found" : `${count} rooms found`}
+              </p>
+            )}
+          </div>
+          <div className="browse-sort">
+            <SelectField
+              label="Sort by"
+              value={values.sort}
+              onChange={(e) =>
+                apply({ ...values, sort: e.target.value as ListingSort }, false)
+              }
+              options={SORT_OPTIONS}
+            />
+          </div>
+        </div>
       </div>
-      <Button
-        variant="secondary"
-        className="filter-toggle"
-        aria-expanded={filtersOpen}
-        aria-controls="browse-filters"
-        onClick={() => setFiltersOpenOn(filtersOpen ? null : queryKey)}
-      >
-        {filtersOpen ? "Hide filters" : "Filters"}
-        {activeFilters > 0 && ` (${activeFilters} active)`}
-      </Button>
-      <div className="browse-layout">
+      <div className="wide browse-body">
+        <Button
+          variant="secondary"
+          className="filter-toggle"
+          aria-expanded={panelOpen}
+          aria-controls="browse-filters"
+          onClick={() => setFiltersOpen(!panelOpen)}
+        >
+          {panelOpen ? "Hide filters" : "Filters"}
+          {activeFilters > 0 && ` (${activeFilters} active)`}
+        </Button>
         <div
           id="browse-filters"
-          className={filtersOpen ? "filter-wrap open" : "filter-wrap"}
+          className={panelOpen ? "filter-wrap open" : "filter-wrap"}
         >
           <ListingFilters
-            // A new URL (Back, a pasted link, or "Clear") resets the form to match it.
-            key={queryKey}
+            // New filters in the URL (Back, a pasted link, or "Clear") reset the form to match.
+            key={panelKey}
             initial={parsed.values}
             initialErrors={parsed.errors}
             neighborhoods={reference?.neighborhoods ?? []}
             amenities={reference?.amenities ?? parsed.values.amenities}
-            onApply={apply}
+            // The panel does not show the sort; keep the one chosen in the band.
+            onApply={(next, submitted) =>
+              apply({ ...next, sort: values.sort }, submitted)
+            }
           />
         </div>
         <div className="browse-results">
           {invalid ? (
             <FormAlert message="Some filters are not valid. Fix them and press Show rooms." />
           ) : !current ? (
-            <ListingListSkeleton />
+            <TicketGridSkeleton count={6} />
           ) : current.kind === "error" ? (
             <FormAlert message={current.message} />
           ) : current.page.totalItems === 0 ? (
@@ -169,28 +206,26 @@ export function BrowsePage() {
             </div>
           ) : (
             <>
-              <p className="results-count" role="status">
-                {current.page.totalItems === 1
-                  ? "1 room found"
-                  : `${current.page.totalItems} rooms found`}
-              </p>
               {current.page.items.length === 0 ? (
                 <p className="muted">This page is empty.</p>
               ) : (
-                <div className="listing-list">
+                <ul className="ticket-grid">
                   {current.page.items.map((listing) => (
-                    <ListingCard
-                      key={listing.id}
-                      listing={listing}
-                      actions={
-                        <FavoriteButton
-                          listingId={listing.id}
-                          title={listing.title}
-                        />
-                      }
-                    />
+                    <li key={listing.id}>
+                      <TicketCard
+                        listing={listing}
+                        headingLevel={2}
+                        action={
+                          <FavoriteButton
+                            listingId={listing.id}
+                            title={listing.title}
+                            compact
+                          />
+                        }
+                      />
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
               <Pagination
                 page={parsed.page}

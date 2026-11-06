@@ -1,17 +1,16 @@
 import { useState, type FormEvent } from "react";
-import type { Amenity, ListingSort } from "../api/types";
+import type { Amenity } from "../api/types";
 import {
   EMPTY_FILTERS,
-  SORT_OPTIONS,
   type FilterErrors,
   type FilterValues,
 } from "../browse/filters";
+import { LINE_STOPS } from "../home/lineStops";
 import { formatAmenity } from "../utils/format";
-import { Button } from "./Button";
-import { CheckboxGroup } from "./CheckboxGroup";
-import { SelectField } from "./SelectField";
 import { AREA, MONEY } from "../utils/numberInput";
+import { Button } from "./Button";
 import { NumberField } from "./NumberField";
+import { SelectField } from "./SelectField";
 
 interface ListingFiltersProps {
   initial: FilterValues;
@@ -19,13 +18,17 @@ interface ListingFiltersProps {
   initialErrors?: FilterErrors;
   neighborhoods: string[];
   amenities: Amenity[];
-  /** Returns errors to show, or an empty object when the filters were applied. */
-  onApply: (values: FilterValues) => FilterErrors;
+  /**
+   * Applies the filters. `submitted` is true for "Show rooms" / Enter and false for a stop, chip or
+   * neighborhood picked from the panel. Returns errors to show, or an empty object when applied.
+   */
+  onApply: (values: FilterValues, submitted: boolean) => FilterErrors;
 }
 
 /**
- * T-202: the browse filter panel. Changes apply when the visitor presses "Show rooms" (or Enter),
- * not on every keystroke, so typing a price does not fire a search per digit.
+ * T-202 / T-211: the browse filter panel. Stops on the mini 1 Line, the neighborhood list and the
+ * amenity chips apply at once. Typed amounts apply on "Show rooms" (or Enter), so typing a price
+ * does not fire a search per digit.
  */
 export function ListingFilters({
   initial,
@@ -41,41 +44,82 @@ export function ListingFilters({
     setValues((current) => ({ ...current, [key]: value }));
   }
 
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    setErrors(onApply(values));
+  function applyNow(next: FilterValues) {
+    setValues(next);
+    setErrors(onApply(next, false));
   }
 
-  function clear() {
-    setValues(EMPTY_FILTERS);
-    setErrors(onApply(EMPTY_FILTERS));
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    setErrors(onApply(values, true));
+  }
+
+  function toggleAmenity(amenity: Amenity) {
+    const chosen = values.amenities.includes(amenity)
+      ? values.amenities.filter((a) => a !== amenity)
+      : [...values.amenities, amenity];
+    // Keep the server's order so the URL stays the same for the same choice.
+    applyNow({
+      ...values,
+      amenities: amenities.filter((a) => chosen.includes(a)),
+    });
   }
 
   return (
     <form
-      className="card filter-panel"
+      className="filter-panel"
       aria-label="Filters"
       noValidate
       onSubmit={submit}
     >
-      <h2>Filters</h2>
-      <SelectField
-        label="Neighborhood"
-        value={values.neighborhood}
-        onChange={(e) => set("neighborhood", e.target.value)}
-        options={[
-          { value: "", label: "Any neighborhood" },
-          ...neighborhoods.map((n) => ({ value: n, label: n })),
-          // Keep a value from a link even before the list has loaded.
-          ...(values.neighborhood &&
-          !neighborhoods.includes(values.neighborhood)
-            ? [{ value: values.neighborhood, label: values.neighborhood }]
-            : []),
-        ]}
-      />
-      <div className="field-row">
+      <div className="mini-line">
+        <div
+          role="group"
+          aria-label="Stops on the 1 Line"
+          className="mini-stops"
+        >
+          {LINE_STOPS.map((stop) => {
+            const on = values.neighborhood === stop.neighborhood;
+            return (
+              <button
+                key={stop.neighborhood}
+                type="button"
+                className="mini-stop"
+                aria-pressed={on}
+                onClick={() =>
+                  applyNow({
+                    ...values,
+                    neighborhood: on ? "" : stop.neighborhood,
+                  })
+                }
+              >
+                <span className="mini-dot" aria-hidden="true" />
+                {stop.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="filter-fields">
+        <SelectField
+          label="Neighborhood"
+          value={values.neighborhood}
+          onChange={(e) =>
+            applyNow({ ...values, neighborhood: e.target.value })
+          }
+          options={[
+            { value: "", label: "Any neighborhood" },
+            ...neighborhoods.map((n) => ({ value: n, label: n })),
+            // Keep a value from a link even before the list has loaded.
+            ...(values.neighborhood &&
+            !neighborhoods.includes(values.neighborhood)
+              ? [{ value: values.neighborhood, label: values.neighborhood }]
+              : []),
+          ]}
+        />
         <NumberField
-          label="Min rent"
+          label="Rent from"
           format={MONEY}
           prefix="$"
           placeholder="Any"
@@ -84,7 +128,7 @@ export function ListingFilters({
           onValueChange={(plain) => set("minPrice", plain)}
         />
         <NumberField
-          label="Max rent"
+          label="Rent up to"
           format={MONEY}
           prefix="$"
           placeholder="Any"
@@ -92,37 +136,46 @@ export function ListingFilters({
           error={errors.maxPrice}
           onValueChange={(plain) => set("maxPrice", plain)}
         />
-      </div>
-      <NumberField
-        label="Min area"
-        format={AREA}
-        suffix="sq ft"
-        placeholder="Any"
-        value={values.minArea}
-        error={errors.minArea}
-        onValueChange={(plain) => set("minArea", plain)}
-      />
-      <CheckboxGroup
-        legend="Must have"
-        options={amenities.map((a) => ({ value: a, label: formatAmenity(a) }))}
-        selected={values.amenities}
-        onChange={(selected) => set("amenities", selected)}
-        error={errors.amenities}
-      />
-      <SelectField
-        label="Sort by"
-        value={values.sort}
-        onChange={(e) => set("sort", e.target.value as ListingSort)}
-        options={SORT_OPTIONS}
-      />
-      <div className="form-actions">
-        <Button type="submit" variant="primary">
+        <NumberField
+          label="Area at least"
+          format={AREA}
+          suffix="sq ft"
+          placeholder="Any"
+          value={values.minArea}
+          error={errors.minArea}
+          onValueChange={(plain) => set("minArea", plain)}
+        />
+        <Button type="submit" variant="primary" className="filter-submit">
           Show rooms
         </Button>
-        <Button variant="ghost" onClick={clear}>
+      </div>
+
+      <div className="filter-chips">
+        <div role="group" aria-labelledby="must-have" className="chip-list">
+          <span id="must-have" className="chip-legend">
+            Must have
+          </span>
+          {amenities.map((amenity) => (
+            <button
+              key={amenity}
+              type="button"
+              className="chip"
+              aria-pressed={values.amenities.includes(amenity)}
+              onClick={() => toggleAmenity(amenity)}
+            >
+              {formatAmenity(amenity)}
+            </button>
+          ))}
+        </div>
+        <Button
+          variant="ghost"
+          className="filter-clear"
+          onClick={() => applyNow(EMPTY_FILTERS)}
+        >
           Clear filters
         </Button>
       </div>
+      {errors.amenities && <p className="field-error">{errors.amenities}</p>}
     </form>
   );
 }
