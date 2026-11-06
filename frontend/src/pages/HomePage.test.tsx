@@ -2,11 +2,11 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Listing, NeighborhoodStats, Page } from "../api/types";
 import { TOKEN_STORAGE_KEY } from "../auth/session";
-import { isNew } from "../components/TicketCard";
 import { listingDetail } from "../test/fixtures";
 import { apiError, mockApi } from "../test/mockApi";
 import { renderApp } from "../test/renderApp";
-import { LINE_STOPS } from "./HomePage";
+import { LINE_STOPS } from "../home/lineStops";
+import { isNew } from "../utils/listingAge";
 
 function page(items: Listing[]): Page<Listing> {
   return {
