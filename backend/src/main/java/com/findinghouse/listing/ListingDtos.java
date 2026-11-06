@@ -15,10 +15,10 @@ public final class ListingDtos {
   private ListingDtos() {}
 
   /** Upper bounds catch typos (an extra zero) and keep values far from numeric limits. */
-  static final long MAX_MONTHLY_PRICE_CENTS = 100_000_00L;
+  public static final long MAX_MONTHLY_PRICE_CENTS = 100_000_00L;
 
-  static final int MAX_AREA_SQFT = 100_000;
-  static final int MAX_IMAGES = 5;
+  public static final int MAX_AREA_SQFT = 100_000;
+  public static final int MAX_IMAGES = 5;
 
   /**
    * Create or replace a listing. Price is in US cents to avoid floating-point money. City is not

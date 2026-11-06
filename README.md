@@ -85,9 +85,21 @@ python3 scripts/sample-data/load_sample_data.py --check-invalid  # also checks t
 
 Then log in as `maya.landlord@example.com` / `sample-pass-maya` (other passwords are in the JSON file).
 
+### Synthetic data (thousands of listings)
+
+For load testing and for a browse page that feels full, the backend can generate synthetic listings itself (T-203, D-028). It only does this under the `dev` profile, and tops the database up to the number you ask for, so restarting does not add more:
+
+```bash
+cd backend
+SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 mvn spring-boot:run
+# Windows PowerShell: $env:SPRING_PROFILES_ACTIVE="dev"; $env:SYNTHETIC_LISTINGS="10000"; mvn spring-boot:run
+```
+
+Synthetic listings belong to 20 landlords at `synthetic.landlord.NN@example.invalid` that cannot log in, and every description starts with "Synthetic listing for development and testing." The same `SYNTHETIC_SEED` (default 42) always gives the same data. To remove them, recreate the local database: `docker compose down -v && docker compose up -d postgres`.
+
 ### Frontend
 
-Pages so far: home (with a neighborhood carousel using sample photos), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
+Pages so far: home (with a carousel of the newest listings), browse with filters (`/browse`), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
 
 Prerequisites: Node.js 22.
 
