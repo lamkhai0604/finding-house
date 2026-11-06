@@ -33,6 +33,9 @@ export function Layout() {
           aria-label="Main"
           className={menuOpen ? "header-actions open" : "header-actions"}
         >
+          <ButtonLink to="/browse" variant="ghost">
+            Browse rooms
+          </ButtonLink>
           {status === "authenticated" && user ? (
             <>
               {user.role === "LANDLORD" && (

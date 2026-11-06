@@ -29,6 +29,11 @@ const AMENITY_LABELS: Record<Amenity, string> = {
   PETS_ALLOWED: "Pets allowed",
 };
 
+/** True for a value the backend knows as an amenity (e.g. from a pasted link). */
+export function isAmenity(value: string): value is Amenity {
+  return Object.hasOwn(AMENITY_LABELS, value);
+}
+
 export function formatAmenity(amenity: Amenity): string {
   return AMENITY_LABELS[amenity];
 }
