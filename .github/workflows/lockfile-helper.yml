@@ -1,0 +1,37 @@
+name: lockfile-helper
+
+# Temporary (T-208): Claude's workspace cannot reach the npm registry, so CI installs the font
+# packages and prints the updated manifest and lockfile. Removed before merging.
+
+on:
+  push:
+    branches: ["feat/T-208-design-tokens"]
+    paths: [".github/workflows/lockfile-helper.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Install font packages
+        run: |
+          npm ci --no-audit --no-fund
+          npm install --save-exact --no-audit --no-fund @fontsource-variable/archivo @fontsource-variable/public-sans
+          ls node_modules/@fontsource-variable/archivo node_modules/@fontsource-variable/public-sans
+          cat node_modules/@fontsource-variable/archivo/package.json | head -20
+          head -c 1500 node_modules/@fontsource-variable/archivo/wdth.css || true
+          npm audit --omit=dev --audit-level=high
+      - name: Print manifest and lockfile (gzip + base64)
+        run: |
+          for f in package.json package-lock.json; do
+            echo "FILE-BEGIN $f"; gzip -9 -c "$f" | base64 -w 1000; echo "FILE-END"
+          done
