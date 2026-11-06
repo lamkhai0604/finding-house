@@ -8,6 +8,6 @@
 | Active work | Sprint 3: **live** at https://finding-house.vercel.app (API https://finding-house.onrender.com). T-114a, T-114b, T-113, T-401, T-405 Done. |
 | Source revision | `dev` (see `git log dev`) |
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
-| Verification | Backend: run 42154962043 (111 tests). Frontend: run 42154962010 (106/106). Smoke: run 42154962116 (Docker backend image, cross-origin production build with CSP). |
+| Verification | Backend: run 42154962043 (111 tests). Frontend: run 42166845797 (118/118). Smoke: run 42166845789 (Docker backend image, cross-origin production build with CSP). |
 | Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
-| Next action | Khai: try the live site and post a few rooms. Next candidates: T-207 empty-state wording, T-402 README with screenshots, T-403 favorites (FR-06), then Sprint 4 AI search. |
+| Next action | Khai: try the live site and post a few rooms. T-207 (review fixes) is on `dev`, live after the next `dev -> main` merge. Next candidates: T-402 README with screenshots, T-403 favorites (FR-06), then Sprint 4 AI search. |
