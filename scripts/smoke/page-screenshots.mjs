@@ -278,6 +278,40 @@ try {
   await page.getByRole("button", { name: "Show rooms" }).click();
   await shot(page, "20-browse-invalid-range", "Must be at least the minimum price.");
 
+  // T-403 (FR-06): a tenant saves a room, finds it under Saved rooms, and unsaves it.
+  await page.goto(`${frontend}/login`);
+  await page.getByLabel("Email").fill("alex.tenant@example.com");
+  await page.getByLabel("Password").fill("sample-pass-alex");
+  await page.getByRole("button", { name: "Log in" }).click();
+  await page.getByText("Welcome back, Alex Nguyen.").waitFor({ timeout: 15000 });
+  const room = "Green Lake one-bedroom";
+  await page.goto(`${frontend}/browse`);
+  const saveButton = page.getByRole("button", { name: `Save ${room}` });
+  await check("23a: tenant saves a room from the browse page", async () => {
+    await saveButton.waitFor({ timeout: 15000 });
+    if ((await saveButton.getAttribute("aria-pressed")) === "true") {
+      await saveButton.click(); // left over from an earlier run on the same database
+      await page.waitForFunction(
+        (name) => document.querySelector(`[aria-label="${name}"]`)?.getAttribute("aria-pressed") === "false",
+        `Save ${room}`,
+      );
+    }
+    await saveButton.click();
+    await page.waitForFunction(
+      (name) => document.querySelector(`[aria-label="${name}"]`)?.getAttribute("aria-pressed") === "true",
+      `Save ${room}`,
+    );
+  });
+  await page.getByRole("button", { name: /Account menu/ }).click();
+  await page.getByRole("link", { name: "Saved rooms" }).click();
+  await shot(page, "23-saved-rooms", room, page.getByRole("heading", { name: "Saved rooms" }));
+  await check("23b: unsaving removes the room from Saved rooms", async () => {
+    await page.getByRole("button", { name: `Save ${room}` }).click();
+    await page.getByRole("heading", { name: "No saved rooms yet" }).waitFor({ timeout: 15000 });
+  });
+  await page.getByRole("button", { name: /Account menu/ }).click();
+  await page.getByRole("button", { name: "Log out" }).click();
+
   const mobile = await browser.newContext({ viewport: { width: 375, height: 740 }, isMobile: true });
   const phone = await mobile.newPage();
   watchForCspViolations(phone);
