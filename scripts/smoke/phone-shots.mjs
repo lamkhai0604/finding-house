@@ -77,6 +77,9 @@ try {
   await page.goto(`${frontend}/browse?neighborhood=Capitol+Hill`);
   await page.getByRole("link", { name: "Capitol Hill 1BR, pets welcome", exact: true }).click();
   await phoneShot(page, "P04-listing", page.getByRole("heading", { level: 1, name: "Capitol Hill 1BR, pets welcome" }));
+  // The quick-contact bar stays on screen while reading the top of the page.
+  await page.getByRole("region", { name: "Quick contact" }).getByRole("link", { name: "Call" }).waitFor({ timeout: 5000 });
+  await page.screenshot({ path: `${outDir}/P04b-listing-first-screen.jpg`, type: "jpeg", quality: 70 });
 
   await page.goto(`${frontend}/login`);
   await phoneShot(page, "P05-login", page.getByRole("button", { name: "Log in" }));
@@ -87,7 +90,7 @@ try {
 
   await logIn(page, "alex.tenant@example.com", "sample-pass-alex", "Welcome back, Alex Nguyen.");
   await page.goto(`${frontend}/my/saved`);
-  await phoneShot(page, "P08-saved", page.getByRole("heading", { name: "Saved rooms" }));
+  await phoneShot(page, "P08-saved", page.getByRole("heading", { level: 1, name: "Saved rooms" }));
   // Log out by dropping the stored token (the session lives in sessionStorage).
   await page.evaluate(() => window.sessionStorage.clear());
 
