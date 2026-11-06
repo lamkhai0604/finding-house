@@ -101,18 +101,18 @@ describe("Header and footer (D-027)", () => {
     expect(within(footer).getByText(/Portfolio project/)).toBeInTheDocument();
   });
 
-  it("lets a visitor go back from a listing opened directly", async () => {
+  it("lets a visitor go back to the rooms from a listing opened directly", async () => {
     mockApi({
       "GET /api/v1/listings/7": () => Response.json(listingDetail()),
     });
     renderApp("/listings/7");
 
-    fireEvent.click(await screen.findByRole("button", { name: /Back/ }));
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Back to rooms/ }),
+    );
 
     expect(
-      await screen.findByRole("heading", {
-        name: "Find a room near your stop",
-      }),
+      await screen.findByRole("heading", { name: "Browse rooms" }),
     ).toBeInTheDocument();
   });
 });

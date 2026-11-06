@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TOKEN_STORAGE_KEY } from "../auth/session";
 import { landlordMaya, listingDetail } from "../test/fixtures";
@@ -13,10 +13,10 @@ describe("Listing detail page (FR-04)", () => {
     expect(
       await screen.findByRole("heading", { name: "Sunny studio near UW" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("$1,650")).toBeInTheDocument();
-    expect(
-      screen.getByText("University District, Seattle · 420 sq ft"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("University District, Seattle")).toBeInTheDocument();
+    const facts = screen.getByText("Rent").closest("dl")!;
+    expect(facts).toHaveTextContent("Rent$1,650");
+    expect(facts).toHaveTextContent("Area420 sq ft");
     expect(
       screen.getByText("4500 Sample Ave NE, Seattle, WA"),
     ).toBeInTheDocument();
@@ -28,9 +28,45 @@ describe("Listing detail page (FR-04)", () => {
     expect(
       screen.getByRole("img", { name: "Sunny studio near UW, photo 2" }),
     ).toBeInTheDocument();
+    const contact = screen.getByRole("complementary", { name: "Contact" });
+    expect(contact).toHaveTextContent("$1,650 a month");
+    expect(contact).toHaveTextContent("Maya Chen");
     expect(
-      screen.getByRole("link", { name: "(206) 555-0101" }),
+      within(contact).getByRole("link", { name: "Call (206) 555-0101" }),
     ).toHaveAttribute("href", "tel:(206) 555-0101");
+  });
+
+  it("shows the neighboring 1 Line stops, or says there is no station (T-212)", async () => {
+    mockApi({ "GET /api/v1/listings/7": () => Response.json(listingDetail()) });
+    renderApp("/listings/7");
+
+    const stops = await screen.findByRole("list", {
+      name: "Nearby 1 Line stops",
+    });
+    expect(
+      within(stops)
+        .getAllByRole("listitem")
+        .map((li) => li.textContent),
+    ).toEqual(["Roosevelt", "U District", "Capitol Hill"]);
+    expect(within(stops).getByText("U District").closest("li")).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
+
+  it("does not invent transit for a neighborhood without a station (T-212)", async () => {
+    mockApi({
+      "GET /api/v1/listings/7": () =>
+        Response.json(listingDetail({ neighborhood: "Ballard" })),
+    });
+    renderApp("/listings/7");
+
+    expect(
+      await screen.findByText(/Ballard has no 1 Line station/),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("list", { name: "Nearby 1 Line stops" }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows a placeholder and friendly text when details are missing", async () => {
