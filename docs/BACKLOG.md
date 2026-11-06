@@ -16,7 +16,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-005 | CI workflow | NFR-08 | Claude | P1 | Done — `backend` and `frontend` workflows run on every push and on PRs into `dev`/`main` (runs 42069891558, 42074077400). Branch protection on `main` is not configured or verified (Khai\'s setting) | T-003, T-004 | GitHub Actions runs backend `mvn verify` and frontend lint + build on every push to `dev`, task branches, and PRs into `main`; result visible in GitHub Actions |
 | T-008 | End-to-end smoke workflow: `docker compose` PostgreSQL, backend jar with `.env`, API calls, Vite dev server, headless browser | NFR-08 | Claude | P2 | Done — commit `504c909`, run 42096337624 (ubuntu-latest): PostgreSQL container healthy; backend healthy after 9 s; 6 API checks passed (register 201, duplicate 409, wrong password 401, login 200, `/me` 200 / 401); Chromium (Playwright 1.64.1) showed "API is up", then "API is down" after stopping the backend; screenshots reviewed | T-003, T-004, T-101 | Workflow green; screenshots match |
 | T-009 | Synthetic sample data JSON with every API field + idempotent loader script | FR-01, FR-02 | Claude | P2 | Done — commit `998031a`, smoke run 42103027735: 5 users and 12 listings loaded through the API; 8/8 invalid examples returned the expected status and field errors; second load created 0 duplicates. Requested by Khai | T-103 | Loads cleanly twice; invalid examples behave as documented |
-| T-006 | Verify LLM free tier and get API key | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Deferred to Sprint 4 (D-019) | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
+| T-006 | Verify LLM free tier and get API key (Sprint 5, D-032) | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Deferred to Sprint 4 (D-019) | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
 | T-007 | Add Maven wrapper (`mvnw`) and switch docs/CI to it | — | Claude | P3 | Proposed | Maven Central reachable from workspace | `./mvnw verify` passes locally and in CI |
 
 ## Sprint 1 — "A landlord can post a room" ([plan](sprints/sprint-1.md))
@@ -62,6 +62,15 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
 | T-206 | Unique CI check names (`backend`, `frontend`, `smoke`) so they can be required on `main` | Review O3 | P2 | Done — runs 42142824394 (frontend) and 42142824388 (backend) report checks named `frontend` and `backend`; smoke already reports `smoke` |
 | T-207 | Khai's review of the live site: Sign up text vanished on hover; fewer duplicate sign-in buttons on the home page; Back on log-in and sign-up pages; money and area boxes with the unit inside and thousands separators; empty browse page says nothing is posted yet | D-027, FR-02, FR-03 | P2 | Done — frontend run 42166845797: 118 tests passed (12 new: number formatting and caret, NumberField, one hero action, Back on both account pages, empty-state wording); smoke run 42166845789: Sign up stays white on dark green when hovered (01c), filters and listing form work with the new boxes |
+| T-208 | Design tokens (Lagoon), self-hosted Archivo + Public Sans, logo mark, favicon, page titles | D-033 | P1 | Ready (Sprint 4) |
+| T-209 | Header and footer in the new design | D-033 | P1 | Ready (Sprint 4) |
+| T-210 | Home page: hero with skyline and ticket collage, search, 1 Line strip with real counts (read-only stats endpoint), just posted, how it works | D-033, FR-03 | P1 | Ready (Sprint 4) |
+| T-211 | Ticket listing cards; browse page with colour band, mini line, amenity chips | D-033, FR-03 | P1 | Ready (Sprint 4) |
+| T-212 | Listing page: two columns, sticky contact card, amenity icons, getting around | D-033, FR-04 | P1 | Ready (Sprint 4) |
+| T-213 | Landlord pages: sectioned form with live preview; My listings counts | D-033, FR-02 | P2 | Ready (Sprint 4) |
+| T-214 | Toasts, 404 and empty states, page titles | D-033 | P2 | Ready (Sprint 4) |
+| T-215 | Demo content: free-licence room photos; live demo-data loader with private passwords | D-033, NFR-06 | P2 | Ready (Sprint 4) |
+| T-216 | Phone pass at 375 px with smoke screenshots | NFR-07 | P2 | Ready (Sprint 4) |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
