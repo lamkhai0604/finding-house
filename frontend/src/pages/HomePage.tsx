@@ -59,21 +59,10 @@ export function HomePage() {
         </p>
         {user && <p>Welcome back, {user.displayName}.</p>}
         <div className="hero-actions">
+          {/* Log in, Sign up, and Post a room live in the header; one clear action here. */}
           <ButtonLink to="/browse" variant="primary">
             Browse rooms
           </ButtonLink>
-          {!user && (
-            <>
-              <ButtonLink to="/register">Create an account</ButtonLink>
-              <ButtonLink to="/login">Log in</ButtonLink>
-            </>
-          )}
-          {user?.role === "LANDLORD" && (
-            <>
-              <ButtonLink to="/listings/new">Post a room</ButtonLink>
-              <ButtonLink to="/my/listings">My listings</ButtonLink>
-            </>
-          )}
         </div>
       </section>
 

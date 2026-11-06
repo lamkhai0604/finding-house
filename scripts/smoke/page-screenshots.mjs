@@ -96,6 +96,24 @@ try {
     console.error(`FAIL 01b-carousel-opens-listing: ${error.message.split("\n")[0]}`);
   }
 
+  // T-207: a primary button link keeps readable text on hover (it used to turn the same green as
+  // its hover background).
+  {
+    const signUp = page.getByRole("banner").getByRole("link", { name: "Sign up" });
+    await signUp.hover();
+    await page.waitForTimeout(250);
+    const [color, background] = await signUp.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return [style.color, style.backgroundColor];
+    });
+    if (color === background) {
+      failures += 1;
+      console.error(`FAIL 01c: Sign up text disappears on hover (${color} on ${background})`);
+    } else {
+      console.log(`ok   01c: Sign up stays readable on hover (${color} on ${background})`);
+    }
+  }
+
   await page.goto(`${frontend}/register`);
   await page.getByLabel("Account type").selectOption("LANDLORD");
   await shot(page, "02-register-landlord", "Contact phone (optional)");
@@ -157,8 +175,8 @@ try {
 
   await page.goto(`${frontend}/listings/new`);
   await page.getByLabel("Title").fill("Posted from the UI");
-  await page.getByLabel("Monthly rent (USD)").fill("1,450.75");
-  await page.getByLabel("Area (sq ft)").fill("380");
+  await page.getByLabel("Monthly rent").fill("1,450.75");
+  await page.getByLabel("Area").fill("380");
   await page.getByLabel("Neighborhood").selectOption("Fremont");
   await page.getByLabel("Street address").fill("3500 Example Ave N, Seattle, WA");
   await page.getByLabel("Description (optional)").fill("Created by the smoke test.");
@@ -236,7 +254,7 @@ try {
     }
   });
 
-  await page.getByLabel("Max rent ($)").fill("1500");
+  await page.getByLabel("Max rent").fill("1500");
   await page.getByLabel("Sort by").selectOption("price_asc");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await page.waitForURL(/maxPrice=1500/);
@@ -252,11 +270,11 @@ try {
   await check("19c: the URL restores the filters after a reload", async () => {
     await page.reload();
     await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
-    const max = await page.getByLabel("Max rent ($)").inputValue();
-    if (max !== "1500") throw new Error(`max rent field is "${max}"`);
+    const max = await page.getByLabel("Max rent").inputValue();
+    if (max !== "1,500") throw new Error(`max rent field is "${max}"`);
   });
 
-  await page.getByLabel("Min rent ($)").fill("2000");
+  await page.getByLabel("Min rent").fill("2000");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await shot(page, "20-browse-invalid-range", "Must be at least the minimum price.");
 
@@ -279,10 +297,10 @@ try {
   await phone.goto(`${frontend}/browse`);
   await shot(phone, "21-browse-mobile", "rooms found", phone.getByRole("heading", { name: "Browse rooms" }));
   await check("21b: phone filters start folded", async () => {
-    if (await phone.getByLabel("Max rent ($)").isVisible()) throw new Error("filter panel is open");
+    if (await phone.getByLabel("Max rent").isVisible()) throw new Error("filter panel is open");
   });
   await phone.getByRole("button", { name: "Filters" }).click();
-  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent ($)"));
+  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent"));
 } finally {
   await browser.close();
 }
