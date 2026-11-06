@@ -23,13 +23,15 @@ describe("API base URL (T-114b)", () => {
 
   it("sends API calls and the health check to the backend origin", async () => {
     vi.stubEnv("VITE_API_BASE_URL", "https://api.example.test");
-    const fetchMock = vi.fn(async () => Response.json({ status: "UP" }));
+    const fetchMock = vi.fn<typeof fetch>(async () =>
+      Response.json({ status: "UP" }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     await apiRequest("GET", "/api/v1/reference-data");
     await fetchApiHealth();
 
-    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+    expect(fetchMock.mock.calls.map(([url]) => String(url))).toEqual([
       "https://api.example.test/api/v1/reference-data",
       "https://api.example.test/actuator/health",
     ]);
