@@ -1,3 +1,10 @@
+server:
+  # Render (and similar hosts) tell the app which port to listen on.
+  port: ${PORT:8080}
+  # D-030: never rebuild the client address from X-Forwarded-For (forgeable on Render);
+  # app.http.client-ip-header is used instead.
+  forward-headers-strategy: none
+
 spring:
   application:
     name: finding-house
@@ -10,6 +17,9 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/findinghouse}
     username: ${DB_USERNAME:findinghouse}
     password: ${DB_PASSWORD:findinghouse}
+    hikari:
+      # Free database tiers allow few connections; one small instance needs few.
+      maximum-pool-size: ${DB_POOL_SIZE:5}
   jpa:
     # Schema is owned by Flyway (D-005); Hibernate only validates it.
     hibernate:
@@ -34,6 +44,13 @@ app:
     # D-025: 2 hours limits how long a stolen token stays useful.
     ttl: ${JWT_TTL:2h}
     issuer: finding-house
+  # T-114a / D-030: deployment edge. Defaults are for local development.
+  http:
+    # On Render: CF-Connecting-IP (set by Cloudflare, cannot be forged by the client).
+    client-ip-header: ${CLIENT_IP_HEADER:}
+    # Comma-separated exact frontend origins, e.g. https://finding-house.vercel.app
+    cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+    max-request-size: ${MAX_REQUEST_SIZE:64KB}
   # D-024: failed logins allowed per window before that email or client address is blocked.
   login-throttle:
     max-failures-per-email: ${LOGIN_MAX_FAILURES_PER_EMAIL:5}
