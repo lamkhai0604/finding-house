@@ -300,8 +300,13 @@ try {
       .getByRole("button", { name: "Capitol Hill" })
       .click();
     await page.waitForURL(/neighborhood=Capitol\+Hill/);
-    await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
-    const stops = await browseResults.locator(".ticket-stop").allTextContents();
+    // The old results stay until the new ones arrive, so wait for the filtered list itself.
+    let stops = [];
+    for (let tries = 0; tries < 30; tries += 1) {
+      stops = await browseResults.locator(".ticket-stop").allTextContents();
+      if (stops.length > 0 && stops.every((t) => t.startsWith("Capitol Hill"))) break;
+      await page.waitForTimeout(500);
+    }
     if (stops.length === 0 || stops.some((t) => !t.startsWith("Capitol Hill"))) {
       throw new Error(`results outside Capitol Hill: ${stops}`);
     }
