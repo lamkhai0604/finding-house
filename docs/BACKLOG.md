@@ -56,7 +56,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | --- | --- | --- | --- | --- |
 | T-201 | Browse/filter API with validation, sort, pagination | FR-03 | P2 | Done — commit `fb3c40f`, backend run 42128660324: 86 tests passed (12 new: each FR-03 criterion, combined filters, comma and repeated amenities, 9 invalid inputs, and at most 5 SQL statements for a 12-listing page); smoke run 42128660233 |
 | T-202 | Browse page with filter panel | FR-03 | P2 | Done — `/browse` with filters in the URL, 12 per page; frontend run 42135480928: 100 tests passed (9 browse-page and 7 filter unit tests); smoke run 42135480822: filtered prices checked against the real API, reload keeps filters, invalid range shown, phone layout |
-| T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Ready |
+| T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Done — dev-profile loader (D-028); backend run 42141631858: 93 tests passed (7 new: generator rules and variety, 300 loaded in 211 ms, idempotent, browsable, synthetic landlords cannot log in, loader absent outside dev); smoke run 42141631910 |
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Ready |
 | T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
 
