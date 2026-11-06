@@ -2418,3 +2418,79 @@ a.save-heart:not(.button):hover {
     animation: none;
   }
 }
+
+/* Waiting for the server (T-217) */
+
+.nav-progress {
+  position: fixed;
+  z-index: 300;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  pointer-events: none;
+}
+
+.nav-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--line);
+  box-shadow: 0 0 8px rgb(255 79 154 / 0.6);
+  opacity: 0;
+}
+
+/* Runs quickly at first, then slows down and never quite finishes until the data is in. */
+.nav-progress[data-state="loading"] span {
+  opacity: 1;
+  animation: nav-progress 12s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+.nav-progress[data-state="done"] span {
+  width: 100%;
+  opacity: 0;
+  transition:
+    width 150ms ease-out,
+    opacity 250ms ease-in 100ms;
+}
+
+@keyframes nav-progress {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 90%;
+  }
+}
+
+.slow-notice {
+  position: fixed;
+  z-index: 150;
+  top: 4.75rem;
+  left: 50%;
+  width: min(32rem, calc(100% - 2rem));
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 10px 28px rgb(11 43 41 / 0.16);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  transform: translateX(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress[data-state="loading"] span {
+    width: 60%;
+    animation: none;
+  }
+
+  .nav-progress[data-state="done"] span {
+    transition: none;
+  }
+}

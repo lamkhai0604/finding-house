@@ -11,6 +11,7 @@ import { MyListingsPage } from "./pages/MyListingsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SavedRoomsPage } from "./pages/SavedRoomsPage";
+import { LoadingProvider } from "./loading/LoadingProvider";
 import { ToastProvider } from "./toast/ToastProvider";
 
 /** All routes. Kept separate from the browser router so tests can use a memory router. */
@@ -18,48 +19,50 @@ export function AppRoutes() {
   return (
     <FavoritesProvider>
       <ToastProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="browse" element={<BrowsePage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="listings/:id" element={<ListingDetailPage />} />
-            <Route
-              path="listings/new"
-              element={
-                <RequireRole role="LANDLORD">
-                  <ListingFormPage />
-                </RequireRole>
-              }
-            />
-            <Route
-              path="listings/:id/edit"
-              element={
-                <RequireRole role="LANDLORD">
-                  <ListingFormPage />
-                </RequireRole>
-              }
-            />
-            <Route
-              path="my/listings"
-              element={
-                <RequireRole role="LANDLORD">
-                  <MyListingsPage />
-                </RequireRole>
-              }
-            />
-            <Route
-              path="my/saved"
-              element={
-                <RequireRole role="TENANT">
-                  <SavedRoomsPage />
-                </RequireRole>
-              }
-            />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-        </Routes>
+        <LoadingProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="browse" element={<BrowsePage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route path="listings/:id" element={<ListingDetailPage />} />
+              <Route
+                path="listings/new"
+                element={
+                  <RequireRole role="LANDLORD">
+                    <ListingFormPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="listings/:id/edit"
+                element={
+                  <RequireRole role="LANDLORD">
+                    <ListingFormPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="my/listings"
+                element={
+                  <RequireRole role="LANDLORD">
+                    <MyListingsPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="my/saved"
+                element={
+                  <RequireRole role="TENANT">
+                    <SavedRoomsPage />
+                  </RequireRole>
+                }
+              />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </LoadingProvider>
       </ToastProvider>
     </FavoritesProvider>
   );
