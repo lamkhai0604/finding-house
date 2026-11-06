@@ -56,9 +56,7 @@ export function TicketCard({
       </div>
       <div className="ticket-stub">
         <p className="ticket-price">
-          <span className="display">
-            {price}
-          </span>
+          <span className="display">{price}</span>
           <span className="muted"> a month</span>
         </p>
         <Heading className="ticket-title">

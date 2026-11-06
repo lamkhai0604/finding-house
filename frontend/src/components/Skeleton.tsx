@@ -38,7 +38,6 @@ export function ListingDetailSkeleton() {
   );
 }
 
-
 /** Placeholder for a grid of ticket cards while listings load (T-210). */
 export function TicketGridSkeleton({ count = 4 }: { count?: number }) {
   return (

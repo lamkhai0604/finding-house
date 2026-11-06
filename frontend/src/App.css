@@ -322,7 +322,6 @@ h2 {
   margin-bottom: 1rem;
 }
 
-
 .skeleton-title {
   height: 1.75rem;
   width: 60%;
@@ -920,7 +919,6 @@ a.button {
 
 @media (max-width: 480px) {
   .field-row,
-
   .image-url-row {
     grid-template-columns: 4rem 1fr;
   }

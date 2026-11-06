@@ -248,7 +248,11 @@ function FormSection({
 }
 
 /** T-213: the form's current values as a listing, for the live preview. Never sent anywhere. */
-function previewOf(values: FormValues, city: string, listing?: Listing): Listing {
+function previewOf(
+  values: FormValues,
+  city: string,
+  listing?: Listing,
+): Listing {
   const cents = parseDollarsToCents(values.price);
   const area = Number(values.areaSqft);
   const now = new Date().toISOString();
