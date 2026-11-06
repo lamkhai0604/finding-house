@@ -82,6 +82,7 @@ Then send Claude the two URLs (they are public, not secrets) for the live checks
 - **First visit after a quiet period takes up to about a minute**: the free Render service sleeps after 15 minutes without traffic. Open the site a few minutes before showing it in an interview.
 - **Vercel preview deployments** (for branches other than `main`) cannot call the API, because CORS allows only the production URL. That is intended.
 - **No data at first.** Register through the site. Do **not** run `scripts/sample-data/load_sample_data.py` against the live site: its passwords are published in this repository, so anyone could log in as those landlords.
+- **Sign-ups are limited** to 10 attempts per network address per hour (D-031). If you test sign-up many times from home, you may see "Too many sign-up attempts"; it clears within the hour.
 - **Changing a setting**: edit it in the dashboard; Render and Vercel redeploy. A change to `VITE_API_BASE_URL` needs a Vercel redeploy, because it is built into the page.
 
 ## If something goes wrong

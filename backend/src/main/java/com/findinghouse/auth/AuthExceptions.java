@@ -36,4 +36,18 @@ public final class AuthExceptions {
       return retryAfter;
     }
   }
+
+  /** Sign-up refused because this address made too many attempts recently (HTTP 429, T-113). */
+  public static class TooManyRegistrationsException extends RuntimeException {
+    private final java.time.Duration retryAfter;
+
+    public TooManyRegistrationsException(java.time.Duration retryAfter) {
+      super("Too many sign-up attempts");
+      this.retryAfter = retryAfter;
+    }
+
+    public java.time.Duration getRetryAfter() {
+      return retryAfter;
+    }
+  }
 }

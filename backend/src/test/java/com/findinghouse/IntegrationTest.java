@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
       IntegrationTest.TEST_JWT_SECRET_PROPERTY,
       // All tests share one client address (localhost); the per-address limit is unit-tested.
       "app.login-throttle.max-failures-per-address=100000",
+      "app.registration-throttle.max-per-address=100000",
       // Lets tests count SQL statements (e.g. no N+1 queries when browsing).
       "spring.jpa.properties.hibernate.generate_statistics=true"
     })
