@@ -1,0 +1,49 @@
+name: demo-data
+
+# T-215: loads the demo content (scripts/demo-data/demo-data.json) into a deployed backend through
+# its public API. Run by hand only, after the owner has approved it: Actions -> demo-data -> Run
+# workflow. The demo accounts' password is the repository secret DEMO_PASSWORD; it is never in the
+# repository or the logs. Safe to run again: existing accounts and listings are reused.
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "Backend (Render) URL, e.g. https://finding-house.onrender.com"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo-data
+  cancel-in-progress: false
+
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Inputs and secrets pass through environment variables, never into the script text.
+      API_URL: ${{ inputs.api_url }}
+      DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check the inputs
+        run: |
+          [[ "$API_URL" =~ ^https://[A-Za-z0-9.-]+/?$ ]] || { echo "not an https origin: $API_URL"; exit 1; }
+          [ -n "$DEMO_PASSWORD" ] || { echo "the DEMO_PASSWORD repository secret is not set"; exit 1; }
+
+      - name: Wake the API (free hosting sleeps when idle)
+        run: |
+          for i in $(seq 1 36); do
+            if curl -sf --max-time 10 "${API_URL%/}/actuator/health" | grep -q '"UP"'; then
+              echo "API healthy"; exit 0
+            fi
+            sleep 5
+          done
+          echo "API not healthy after 3 minutes"; exit 1
+
+      - name: Load demo content
+        run: python3 scripts/demo-data/load_demo_data.py --base-url "${API_URL%/}" --check-images
