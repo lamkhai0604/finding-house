@@ -72,6 +72,11 @@ describe("Post a room (FR-02)", () => {
     expect(
       await screen.findByRole("heading", { level: 1, name: "Cozy room" }),
     ).toBeInTheDocument();
+    // T-214: a toast confirms it, and can be dismissed.
+    const toasts = screen.getByRole("region", { name: "Notifications" });
+    expect(toasts).toHaveTextContent("Your room is posted.");
+    fireEvent.click(within(toasts).getByRole("button", { name: "Dismiss" }));
+    expect(toasts).toBeEmptyDOMElement();
     expect(sent).toEqual({
       title: "Cozy room",
       description: "Near the park",
@@ -281,6 +286,9 @@ describe("My listings (FR-02 AC3, AC6)", () => {
       await within(activeCard).findByRole("button", { name: "Unhide" }),
     ).toBeInTheDocument();
     expect(within(activeCard).getByText("Hidden")).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Notifications" }),
+    ).toHaveTextContent('"Active room" is hidden from Browse.');
   });
 
   it("invites the landlord to post when there are no listings", async () => {
@@ -349,6 +357,9 @@ describe("Delete a listing (FR-07)", () => {
     expect(
       screen.getByRole("heading", { name: "No listings yet" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Notifications" }),
+    ).toHaveTextContent('"Mistake room" was deleted.');
   });
 
   it("can be deleted from the edit page, then returns to My listings", async () => {

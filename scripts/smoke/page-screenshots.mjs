@@ -212,6 +212,16 @@ try {
     "$1,450.75",
     page.getByRole("heading", { name: "Posted from the UI" }),
   );
+  // T-214: a toast confirms the post. It is fixed to the screen, so take the viewport only.
+  try {
+    const toasts = page.getByRole("region", { name: "Notifications" });
+    await toasts.getByText("Your room is posted.").waitFor({ timeout: 5000 });
+    await page.screenshot({ path: `${outDir}/14b-toast-posted.jpg`, type: "jpeg", quality: 70 });
+    console.log('ok   14b-toast-posted: shows "Your room is posted."');
+  } catch (error) {
+    failures += 1;
+    console.error(`FAIL 14b-toast-posted: ${error.message.split("\n")[0]}`);
+  }
 
   await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
@@ -251,6 +261,10 @@ try {
 
   await page.goto(`${frontend}/listings/${ids["Basement studio (paused)"]}`);
   await shot(page, "09-detail-hidden-public-view", "Listing not found");
+
+  // T-214: an unknown address shows the not-found page with ways back.
+  await page.goto(`${frontend}/no/such/page`);
+  await shot(page, "09b-page-not-found", "This stop is not on our line");
 
   // T-202: browse page against the real API.
   const check = async (name, fn) => {

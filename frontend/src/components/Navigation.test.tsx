@@ -143,3 +143,22 @@ describe("Listing form leaves safely (D-027)", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("Page not found (T-214)", () => {
+  it("explains and offers a way back into the site", async () => {
+    mockApi({});
+    renderApp("/no/such/page");
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Page not found" }),
+    ).toBeInTheDocument();
+    const main = screen.getByRole("main");
+    expect(
+      within(main).getByRole("link", { name: "Browse rooms" }),
+    ).toHaveAttribute("href", "/browse");
+    expect(
+      within(main).getByRole("link", { name: "Back to home" }),
+    ).toHaveAttribute("href", "/");
+    expect(document.title).toBe("Page not found | Finding House");
+  });
+});

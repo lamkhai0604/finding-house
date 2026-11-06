@@ -7,9 +7,11 @@ import { ButtonLink } from "../components/ButtonLink";
 import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { FormAlert } from "../components/FormAlert";
 import { TicketGridSkeleton } from "../components/Skeleton";
+import { EmptyState } from "../components/EmptyState";
 import { StatusMessage } from "../components/StatusMessage";
 import { TicketCard } from "../components/TicketCard";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useToast } from "../toast/toast";
 
 type Loaded =
   { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
@@ -21,6 +23,7 @@ export function MyListingsPage() {
   const [busyId, setBusyId] = useState<number | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [toDelete, setToDelete] = useState<Listing | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     let active = true;
@@ -46,6 +49,11 @@ export function MyListingsPage() {
       const updated = await changeListingStatus(
         listing.id,
         listing.status === "ACTIVE" ? "HIDDEN" : "ACTIVE",
+      );
+      toast.show(
+        updated.status === "HIDDEN"
+          ? `"${updated.title}" is hidden from Browse.`
+          : `"${updated.title}" is back in Browse.`,
       );
       setLoaded((current) =>
         current?.kind === "ready"
@@ -90,9 +98,11 @@ export function MyListingsPage() {
       </div>
       <FormAlert message={actionError} />
       {loaded.listings.length === 0 ? (
-        <StatusMessage title="No listings yet">
-          <p>Post your first room so tenants can find it.</p>
-        </StatusMessage>
+        <EmptyState title="No listings yet">
+          <p>
+            Post your first room so tenants can find it. It takes a few minutes.
+          </p>
+        </EmptyState>
       ) : (
         <>
           <dl className="listing-counts">
@@ -146,6 +156,7 @@ export function MyListingsPage() {
         listing={toDelete}
         onCancel={() => setToDelete(null)}
         onDeleted={(id) => {
+          if (toDelete) toast.show(`"${toDelete.title}" was deleted.`);
           setToDelete(null);
           setLoaded((current) =>
             current?.kind === "ready"
