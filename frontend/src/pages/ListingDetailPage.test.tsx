@@ -36,6 +36,13 @@ describe("Listing detail page (FR-04)", () => {
     expect(
       within(contact).getByRole("link", { name: "Call (206) 555-0101" }),
     ).toHaveAttribute("href", "tel:(206) 555-0101");
+    // T-216: the phone-only bar repeats the price and the call link.
+    const bar = screen.getByRole("region", { name: "Quick contact" });
+    expect(bar).toHaveTextContent("$1,650 a month");
+    expect(within(bar).getByRole("link", { name: "Call" })).toHaveAttribute(
+      "href",
+      "tel:(206) 555-0101",
+    );
   });
 
   it("shows the neighboring 1 Line stops, or says there is no station (T-212)", async () => {
@@ -88,6 +95,11 @@ describe("Listing detail page (FR-04)", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("No amenities listed.")).toBeInTheDocument();
     expect(screen.getByText("No phone number provided.")).toBeInTheDocument();
+    expect(
+      within(screen.getByRole("region", { name: "Quick contact" })).queryByRole(
+        "link",
+      ),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "About this place" }),
     ).not.toBeInTheDocument();
