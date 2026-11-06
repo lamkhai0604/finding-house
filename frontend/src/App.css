@@ -2520,7 +2520,7 @@ a.save-heart:not(.button):hover {
     gap: 0.75rem;
     padding: 0.625rem 1rem calc(0.625rem + env(safe-area-inset-bottom));
     border-top: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.97);
+    background: #fff;
     box-shadow: 0 -6px 20px rgb(11 43 41 / 0.08);
   }
 
@@ -2602,21 +2602,13 @@ a.save-heart:not(.button):hover {
     font-size: 1rem;
   }
 
-  /* The mini line in the filter fits all seven stops; long names wrap. */
+  /* Seven stop names do not fit 375 px without breaking words; on phones the Neighborhood list
+     right below does the same job, and the home page shows the full line. */
   .mini-line {
-    overflow: visible;
+    display: none;
   }
 
-  .mini-stops {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 0;
-    min-width: 0;
-  }
-
-  .mini-stop {
-    min-width: 0;
-    font-size: 0.6875rem;
-    line-height: 1.2;
-    overflow-wrap: anywhere;
+  .filter-fields {
+    margin-top: 0;
   }
 }
