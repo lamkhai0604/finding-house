@@ -13,7 +13,7 @@ if (!frontend || !outDir) {
 mkdirSync(outDir, { recursive: true });
 
 let failures = 0;
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: "chrome" });
 
 async function photosLoaded(page) {
   // Scroll through so lazy images load, then wait for every Unsplash photo to finish.
