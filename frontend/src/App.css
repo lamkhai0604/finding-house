@@ -2077,6 +2077,11 @@ a.save-heart:not(.button):hover {
   margin-top: 1.25rem;
 }
 
+.contact-call svg {
+  flex: 0 0 auto;
+  margin-right: 0.25rem;
+}
+
 .contact-save {
   margin-top: 0.625rem;
 }
