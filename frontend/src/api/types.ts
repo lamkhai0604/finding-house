@@ -109,3 +109,10 @@ export interface ApiErrorBody {
   message: string;
   fieldErrors: FieldError[];
 }
+
+/** T-210: shown rooms and the lowest rent in one neighborhood (null when it has none). */
+export interface NeighborhoodStats {
+  neighborhood: string;
+  activeListings: number;
+  lowestMonthlyPriceCents: number | null;
+}

@@ -120,6 +120,7 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | DELETE | `/api/v1/listings/{id}` | owner; 204 | FR-07 |
 | GET | `/api/v1/me/listings` | LANDLORD | FR-02 |
 | GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
+| GET | `/api/v1/neighborhoods` | — | T-210 (every neighborhood with its count of shown rooms and lowest monthly rent, for the home page; hidden rooms are not counted) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |
 | GET | `/api/v1/me/favorites` (saved, still-visible listings, newest saved first) and `/api/v1/me/favorites/ids` | TENANT | FR-06 |
 | PUT / DELETE | `/api/v1/me/favorites/{listingId}` (both idempotent, 204; saving a hidden or missing listing is 404; at most 200 per tenant) | TENANT | FR-06 |

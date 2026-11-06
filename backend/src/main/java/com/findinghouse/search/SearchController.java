@@ -1,6 +1,7 @@
 package com.findinghouse.search;
 
 import com.findinghouse.listing.ListingDtos.ListingResponse;
+import com.findinghouse.listing.NeighborhoodStats;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
   private final SearchService searchService;
+  private final NeighborhoodStatsService neighborhoodStats;
 
-  public SearchController(SearchService searchService) {
+  public SearchController(SearchService searchService, NeighborhoodStatsService neighborhoodStats) {
     this.searchService = searchService;
+    this.neighborhoodStats = neighborhoodStats;
+  }
+
+  /** T-210: public room counts and lowest rent per neighborhood, for the home page. */
+  @GetMapping("/neighborhoods")
+  public List<NeighborhoodStats> neighborhoods() {
+    return neighborhoodStats.all();
   }
 
   /**
