@@ -212,14 +212,17 @@ describe("Register page (FR-01)", () => {
 });
 
 describe("Back button on the account pages (T-207)", () => {
-  it.each(["/login", "/register"])("%s has a Back button to the home page", (path) => {
-    mockApi({});
-    renderApp(path);
+  it.each(["/login", "/register"])(
+    "%s has a Back button to the home page",
+    (path) => {
+      mockApi({});
+      renderApp(path);
 
-    fireEvent.click(screen.getByRole("button", { name: /Back/ }));
+      fireEvent.click(screen.getByRole("button", { name: /Back/ }));
 
-    expect(
-      screen.getByRole("heading", { name: "Find a room in Seattle" }),
-    ).toBeInTheDocument();
-  });
+      expect(
+        screen.getByRole("heading", { name: "Find a room in Seattle" }),
+      ).toBeInTheDocument();
+    },
+  );
 });

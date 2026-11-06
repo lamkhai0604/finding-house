@@ -4,7 +4,11 @@ import { describe, expect, it } from "vitest";
 import { AREA, MONEY, type NumberFormat } from "../utils/numberInput";
 import { NumberField } from "./NumberField";
 
-function Harness({ format, prefix, suffix }: {
+function Harness({
+  format,
+  prefix,
+  suffix,
+}: {
   format: NumberFormat;
   prefix?: string;
   suffix?: string;

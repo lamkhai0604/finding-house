@@ -104,9 +104,8 @@ describe("Home page newest rooms (T-122)", () => {
       await screen.findByRole("heading", { name: "Find a room in Seattle" })
     ).closest("section")!;
     expect(within(hero).getAllByRole("link")).toHaveLength(1);
-    expect(within(hero).getByRole("link", { name: "Browse rooms" })).toHaveAttribute(
-      "href",
-      "/browse",
-    );
+    expect(
+      within(hero).getByRole("link", { name: "Browse rooms" }),
+    ).toHaveAttribute("href", "/browse");
   });
 });

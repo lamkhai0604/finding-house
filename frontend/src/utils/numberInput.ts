@@ -16,7 +16,10 @@ export const AREA: NumberFormat = { decimals: 0, maxIntegerDigits: 6 };
  * Keeps digits and at most one decimal point, within the format's limits. Returns null when the
  * input has too many digits, so the field can refuse the keystroke instead of cutting digits off.
  */
-export function toPlainNumber(input: string, format: NumberFormat): string | null {
+export function toPlainNumber(
+  input: string,
+  format: NumberFormat,
+): string | null {
   let digitsAndPoint = input.replace(/[^\d.]/g, "");
   if (format.decimals === 0) {
     digitsAndPoint = digitsAndPoint.replace(/\./g, "");

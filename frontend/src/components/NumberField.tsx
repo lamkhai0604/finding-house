@@ -48,7 +48,11 @@ export function NumberField({
 
   useLayoutEffect(() => {
     const input = inputRef.current;
-    if (input && pendingCaret.current !== null && document.activeElement === input) {
+    if (
+      input &&
+      pendingCaret.current !== null &&
+      document.activeElement === input
+    ) {
       input.setSelectionRange(pendingCaret.current, pendingCaret.current);
     }
     pendingCaret.current = null;
@@ -59,13 +63,19 @@ export function NumberField({
     const plain = toPlainNumber(typed, format);
     if (plain === null) {
       // Too many digits: keep the previous value and put the caret back where it was.
-      const caret = Math.max(0, (event.target.selectionStart ?? typed.length) - 1);
+      const caret = Math.max(
+        0,
+        (event.target.selectionStart ?? typed.length) - 1,
+      );
       pendingCaret.current = caret;
       event.target.value = shown;
       event.target.setSelectionRange(caret, caret);
       return;
     }
-    const before = significantBefore(typed, event.target.selectionStart ?? typed.length);
+    const before = significantBefore(
+      typed,
+      event.target.selectionStart ?? typed.length,
+    );
     pendingCaret.current = caretAfter(formatPlainNumber(plain), before);
     onValueChange(plain);
   }
@@ -90,7 +100,9 @@ export function NumberField({
           value={shown}
           onChange={handleChange}
           aria-invalid={error ? true : undefined}
-          aria-describedby={[hintId, errorId].filter(Boolean).join(" ") || undefined}
+          aria-describedby={
+            [hintId, errorId].filter(Boolean).join(" ") || undefined
+          }
         />
         {suffix && (
           <span className="affix" aria-hidden="true">
