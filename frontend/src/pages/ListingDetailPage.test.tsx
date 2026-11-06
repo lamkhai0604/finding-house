@@ -13,7 +13,9 @@ describe("Listing detail page (FR-04)", () => {
     expect(
       await screen.findByRole("heading", { name: "Sunny studio near UW" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("University District, Seattle")).toBeInTheDocument();
+    expect(
+      screen.getByText("University District, Seattle"),
+    ).toBeInTheDocument();
     const facts = screen.getByText("Rent").closest("dl")!;
     expect(facts).toHaveTextContent("Rent$1,650");
     expect(facts).toHaveTextContent("Area420 sq ft");

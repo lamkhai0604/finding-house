@@ -644,7 +644,6 @@ input[type="checkbox"]:focus-visible {
 
 /* Listing detail */
 
-
 .listing-image {
   display: block;
   overflow: hidden;
@@ -669,7 +668,6 @@ input[type="checkbox"]:focus-visible {
   background: var(--hover);
 }
 
-
 .badge {
   display: inline-block;
   margin-bottom: 0.5rem;
@@ -683,8 +681,6 @@ input[type="checkbox"]:focus-visible {
 .description {
   white-space: pre-line;
 }
-
-
 
 /* Listing form and lists */
 
@@ -985,7 +981,6 @@ a.button {
   .image-url-row {
     grid-template-columns: 4rem 1fr;
   }
-
 
   .header-inner {
     flex-wrap: wrap;
