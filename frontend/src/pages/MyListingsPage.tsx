@@ -6,9 +6,9 @@ import { Button } from "../components/Button";
 import { ButtonLink } from "../components/ButtonLink";
 import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { FormAlert } from "../components/FormAlert";
-import { ListingCard } from "../components/ListingCard";
-import { ListingListSkeleton } from "../components/Skeleton";
+import { TicketGridSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
+import { TicketCard } from "../components/TicketCard";
 import { usePageTitle } from "../hooks/usePageTitle";
 
 type Loaded =
@@ -67,7 +67,7 @@ export function MyListingsPage() {
   }
 
   if (!loaded) {
-    return <ListingListSkeleton />;
+    return <TicketGridSkeleton count={3} />;
   }
   if (loaded.kind === "error") {
     return (
@@ -77,10 +77,13 @@ export function MyListingsPage() {
     );
   }
 
+  const shown = loaded.listings.filter((l) => l.status === "ACTIVE").length;
+  const hidden = loaded.listings.length - shown;
+
   return (
-    <section>
+    <section className="my-listings">
       <div className="page-heading">
-        <h1>My listings</h1>
+        <h1 className="display">My listings</h1>
         <ButtonLink to="/listings/new" variant="primary">
           Post a room
         </ButtonLink>
@@ -91,35 +94,53 @@ export function MyListingsPage() {
           <p>Post your first room so tenants can find it.</p>
         </StatusMessage>
       ) : (
-        <div className="listing-list">
-          {loaded.listings.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              listing={listing}
-              actions={
-                <>
-                  <ButtonLink to={`/listings/${listing.id}/edit`}>
-                    Edit
-                  </ButtonLink>
-                  <Button
-                    variant="secondary"
-                    busy={busyId === listing.id}
-                    onClick={() => toggleStatus(listing)}
-                  >
-                    {listing.status === "ACTIVE" ? "Hide" : "Unhide"}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    className="button-danger-outline"
-                    onClick={() => setToDelete(listing)}
-                  >
-                    Delete
-                  </Button>
-                </>
-              }
-            />
-          ))}
-        </div>
+        <>
+          <dl className="listing-counts" aria-label="Your rooms">
+            <div>
+              <dt>Rooms</dt>
+              <dd className="display">{loaded.listings.length}</dd>
+            </div>
+            <div>
+              <dt>Shown in Browse</dt>
+              <dd className="display">{shown}</dd>
+            </div>
+            <div>
+              <dt>Hidden</dt>
+              <dd className="display">{hidden}</dd>
+            </div>
+          </dl>
+          <ul className="ticket-grid">
+            {loaded.listings.map((listing) => (
+              <li key={listing.id}>
+                <TicketCard
+                  listing={listing}
+                  headingLevel={2}
+                  footer={
+                    <>
+                      <ButtonLink to={`/listings/${listing.id}/edit`}>
+                        Edit
+                      </ButtonLink>
+                      <Button
+                        variant="secondary"
+                        busy={busyId === listing.id}
+                        onClick={() => toggleStatus(listing)}
+                      >
+                        {listing.status === "ACTIVE" ? "Hide" : "Unhide"}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="button-danger-outline"
+                        onClick={() => setToDelete(listing)}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       <DeleteListingDialog
         listing={toDelete}
