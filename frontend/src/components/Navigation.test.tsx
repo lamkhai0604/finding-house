@@ -6,7 +6,6 @@ import { landlordMaya, listingDetail } from "../test/fixtures";
 import { mockApi } from "../test/mockApi";
 import { renderApp } from "../test/renderApp";
 import { BackButton } from "./BackButton";
-import { Carousel } from "./Carousel";
 
 function loggedInAsMaya() {
   window.sessionStorage.setItem(TOKEN_STORAGE_KEY, "tok");
@@ -111,37 +110,8 @@ describe("Header and footer (D-027)", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Back/ }));
 
     expect(
-      await screen.findByRole("heading", { name: "Find a room in Seattle" }),
+      await screen.findByRole("heading", { name: "Find a room near your stop" }),
     ).toBeInTheDocument();
-  });
-});
-
-describe("Carousel (T-122)", () => {
-  it("lists every slide with its position, and starts at the beginning", () => {
-    render(
-      <MemoryRouter>
-        <Carousel
-          label="Neighborhoods"
-          items={[
-            { id: "a", title: "Ballard", subtitle: "By the locks" },
-            { id: "b", title: "Fremont", href: "/listings/1" },
-          ]}
-        />
-      </MemoryRouter>,
-    );
-
-    const carousel = screen.getByRole("region", { name: "Neighborhoods" });
-    expect(within(carousel).getAllByRole("listitem")).toHaveLength(2);
-    expect(
-      within(carousel).getByLabelText("1 of 2: Ballard"),
-    ).toBeInTheDocument();
-    expect(within(carousel).getByRole("link")).toHaveAttribute(
-      "href",
-      "/listings/1",
-    );
-    expect(
-      within(carousel).getByRole("button", { name: "Previous" }),
-    ).toBeDisabled();
   });
 });
 

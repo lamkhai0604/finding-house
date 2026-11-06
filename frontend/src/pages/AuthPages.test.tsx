@@ -221,7 +221,7 @@ describe("Back button on the account pages (T-207)", () => {
       fireEvent.click(screen.getByRole("button", { name: /Back/ }));
 
       expect(
-        screen.getByRole("heading", { name: "Find a room in Seattle" }),
+        screen.getByRole("heading", { name: "Find a room near your stop" }),
       ).toBeInTheDocument();
     },
   );

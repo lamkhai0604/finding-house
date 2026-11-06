@@ -9,7 +9,7 @@ describe("page titles (T-208)", () => {
     mockApi({});
     renderApp("/");
 
-    await screen.findByRole("heading", { name: "Find a room in Seattle" });
+    await screen.findByRole("heading", { name: "Find a room near your stop" });
     expect(document.title).toBe("Finding House: rooms for rent in Seattle");
   });
 

@@ -6,6 +6,7 @@ import type {
   ListingDetail,
   ListingRequest,
   ListingStatus,
+  NeighborhoodStats,
   ReferenceData,
 } from "./types";
 
@@ -37,6 +38,11 @@ export function searchListings(
 
 export function getReferenceData(): Promise<ReferenceData> {
   return apiRequest("GET", "/api/v1/reference-data");
+}
+
+/** T-210: every neighborhood with its count of shown rooms and lowest rent. */
+export function getNeighborhoodStats(): Promise<NeighborhoodStats[]> {
+  return apiRequest("GET", "/api/v1/neighborhoods");
 }
 
 export function getMyListings(): Promise<Listing[]> {

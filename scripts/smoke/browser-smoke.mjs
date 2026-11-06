@@ -16,7 +16,7 @@ const browser = await chromium.launch({ channel: "chrome" });
 try {
   const page = await browser.newPage({ viewport: { width: 1024, height: 640 } });
   await page.goto(url);
-  await page.getByRole("heading", { name: "Find a room in Seattle" }).waitFor({ timeout: 15000 });
+  await page.getByRole("heading", { name: "Find a room near your stop" }).waitFor({ timeout: 15000 });
   await page
     .getByRole("banner")
     .getByRole("link", { name: "Finding House" })

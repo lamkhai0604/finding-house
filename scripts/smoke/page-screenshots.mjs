@@ -77,24 +77,44 @@ try {
   const page = await desktop.newPage();
   watchForCspViolations(page);
 
-  // T-122: the home carousel shows the newest real listings (never the hidden one), and a slide
-  // opens that listing.
+  // T-122 / T-210: "Just posted" shows the newest real listings (never the hidden one) as tickets,
+  // and a ticket opens that listing. The 1 Line strip shows real room counts.
   await page.goto(`${frontend}/`);
-  const newest = page.getByRole("region", { name: "Newest rooms" });
-  await shot(page, "01-home-logged-out", "/month ·", newest);
+  const newest = page.getByRole("region", { name: "Just posted" });
+  const line = page.getByRole("region", { name: "Rooms along the 1 Line" });
+  await shot(page, "01-home-logged-out", " a month", newest.getByRole("article").first());
   try {
     if ((await newest.getByText("Basement studio (paused)").count()) > 0) {
-      throw new Error("the hidden listing is in the carousel");
+      throw new Error("the hidden listing is in Just posted");
     }
-    const firstSlide = newest.getByRole("link").first();
-    const title = (await firstSlide.locator("strong").textContent()) ?? "";
-    await firstSlide.click();
+    const counts = await line.getByText(/^\d+ rooms?$/).count();
+    if (counts === 0) throw new Error("no stop on the 1 Line shows a room count");
+    console.log(`ok   01a-line-counts: ${counts} stops show a room count`);
+    const firstTicket = newest.getByRole("article").first().getByRole("link");
+    const title = (await firstTicket.textContent()) ?? "";
+    await firstTicket.click();
     await page.getByRole("heading", { level: 1, name: title }).waitFor({ timeout: 15000 });
-    console.log(`ok   01b-carousel-opens-listing: "${title}"`);
+    console.log(`ok   01b-ticket-opens-listing: "${title}"`);
   } catch (error) {
     failures += 1;
-    console.error(`FAIL 01b-carousel-opens-listing: ${error.message.split("\n")[0]}`);
+    console.error(`FAIL 01b-ticket-opens-listing: ${error.message.split("\n")[0]}`);
   }
+
+  // T-210: the hero search opens browse with the neighborhood and max rent filled in.
+  await page.goto(`${frontend}/`);
+  {
+    const form = page.getByRole("form", { name: "Search rooms" });
+    await form.getByLabel("Neighborhood").selectOption("Capitol Hill");
+    await form.getByLabel("Max rent per month").fill("3000");
+    await form.getByRole("button", { name: "Search rooms" }).click();
+    await shot(page, "01d-home-search-to-browse", "Capitol Hill 1BR, pets welcome");
+    const url = new URL(page.url());
+    if (url.searchParams.get("neighborhood") !== "Capitol Hill" || url.searchParams.get("maxPrice") !== "3000") {
+      failures += 1;
+      console.error(`FAIL 01d: browse opened with ${url.search}`);
+    }
+  }
+  await page.goto(`${frontend}/`);
 
   // T-207: a primary button link keeps readable text on hover (it used to turn the same green as
   // its hover background).
