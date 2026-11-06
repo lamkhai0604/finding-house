@@ -16,6 +16,7 @@ import { ListingForm } from "../components/ListingForm";
 import { FormSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useToast } from "../toast/toast";
 
 type Loaded =
   | { kind: "ready"; referenceData: ReferenceData; listing?: Listing }
@@ -27,6 +28,7 @@ export function ListingFormPage() {
   const { id } = useParams();
   const { user } = useSession();
   const navigate = useNavigate();
+  const toast = useToast();
   const key = id ?? "new";
   const [loaded, setLoaded] = useState<{ key: string; value: Loaded } | null>(
     null,
@@ -86,6 +88,11 @@ export function ListingFormPage() {
       ? await updateListing(editing.id, request)
       : await createListing(request);
     navigate(`/listings/${saved.id}`);
+    toast.show(
+      editing
+        ? "Changes saved."
+        : "Your room is posted. Tenants can find it in Browse now.",
+    );
   }
 
   return (
@@ -117,7 +124,10 @@ export function ListingFormPage() {
           <DeleteListingDialog
             listing={confirmingDelete ? editing : null}
             onCancel={() => setConfirmingDelete(false)}
-            onDeleted={() => navigate("/my/listings", { replace: true })}
+            onDeleted={() => {
+              navigate("/my/listings", { replace: true });
+              toast.show(`"${editing.title}" was deleted.`);
+            }}
           />
         </div>
       )}

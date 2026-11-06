@@ -80,8 +80,12 @@ export function ListingDetailPage() {
   if (value.kind === "not-found") {
     return (
       <StatusMessage title="Listing not found">
-        <p>It may have been removed or hidden by its owner.</p>
-        <ButtonLink to="/">Back to home</ButtonLink>
+        <p>It may have been rented, removed or hidden by its owner.</p>
+        <div className="empty-actions">
+          <ButtonLink to="/browse" variant="primary">
+            Browse rooms
+          </ButtonLink>
+        </div>
       </StatusMessage>
     );
   }

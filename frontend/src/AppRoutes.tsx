@@ -11,11 +11,13 @@ import { MyListingsPage } from "./pages/MyListingsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SavedRoomsPage } from "./pages/SavedRoomsPage";
+import { ToastProvider } from "./toast/ToastProvider";
 
 /** All routes. Kept separate from the browser router so tests can use a memory router. */
 export function AppRoutes() {
   return (
     <FavoritesProvider>
+      <ToastProvider>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
@@ -58,6 +60,7 @@ export function AppRoutes() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
+      </ToastProvider>
     </FavoritesProvider>
   );
 }

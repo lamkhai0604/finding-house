@@ -6,6 +6,7 @@ import { ButtonLink } from "../components/ButtonLink";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { TicketGridSkeleton } from "../components/Skeleton";
 import { TicketCard } from "../components/TicketCard";
+import { EmptyState } from "../components/EmptyState";
 import { StatusMessage } from "../components/StatusMessage";
 import { useFavorites } from "../favorites/favorites";
 import { usePageTitle } from "../hooks/usePageTitle";
@@ -58,12 +59,14 @@ export function SavedRoomsPage() {
         <ButtonLink to="/browse">Browse rooms</ButtonLink>
       </div>
       {shown.length === 0 ? (
-        <div className="empty-results" role="status">
-          <h2>No saved rooms yet</h2>
-          <p className="muted">
-            Tap the heart on a room you like and it will show up here.
-          </p>
-        </div>
+        <EmptyState title="No saved rooms yet">
+          <p>Tap the heart on a room you like and it will show up here.</p>
+          <div className="empty-actions">
+            <ButtonLink to="/browse" variant="primary">
+              Browse rooms
+            </ButtonLink>
+          </div>
+        </EmptyState>
       ) : (
         <ul className="ticket-grid">
           {shown.map((listing) => (

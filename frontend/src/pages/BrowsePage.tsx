@@ -5,6 +5,7 @@ import { getReferenceData, searchListings } from "../api/listings";
 import type { Listing, ListingSort, Page, ReferenceData } from "../api/types";
 import { useSession } from "../auth/session";
 import {
+  EMPTY_FILTERS,
   filtersFromParams,
   filtersToParams,
   SORT_OPTIONS,
@@ -14,6 +15,7 @@ import {
 } from "../browse/filters";
 import { Button } from "../components/Button";
 import { FavoriteButton } from "../components/FavoriteButton";
+import { EmptyState } from "../components/EmptyState";
 import { FormAlert } from "../components/FormAlert";
 import { SelectField } from "../components/SelectField";
 import { TicketCard } from "../components/TicketCard";
@@ -188,22 +190,23 @@ export function BrowsePage() {
           ) : current.kind === "error" ? (
             <FormAlert message={current.message} />
           ) : current.page.totalItems === 0 ? (
-            <div className="empty-results" role="status">
-              {activeFilters > 0 ? (
-                <>
-                  <h2>No rooms match these filters</h2>
-                  <p className="muted">
-                    Try a wider price range, another neighborhood, or fewer
-                    amenities.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h2>No rooms have been posted yet</h2>
-                  <p className="muted">Check back soon.</p>
-                </>
-              )}
-            </div>
+            activeFilters > 0 ? (
+              <EmptyState title="No rooms match these filters">
+                <p>
+                  Try a wider price range, another neighborhood, or fewer
+                  amenities.
+                </p>
+                <div className="empty-actions">
+                  <Button onClick={() => apply(EMPTY_FILTERS)}>
+                    Show all rooms
+                  </Button>
+                </div>
+              </EmptyState>
+            ) : (
+              <EmptyState title="No rooms have been posted yet">
+                <p>Check back soon.</p>
+              </EmptyState>
+            )
           ) : (
             <>
               {current.page.items.length === 0 ? (

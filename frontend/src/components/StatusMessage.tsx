@@ -1,16 +1,16 @@
 import type { ReactNode } from "react";
+import { EmptyState } from "./EmptyState";
 
 interface StatusMessageProps {
   title: string;
   children?: ReactNode;
 }
 
-/** Full-page state such as "Loading…", "Listing not found", or an error. */
+/** Full-page state such as "Listing not found" or an error, shown as a T-214 empty state. */
 export function StatusMessage({ title, children }: StatusMessageProps) {
   return (
-    <section className="status-message" aria-live="polite">
-      <h1>{title}</h1>
+    <EmptyState title={title} headingLevel={1}>
       {children}
-    </section>
+    </EmptyState>
   );
 }
