@@ -116,6 +116,13 @@ export function BrowsePage() {
       values.minArea,
     ].filter((v) => v.trim() !== "").length + values.amenities.length;
 
+  // Sort and page live in the band and the pager, not the panel: changing them must not reset
+  // what the visitor has typed in the panel but not applied yet.
+  const panelParams = new URLSearchParams(queryKey);
+  panelParams.delete("sort");
+  panelParams.delete("page");
+  const panelKey = panelParams.toString();
+
   const count =
     current?.kind === "ready" && current.page.totalItems > 0
       ? current.page.totalItems
@@ -161,13 +168,16 @@ export function BrowsePage() {
           className={panelOpen ? "filter-wrap open" : "filter-wrap"}
         >
           <ListingFilters
-            // A new URL (Back, a pasted link, or "Clear") resets the form to match it.
-            key={queryKey}
+            // New filters in the URL (Back, a pasted link, or "Clear") reset the form to match.
+            key={panelKey}
             initial={parsed.values}
             initialErrors={parsed.errors}
             neighborhoods={reference?.neighborhoods ?? []}
             amenities={reference?.amenities ?? parsed.values.amenities}
-            onApply={apply}
+            // The panel does not show the sort; keep the one chosen in the band.
+            onApply={(next, submitted) =>
+              apply({ ...next, sort: values.sort }, submitted)
+            }
           />
         </div>
         <div className="browse-results">

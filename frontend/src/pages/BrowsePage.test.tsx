@@ -266,6 +266,26 @@ describe("Browse rooms (FR-03, T-202)", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
+  it("keeps typed amounts when the sort changes before Show rooms (T-211)", async () => {
+    const queries = browseApi(() => Response.json(page([listing(7, "A")])));
+    renderApp("/browse");
+    await screen.findByText("1 room found");
+
+    fill("Rent up to", "1500");
+    fill("Sort by", "price_asc");
+    await waitFor(() =>
+      expect(queries.at(-1)).toBe("?sort=price_asc&page=0&size=12"),
+    );
+    expect(screen.getByLabelText("Rent up to")).toHaveValue("1,500");
+
+    fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
+    await waitFor(() =>
+      expect(queries.at(-1)).toBe(
+        "?maxPriceCents=150000&sort=price_asc&page=0&size=12",
+      ),
+    );
+  });
+
   it("picks a neighborhood from a stop on the mini 1 Line (T-211)", async () => {
     const queries = browseApi(() => Response.json(page([listing(7, "A")])));
     renderApp("/browse");
