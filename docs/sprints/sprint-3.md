@@ -5,7 +5,7 @@
 | Goal | The app runs on the public internet at no cost, with the same checks that run in CI passing against the live URLs. |
 | Dates | 2026-11-05 → 2026-11-19 (2 weeks, proposed) |
 | Requirements | NFR-01, NFR-05; D-029, D-030 |
-| Tasks | T-114a, T-114b, T-401, T-405, T-113; stretch: T-402, T-403 |
+| Tasks | T-114a, T-114b, T-401, T-405, T-113; stretch: T-402, T-403 (both done); added: T-206, T-207 |
 | Approved | Khai, 2026-11-05 (chat: "okay tớ duyệt") |
 
 ## Plan
@@ -33,4 +33,4 @@
 
 ## Sprint review
 
-_To be filled at the end of the sprint; full report in `docs/reports/sprint-3-report.md` (D-020)._
+Goal met (2026-11-05): live at https://finding-house.vercel.app with the live checks green; all planned tasks plus T-206, T-207, T-402, and T-403. Full report: [sprint-3-report.md](../reports/sprint-3-report.md) (D-020).
