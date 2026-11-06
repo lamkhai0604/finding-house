@@ -25,7 +25,8 @@
   --danger-bg: #fee4e2;
   --radius: 12px;
   --font-text: "Public Sans Variable", system-ui, sans-serif;
-  --font-display: "Archivo Variable", "Public Sans Variable", system-ui, sans-serif;
+  --font-display:
+    "Archivo Variable", "Public Sans Variable", system-ui, sans-serif;
   font-family: var(--font-text);
   color: var(--text);
   background: var(--bg);

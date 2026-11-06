@@ -8,6 +8,8 @@ const SITE = "Finding House";
  */
 export function usePageTitle(title: string | null | undefined) {
   useEffect(() => {
-    document.title = title ? `${title} | ${SITE}` : `${SITE}: rooms for rent in Seattle`;
+    document.title = title
+      ? `${title} | ${SITE}`
+      : `${SITE}: rooms for rent in Seattle`;
   }, [title]);
 }
