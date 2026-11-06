@@ -2,12 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../api/client";
 import { getReferenceData, searchListings } from "../api/listings";
-import type {
-  Listing,
-  ListingSort,
-  Page,
-  ReferenceData,
-} from "../api/types";
+import type { Listing, ListingSort, Page, ReferenceData } from "../api/types";
 import { useSession } from "../auth/session";
 import {
   filtersFromParams,
