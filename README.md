@@ -85,9 +85,21 @@ python3 scripts/sample-data/load_sample_data.py --check-invalid  # also checks t
 
 Then log in as `maya.landlord@example.com` / `sample-pass-maya` (other passwords are in the JSON file).
 
+### Synthetic data (thousands of listings)
+
+For load testing and for a browse page that feels full, the backend can generate synthetic listings itself (T-203, D-028). It only does this under the `dev` profile, and tops the database up to the number you ask for, so restarting does not add more:
+
+```bash
+cd backend
+SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 mvn spring-boot:run
+# Windows PowerShell: $env:SPRING_PROFILES_ACTIVE="dev"; $env:SYNTHETIC_LISTINGS="10000"; mvn spring-boot:run
+```
+
+Synthetic listings belong to 20 landlords at `synthetic.landlord.NN@example.invalid` that cannot log in, and every description starts with "Synthetic listing for development and testing." The same `SYNTHETIC_SEED` (default 42) always gives the same data. To remove them, recreate the local database: `docker compose down -v && docker compose up -d postgres`.
+
 ### Frontend
 
-Pages so far: home (with a neighborhood carousel using sample photos), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
+Pages so far: home (with a carousel of the newest listings), browse with filters (`/browse`), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
 
 Prerequisites: Node.js 22.
 
@@ -125,5 +137,7 @@ npm run build                   # type check + production build
 | Back buttons, loading skeletons, avatar and mobile menus, footer, and the home carousel work in a real browser on the CSP build | 78 Vitest tests; 17 smoke page checks with screenshots | Frontend run 42123750933, smoke run 42123751179 |
 | FR-03 browse API: price, neighborhood, area, and amenity filters combine; three sort orders; pagination with totals; invalid filters are field-level 400s; a page of results needs at most 5 SQL statements | 12 integration tests over HTTP | Commit `fb3c40f`, backend run 42128660324: 86 tests passed |
 | Home page shows the newest real listings, hides hidden ones, and opens a listing from a slide; with the API down it shows a short message instead | Vitest home-page tests; smoke page checks 01 and 01b | Frontend run 42129758228 (84 tests); smoke run 42129758285 |
+| Browse page: filters (neighborhood, rent range, area, amenities, sort) live in the URL, prices returned are within the range and in order, invalid filters are explained and not sent, pages of 12 | 16 Vitest tests; smoke checks 18–21 against the real API | Frontend run 42135480928 (100 tests); smoke run 42135480822 |
+| NFR-02: with 10,000 listings, browse p95 is 40.8 ms (target < 500 ms) over 400 requests mixing every filter, sort, and deep pages | `BrowsePerformanceTest` (prints the latency table and query plans) | Backend run 42142023037 |
 | Sample data loads through the real API (12 listings, 5 users), all 8 invalid examples are rejected with the expected status and field errors, and a second load creates no duplicates | `smoke` workflow, `load_sample_data.py --check-invalid`, then a second run | Commit `998031a`, run 42103027735: passed |
 | The app runs as the README describes: `docker compose` PostgreSQL, backend with `.env`, API flow, and the page in a real browser shows "API is up" (and "API is down" when the backend stops) | `smoke` workflow: `scripts/smoke/api-smoke.sh` + headless Chromium via Playwright | Commit `504c909`, run 42096337624: all checks passed |

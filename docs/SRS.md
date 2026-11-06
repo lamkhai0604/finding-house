@@ -116,7 +116,7 @@ Acceptance criteria:
 | ID | Category | Requirement | Target |
 | --- | --- | --- | --- |
 | NFR-01 | Security | Passwords hashed with BCrypt. Secrets come only from environment variables; none are committed. Authorization is enforced on the server for every protected operation. Failed logins are throttled (D-024). The production frontend sends a Content Security Policy; runtime dependencies have no known high or critical advisories (CI gate). | Pass/fail checklist; see [review 2026-11-05](reviews/2026-11-05-pre-release-review.md) |
-| NFR-02 | Performance | FR-03 browse/filter response time | p95 < 500 ms with 10,000 seeded listings in the local Docker setup (**proposed target**) |
+| NFR-02 | Performance | FR-03 browse/filter response time | p95 < 500 ms with 10,000 seeded listings in the local Docker setup. **Measured** 2026-11-05 (T-204, backend run 42142023037): p95 40.8 ms over 400 sequential requests |
 | NFR-03 | Performance | FR-05 AI search end-to-end | ≤ 6 s including the 5 s LLM timeout |
 | NFR-04 | Reliability | An AI failure never prevents manual search (FR-05 AC5). | Covered by automated failure-path tests |
 | NFR-05 | Cost | Running cost is $0 per month. Only free tiers are used; any paid service needs prior PO approval (D-007). | $0 |

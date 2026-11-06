@@ -214,6 +214,52 @@ try {
   await page.goto(`${frontend}/listings/${ids["Basement studio (paused)"]}`);
   await shot(page, "09-detail-hidden-public-view", "Listing not found");
 
+  // T-202: browse page against the real API.
+  const check = async (name, fn) => {
+    try {
+      await fn();
+      console.log(`ok   ${name}`);
+    } catch (error) {
+      failures += 1;
+      console.error(`FAIL ${name}: ${error.message.split("\n")[0]}`);
+    }
+  };
+  const priceOf = (text) => Number(text.replace(/[^0-9.]/g, ""));
+  const browseResults = page.locator(".browse-results");
+  await page.goto(`${frontend}/`);
+  await page.getByRole("banner").getByRole("link", { name: "Browse rooms" }).click();
+  await shot(page, "18-browse-all", "rooms found", page.getByRole("heading", { name: "Browse rooms" }));
+  await check("18b: hidden listing is not listed", async () => {
+    await browseResults.getByRole("article").first().waitFor();
+    if ((await browseResults.getByText("Basement studio (paused)").count()) > 0) {
+      throw new Error("hidden listing shown");
+    }
+  });
+
+  await page.getByLabel("Max rent ($)").fill("1500");
+  await page.getByLabel("Sort by").selectOption("price_asc");
+  await page.getByRole("button", { name: "Show rooms" }).click();
+  await page.waitForURL(/maxPrice=1500/);
+  await shot(page, "19-browse-filtered", "rooms found", browseResults.getByRole("article").first());
+  await check("19b: filtered prices are at most $1,500 and ascending", async () => {
+    const prices = (await browseResults.locator(".listing-card-price").allTextContents()).map(
+      (text) => priceOf(text.split("/")[0]),
+    );
+    if (prices.length === 0) throw new Error("no results");
+    if (prices.some((p) => p > 1500)) throw new Error(`price above max: ${prices}`);
+    if (prices.some((p, i) => i > 0 && p < prices[i - 1])) throw new Error(`not ascending: ${prices}`);
+  });
+  await check("19c: the URL restores the filters after a reload", async () => {
+    await page.reload();
+    await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
+    const max = await page.getByLabel("Max rent ($)").inputValue();
+    if (max !== "1500") throw new Error(`max rent field is "${max}"`);
+  });
+
+  await page.getByLabel("Min rent ($)").fill("2000");
+  await page.getByRole("button", { name: "Show rooms" }).click();
+  await shot(page, "20-browse-invalid-range", "Must be at least the minimum price.");
+
   const mobile = await browser.newContext({ viewport: { width: 375, height: 740 }, isMobile: true });
   const phone = await mobile.newPage();
   watchForCspViolations(phone);
@@ -228,6 +274,15 @@ try {
     "Sign up",
     phone.getByRole("link", { name: "Sign up" }),
   );
+
+  // T-205: on a phone the filters start folded behind a button, so results come first.
+  await phone.goto(`${frontend}/browse`);
+  await shot(phone, "21-browse-mobile", "rooms found", phone.getByRole("heading", { name: "Browse rooms" }));
+  await check("21b: phone filters start folded", async () => {
+    if (await phone.getByLabel("Max rent ($)").isVisible()) throw new Error("filter panel is open");
+  });
+  await phone.getByRole("button", { name: "Filters" }).click();
+  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent ($)"));
 } finally {
   await browser.close();
 }

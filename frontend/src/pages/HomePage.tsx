@@ -57,26 +57,24 @@ export function HomePage() {
         <p className="hero-lead">
           Browse rooms and studios posted by local landlords.
         </p>
-        {user ? (
-          <>
-            <p>Welcome back, {user.displayName}.</p>
-            {user.role === "LANDLORD" && (
-              <div className="hero-actions">
-                <ButtonLink to="/listings/new" variant="primary">
-                  Post a room
-                </ButtonLink>
-                <ButtonLink to="/my/listings">My listings</ButtonLink>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="hero-actions">
-            <ButtonLink to="/register" variant="primary">
-              Create an account
-            </ButtonLink>
-            <ButtonLink to="/login">Log in</ButtonLink>
-          </div>
-        )}
+        {user && <p>Welcome back, {user.displayName}.</p>}
+        <div className="hero-actions">
+          <ButtonLink to="/browse" variant="primary">
+            Browse rooms
+          </ButtonLink>
+          {!user && (
+            <>
+              <ButtonLink to="/register">Create an account</ButtonLink>
+              <ButtonLink to="/login">Log in</ButtonLink>
+            </>
+          )}
+          {user?.role === "LANDLORD" && (
+            <>
+              <ButtonLink to="/listings/new">Post a room</ButtonLink>
+              <ButtonLink to="/my/listings">My listings</ButtonLink>
+            </>
+          )}
+        </div>
       </section>
 
       <section className="home-section">
@@ -96,7 +94,12 @@ export function HomePage() {
               No rooms have been posted yet.
             </p>
           ) : (
-            <Carousel label="Newest rooms" items={newest.items} />
+            <>
+              <Carousel label="Newest rooms" items={newest.items} />
+              <div className="section-footer">
+                <ButtonLink to="/browse">See all rooms</ButtonLink>
+              </div>
+            </>
           ))}
       </section>
     </>

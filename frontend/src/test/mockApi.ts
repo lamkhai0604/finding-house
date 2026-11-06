@@ -3,6 +3,8 @@ import { vi } from "vitest";
 type Handler = (request: {
   body: unknown;
   headers: Record<string, string>;
+  /** The full request URL, for routes that read the query string. */
+  url: URL;
 }) => Response | Promise<Response>;
 
 /**
@@ -23,7 +25,7 @@ export function mockApi(routes: Record<string, Handler>) {
       }
       const body = init?.body ? JSON.parse(String(init.body)) : undefined;
       const headers = (init?.headers ?? {}) as Record<string, string>;
-      return handler({ body, headers });
+      return handler({ body, headers, url });
     },
   );
   vi.stubGlobal("fetch", fetchMock);
