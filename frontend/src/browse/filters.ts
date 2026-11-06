@@ -76,9 +76,11 @@ export function filtersToParams(
 ): URLSearchParams {
   const params = new URLSearchParams();
   if (values.neighborhood) params.set("neighborhood", values.neighborhood);
-  if (values.minPrice.trim()) params.set("minPrice", values.minPrice.trim());
-  if (values.maxPrice.trim()) params.set("maxPrice", values.maxPrice.trim());
-  if (values.minArea.trim()) params.set("minArea", values.minArea.trim());
+  // Plain numbers in the URL ("5000", not "$5,000").
+  const plain = (text: string) => text.replace(/[$,\s]/g, "");
+  if (plain(values.minPrice)) params.set("minPrice", plain(values.minPrice));
+  if (plain(values.maxPrice)) params.set("maxPrice", plain(values.maxPrice));
+  if (plain(values.minArea)) params.set("minArea", plain(values.minArea));
   for (const amenity of values.amenities) params.append("amenities", amenity);
   if (values.sort !== "newest") params.set("sort", values.sort);
   if (page > 1) params.set("page", String(page));
@@ -109,7 +111,7 @@ export function toSearch(
   }
 
   let minAreaSqft: number | undefined;
-  const area = values.minArea.trim();
+  const area = values.minArea.replace(/[,\s]/g, "");
   if (area) {
     if (/^\d{1,6}$/.test(area) && Number(area) > 0) {
       minAreaSqft = Number(area);

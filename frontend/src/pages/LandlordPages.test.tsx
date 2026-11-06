@@ -48,8 +48,8 @@ describe("Post a room (FR-02)", () => {
 
     await screen.findByRole("heading", { name: "Post a room" });
     fill("Title", "Cozy room");
-    fill("Monthly rent (USD)", "$1,995.50");
-    fill("Area (sq ft)", "300");
+    fill("Monthly rent", "$1,995.50");
+    fill("Area", "300");
     fill("Neighborhood", "Ballard");
     fill("Street address", "1 Sample St");
     fill("Description (optional)", "Near the park");
@@ -83,7 +83,7 @@ describe("Post a room (FR-02)", () => {
 
     await screen.findByRole("heading", { name: "Post a room" });
     fill("Title", "Hi");
-    fill("Monthly rent (USD)", "a lot");
+    fill("Monthly rent", "a lot");
     fireEvent.click(screen.getByRole("button", { name: "Add photo link" }));
     fill("Photo link 1", "http://example.com/a.jpg");
     fireEvent.click(screen.getByRole("button", { name: "Post listing" }));
@@ -127,8 +127,8 @@ describe("Post a room (FR-02)", () => {
 
     await screen.findByRole("heading", { name: "Post a room" });
     fill("Title", "Mansion room");
-    fill("Monthly rent (USD)", "999999");
-    fill("Area (sq ft)", "300");
+    fill("Monthly rent", "999999");
+    fill("Area", "300");
     fill("Neighborhood", "Ballard");
     fill("Street address", "1 Sample St");
     fireEvent.click(screen.getByRole("button", { name: "Add photo link" }));
@@ -138,7 +138,7 @@ describe("Post a room (FR-02)", () => {
     expect(
       await screen.findByText("must be less than or equal to 10000000"),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Monthly rent (USD)")).toHaveAttribute(
+    expect(screen.getByLabelText("Monthly rent")).toHaveAttribute(
       "aria-invalid",
       "true",
     );
@@ -164,7 +164,7 @@ describe("Edit a listing (FR-02)", () => {
 
     await screen.findByRole("heading", { name: "Edit listing" });
     expect(screen.getByLabelText("Title")).toHaveValue("Sunny studio near UW");
-    expect(screen.getByLabelText("Monthly rent (USD)")).toHaveValue("1650");
+    expect(screen.getByLabelText("Monthly rent")).toHaveValue("1,650");
     expect(screen.getByLabelText("Neighborhood")).toHaveValue(
       "University District",
     );
@@ -173,7 +173,7 @@ describe("Edit a listing (FR-02)", () => {
       "https://example.com/2.jpg",
     );
 
-    fill("Monthly rent (USD)", "1700");
+    fill("Monthly rent", "1700");
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() => expect(sent.monthlyPriceCents).toBe(170000));
