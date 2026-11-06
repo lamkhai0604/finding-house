@@ -103,8 +103,12 @@ export function BrowsePage() {
   const filtersOpen = invalid || filtersOpenOn === queryKey;
   const { values } = parsed;
   const activeFilters =
-    [values.neighborhood, values.minPrice, values.maxPrice, values.minArea]
-      .filter((v) => v.trim() !== "").length + values.amenities.length;
+    [
+      values.neighborhood,
+      values.minPrice,
+      values.maxPrice,
+      values.minArea,
+    ].filter((v) => v.trim() !== "").length + values.amenities.length;
 
   return (
     <section className="browse">
