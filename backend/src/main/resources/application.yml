@@ -39,3 +39,8 @@ app:
     max-failures-per-email: ${LOGIN_MAX_FAILURES_PER_EMAIL:5}
     max-failures-per-address: ${LOGIN_MAX_FAILURES_PER_ADDRESS:20}
     window: ${LOGIN_THROTTLE_WINDOW:15m}
+  # T-203 (D-028): synthetic listings for development and load tests. Only used under the "dev"
+  # profile (SPRING_PROFILES_ACTIVE=dev); 0 turns it off. Same seed -> same data.
+  synthetic-data:
+    listings: ${SYNTHETIC_LISTINGS:0}
+    seed: ${SYNTHETIC_SEED:42}
