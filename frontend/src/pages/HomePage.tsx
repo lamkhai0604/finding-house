@@ -17,7 +17,8 @@ import { MONEY } from "../utils/numberInput";
 /** How many of the newest listings the home page shows (T-210). */
 export const NEWEST_COUNT = 4;
 
-type Load<T> = { kind: "loading" } | { kind: "ready"; data: T } | { kind: "error" };
+type Load<T> =
+  { kind: "loading" } | { kind: "ready"; data: T } | { kind: "error" };
 
 /**
  * Loads once the session is known, so an expired stored token is not sent (see T-122). `load`
@@ -305,8 +306,12 @@ function HowItWorks() {
       <div>
         <h2 className="display">Renting one out</h2>
         <ol>
-          <li>Sign up as a landlord and post your room with up to five photos.</li>
-          <li>Hide it while you show it, unhide it if the deal falls through.</li>
+          <li>
+            Sign up as a landlord and post your room with up to five photos.
+          </li>
+          <li>
+            Hide it while you show it, unhide it if the deal falls through.
+          </li>
           <li>Delete it once it is rented.</li>
         </ol>
         <ButtonLink to="/listings/new" variant="secondary">

@@ -110,7 +110,9 @@ describe("Header and footer (D-027)", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Back/ }));
 
     expect(
-      await screen.findByRole("heading", { name: "Find a room near your stop" }),
+      await screen.findByRole("heading", {
+        name: "Find a room near your stop",
+      }),
     ).toBeInTheDocument();
   });
 });

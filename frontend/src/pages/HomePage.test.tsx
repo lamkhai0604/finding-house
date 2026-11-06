@@ -18,8 +18,10 @@ function page(items: Listing[]): Page<Listing> {
   };
 }
 
-const studio = listingDetail({ id: 7, amenities: ["WIFI", "FURNISHED"] })
-  .listing;
+const studio = listingDetail({
+  id: 7,
+  amenities: ["WIFI", "FURNISHED"],
+}).listing;
 const ballard = listingDetail({
   id: 9,
   title: "Ballard room by the locks",
@@ -29,7 +31,11 @@ const ballard = listingDetail({
 }).listing;
 
 const STATS: NeighborhoodStats[] = [
-  { neighborhood: "Ballard", activeListings: 3, lowestMonthlyPriceCents: 95000 },
+  {
+    neighborhood: "Ballard",
+    activeListings: 3,
+    lowestMonthlyPriceCents: 95000,
+  },
   {
     neighborhood: "Capitol Hill",
     activeListings: 1,
@@ -40,7 +46,11 @@ const STATS: NeighborhoodStats[] = [
     activeListings: 12,
     lowestMonthlyPriceCents: 89900,
   },
-  { neighborhood: "Roosevelt", activeListings: 0, lowestMonthlyPriceCents: null },
+  {
+    neighborhood: "Roosevelt",
+    activeListings: 0,
+    lowestMonthlyPriceCents: null,
+  },
 ];
 
 describe("Home page: just posted (T-122, T-210)", () => {
