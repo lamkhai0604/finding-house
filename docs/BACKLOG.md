@@ -69,7 +69,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | --- | --- | --- | --- | --- |
 | T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | Done 2026-11-05 — live at https://finding-house.vercel.app (frontend) and https://finding-house.onrender.com (API), database on Neon (us-west-2). Deployed by Khai through the dashboards following docs/DEPLOYMENT.md; checked by live-smoke run 42165540632 |
 | T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | Done — live-smoke run 42165540632 against the deployment: 14 HTTP checks (health, public API, 401 without a token, actuator closed, CORS allows only the frontend, nosniff, X-Frame-Options, frame-ancestors, HSTS, CSP names the API, SPA routing) and 5 browser checks on desktop and phone, no CSP or CORS errors |
-| T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | In progress — README rewritten with live links, screenshots, features, architecture diagram, and highlights |
+| T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | Done — README opens with live links, 5 screenshots, features (working vs planned), Mermaid diagram, stack, and highlights with real figures; Sprint 3 rows added to Verified (docs only, Khai to review the wording on the dev -> main PR) |
 | T-403 | Favorites | FR-06 | P3 | Proposed |
 | T-404 | Image file upload to a free storage service (free tier verified first, D-007) | FR-02 | P3 | Proposed |
 
