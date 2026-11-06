@@ -66,7 +66,8 @@ export function ListingFilters({
           { value: "", label: "Any neighborhood" },
           ...neighborhoods.map((n) => ({ value: n, label: n })),
           // Keep a value from a link even before the list has loaded.
-          ...(values.neighborhood && !neighborhoods.includes(values.neighborhood)
+          ...(values.neighborhood &&
+          !neighborhoods.includes(values.neighborhood)
             ? [{ value: values.neighborhood, label: values.neighborhood }]
             : []),
         ]}

@@ -17,7 +17,11 @@ function listing(id: number, title: string): Listing {
 
 function page(
   items: Listing[],
-  { totalItems = items.length, totalPages = items.length ? 1 : 0, number = 0 } = {},
+  {
+    totalItems = items.length,
+    totalPages = items.length ? 1 : 0,
+    number = 0,
+  } = {},
 ): Page<Listing> {
   return { items, page: number, size: 12, totalItems, totalPages };
 }
@@ -40,7 +44,8 @@ function fill(label: string, value: string) {
 }
 
 function results() {
-  return screen.getByRole("heading", { name: "Browse rooms" })
+  return screen
+    .getByRole("heading", { name: "Browse rooms" })
     .closest("section")!
     .querySelector<HTMLElement>(".browse-results")!;
 }
@@ -48,7 +53,9 @@ function results() {
 describe("Browse rooms (FR-03, T-202)", () => {
   it("shows the newest rooms first, 12 per page, each linking to its page", async () => {
     const queries = browseApi(() =>
-      Response.json(page([listing(7, "Sunny studio"), listing(8, "Quiet room")])),
+      Response.json(
+        page([listing(7, "Sunny studio"), listing(8, "Quiet room")]),
+      ),
     );
     renderApp("/browse");
 
@@ -110,7 +117,9 @@ describe("Browse rooms (FR-03, T-202)", () => {
         }),
       ),
     );
-    renderApp("/browse?neighborhood=Ballard&minPrice=1000&amenities=WIFI&page=2");
+    renderApp(
+      "/browse?neighborhood=Ballard&minPrice=1000&amenities=WIFI&page=2",
+    );
 
     expect(await screen.findByText("13 rooms found")).toBeInTheDocument();
     expect(queries).toEqual([
