@@ -5,7 +5,7 @@
 | Goal | A tenant can browse and filter active listings, and the app feels finished: navigation, loading states, back buttons, footer, and a landlord can delete a listing safely. |
 | Dates | 2026-11-05 → 2026-11-19 (2 weeks, proposed) |
 | Requirements | FR-03, FR-07; D-025, D-026, D-027 |
-| Tasks | T-121, T-120, T-115 to T-119, T-201 to T-204, T-122 |
+| Tasks | T-121, T-120, T-115 to T-119, T-201 to T-204, T-122; added: T-123, T-205 |
 
 ## Plan
 
@@ -31,4 +31,4 @@
 
 ## Sprint review
 
-_To be filled at the end of the sprint; full report in `docs/reports/sprint-2-report.md` (D-020)._
+Goal met on `dev` (2026-11-05): all 11 planned tasks plus T-123 and T-205; NFR-02 measured at p95 40.8 ms with 10,000 listings. Full report: [sprint-2-report.md](../reports/sprint-2-report.md) (D-020).
