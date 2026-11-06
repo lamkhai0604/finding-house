@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { LoadingContext } from "./loading";
 
 /** After this long, the free backend is probably waking up from sleep (D-029). */
@@ -15,32 +22,41 @@ type BarState = "idle" | "loading" | "done";
  * Nothing is hidden or delayed: pages keep their own skeletons.
  */
 export function LoadingProvider({ children }: { children: ReactNode }) {
-  const [waiting, setWaiting] = useState(0);
   const [bar, setBar] = useState<BarState>("idle");
   const [slow, setSlow] = useState(false);
-  const active = waiting > 0;
+  const waiting = useRef(0);
+  const slowTimer = useRef<number | undefined>(undefined);
+  const doneTimer = useRef<number | undefined>(undefined);
 
+  // State changes happen when the count crosses zero, not in an effect, so nothing re-renders twice.
   const begin = useCallback(() => {
-    setWaiting((n) => n + 1);
+    waiting.current += 1;
+    if (waiting.current === 1) {
+      window.clearTimeout(doneTimer.current);
+      setBar("loading");
+      slowTimer.current = window.setTimeout(() => setSlow(true), SLOW_AFTER_MS);
+    }
     let ended = false;
     return () => {
       if (ended) return;
       ended = true;
-      setWaiting((n) => n - 1);
+      waiting.current -= 1;
+      if (waiting.current === 0) {
+        window.clearTimeout(slowTimer.current);
+        setSlow(false);
+        setBar("done");
+        doneTimer.current = window.setTimeout(() => setBar("idle"), DONE_MS);
+      }
     };
   }, []);
 
-  useEffect(() => {
-    if (active) {
-      setBar("loading");
-      const timer = window.setTimeout(() => setSlow(true), SLOW_AFTER_MS);
-      return () => window.clearTimeout(timer);
-    }
-    setSlow(false);
-    setBar((current) => (current === "loading" ? "done" : current));
-    const timer = window.setTimeout(() => setBar("idle"), DONE_MS);
-    return () => window.clearTimeout(timer);
-  }, [active]);
+  useEffect(
+    () => () => {
+      window.clearTimeout(slowTimer.current);
+      window.clearTimeout(doneTimer.current);
+    },
+    [],
+  );
 
   const api = useMemo(() => ({ begin }), [begin]);
 
