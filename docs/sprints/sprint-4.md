@@ -7,6 +7,7 @@
 | Requirements | NFR-07; D-027, D-032, D-033 |
 | Tasks | T-208 to T-216 |
 | Approved | Khai, 2026-11-05 (chat: agreed to the six UI areas; design chosen) |
+| Status | **Done** 2026-11-06, plus T-217 added at Khai's request. [Report](../reports/sprint-4-report.md) |
 
 ## Plan
 
