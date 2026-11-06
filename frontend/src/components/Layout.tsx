@@ -17,7 +17,8 @@ export function Layout() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <BrandMark />
+        <div className="header-inner">
+          <BrandMark />
         <button
           type="button"
           className="menu-toggle"
@@ -56,6 +57,7 @@ export function Layout() {
             </>
           )}
         </nav>
+        </div>
       </header>
       <main className="page">
         <Outlet />
