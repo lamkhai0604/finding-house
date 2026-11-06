@@ -204,6 +204,23 @@ export function ListingDetailPage() {
           </p>
         </aside>
       </div>
+
+      {/* T-216: on phones the contact card is far down; keep the price and Call in reach. */}
+      <div className="contact-bar" role="region" aria-label="Quick contact">
+        <p>
+          <span className="display">{price}</span>
+          <span className="muted"> a month</span>
+        </p>
+        {landlord.phone && (
+          <a
+            className={buttonClassName("primary")}
+            href={`tel:${landlord.phone}`}
+          >
+            <PhoneIcon />
+            Call
+          </a>
+        )}
+      </div>
     </article>
   );
 }

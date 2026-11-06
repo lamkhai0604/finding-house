@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useDelayedFlag } from "../hooks/useDelayedFlag";
+import { useLoadingSignal } from "../loading/loading";
 
 /** Grey placeholder block with a gentle shimmer. */
 export function Skeleton({ className }: { className?: string }) {
@@ -18,6 +19,8 @@ export function PageLoading({
   children: ReactNode;
 }) {
   const visible = useDelayedFlag(true);
+  // T-217: also drives the progress line and the "waking up" notice.
+  useLoadingSignal(true);
   return (
     <div role="status" aria-label={label} aria-busy="true">
       {visible && children}
