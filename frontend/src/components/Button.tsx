@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, Ref } from "react";
 import { useDelayedFlag } from "../hooks/useDelayedFlag";
+import { useLoadingSignal } from "../loading/loading";
 import { buttonClassName, type ButtonVariant } from "./buttonStyles";
 import { Spinner } from "./Spinner";
 
@@ -20,6 +21,8 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const showSpinner = useDelayedFlag(busy);
+  // T-217: a busy button is waiting for the server too (e.g. logging in while it wakes up).
+  useLoadingSignal(busy);
   return (
     <button
       {...rest}
