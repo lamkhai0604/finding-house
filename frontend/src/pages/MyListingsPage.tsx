@@ -9,12 +9,14 @@ import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
 import { ListingListSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Loaded =
   { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
 
 /** FR-02 AC3, AC6: a landlord's listings, including hidden ones, newest first. */
 export function MyListingsPage() {
+  usePageTitle("My listings");
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);

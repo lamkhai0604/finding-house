@@ -1,18 +1,46 @@
 :root {
-  --text: #1f2933;
-  --muted: #616e7c;
-  --bg: #f7f9fb;
+  /* D-033 "Lagoon". Every text pair meets WCAG AA (4.5:1). */
+  --text: #0b2b29;
+  --text-soft: #2d4a47;
+  --muted: #4a6663;
+  --bg: #f2faf9;
   --card: #ffffff;
-  --border: #d9e2ec;
-  --accent: #0b6e4f;
-  --accent-dark: #08533b;
+  --border: #d3e3e0;
+  --border-strong: #b7cdc9;
+  --accent: #0b7c72; /* buttons and links */
+  --accent-dark: #075e57;
+  --hover: #ddf3f0;
+  --hero: #19c3b1; /* big colour areas, with --hero-ink text */
+  --hero-ink: #062f2c;
+  --hero-deep: #12a493;
+  --line: #ff4f9a; /* the transit line, stops, "New" badges, with --line-ink text */
+  --line-ink: #2a0a1a;
+  --sun: #ffd23f;
+  --tag-bg: #e0f7f4;
+  --tag-ink: #075e57;
+  --saved: #d61f60;
+  --saved-bg: #fff1f5;
+  --footer: #0b2b29;
   --danger: #912018;
   --danger-bg: #fee4e2;
-  --radius: 10px;
-  font-family: system-ui, sans-serif;
+  --radius: 12px;
+  --font-text: "Public Sans Variable", system-ui, sans-serif;
+  --font-display:
+    "Archivo Variable", "Public Sans Variable", system-ui, sans-serif;
+  font-family: var(--font-text);
   color: var(--text);
   background: var(--bg);
   line-height: 1.5;
+}
+
+/* Headings in Archivo, set wide like transit signage (D-033). */
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  letter-spacing: -0.01em;
 }
 
 body {
@@ -24,7 +52,9 @@ a {
 }
 
 h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
   margin: 0 0 0.5rem;
 }
 
@@ -62,15 +92,22 @@ h2 {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 700;
-  font-size: 1.125rem;
+  gap: 0.625rem;
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-weight: 800;
+  font-size: 1.2rem;
   color: var(--text);
   text-decoration: none;
 }
 
-.brand-icon {
-  color: var(--accent);
+.brand-line {
+  fill: var(--line);
+}
+
+.brand-stop {
+  fill: #fff;
+  stroke: var(--text);
 }
 
 .header-actions {

@@ -11,6 +11,7 @@ import { ImageGallery } from "../components/ImageGallery";
 import { ListingDetailSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 import { formatAmenity, formatArea, formatPrice } from "../utils/format";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Result =
   | { kind: "loaded"; detail: ListingDetail }
@@ -27,6 +28,14 @@ export function ListingDetailPage() {
   const key = `${id}|${viewer}`;
   const [result, setResult] = useState<{ key: string; value: Result } | null>(
     null,
+  );
+  const shown = result?.key === key ? result.value : null;
+  usePageTitle(
+    shown?.kind === "loaded"
+      ? shown.detail.listing.title
+      : shown?.kind === "not-found"
+        ? "Listing not found"
+        : null,
   );
 
   useEffect(() => {

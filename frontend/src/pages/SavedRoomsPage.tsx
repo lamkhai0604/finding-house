@@ -8,12 +8,14 @@ import { ListingCard } from "../components/ListingCard";
 import { ListingListSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 import { useFavorites } from "../favorites/favorites";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Loaded =
   { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
 
 /** FR-06: a tenant's saved rooms. Unsaving a room removes it from the list at once. */
 export function SavedRoomsPage() {
+  usePageTitle("Saved rooms");
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const favorites = useFavorites();
 
