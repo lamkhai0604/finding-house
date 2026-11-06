@@ -1,0 +1,300 @@
+{
+  "about": "Demo content for the live site (T-215). People, emails, phone numbers (555-01xx) and listings are fictional; each description says it is a demo. Passwords are NOT in this file: the loader takes them from the DEMO_PASSWORD environment variable. Photos are from Unsplash under the Unsplash License (free to use, attribution appreciated); see photoCredits.",
+  "users": [
+    {
+      "key": "grace",
+      "register": {
+        "email": "grace.demo@example.com",
+        "displayName": "Grace Lin",
+        "role": "LANDLORD",
+        "phone": "(206) 555-0131"
+      }
+    },
+    {
+      "key": "daniel",
+      "register": {
+        "email": "daniel.demo@example.com",
+        "displayName": "Daniel Ortiz",
+        "role": "LANDLORD",
+        "phone": "(206) 555-0132"
+      }
+    },
+    {
+      "key": "priya",
+      "register": {
+        "email": "priya.demo@example.com",
+        "displayName": "Priya Raman",
+        "role": "LANDLORD",
+        "phone": "(206) 555-0133"
+      }
+    },
+    {
+      "key": "sam",
+      "register": {
+        "email": "sam.demo@example.com",
+        "displayName": "Sam Taylor",
+        "role": "TENANT",
+        "phone": null
+      }
+    }
+  ],
+  "listings": [
+    {
+      "owner": "grace",
+      "body": {
+        "title": "Bright room off Pine, 5 min to the station",
+        "description": "Furnished-ready room in a three-bedroom flat with two quiet roommates. Big east window, shared kitchen and in-unit laundry. The light rail is a five-minute walk.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 145000,
+        "areaSqft": 190,
+        "neighborhood": "Capitol Hill",
+        "address": "E Pine St near 12th Ave",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "KITCHEN"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1633836331520-e35c668f1f9d?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1649068533606-0e7ef6786214?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "grace",
+      "body": {
+        "title": "Studio with a real kitchen near the Ave",
+        "description": "Self-contained studio on the second floor: full kitchen, own bathroom, and a desk nook. Close to campus, buses and the U District station.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 158000,
+        "areaSqft": 360,
+        "neighborhood": "University District",
+        "address": "NE 47th St near University Way NE",
+        "amenities": [
+          "WIFI",
+          "KITCHEN",
+          "PRIVATE_BATHROOM"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1718717621302-a359be21a111?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1769745241584-be9b8227e126?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "daniel",
+      "body": {
+        "title": "Attic room with a desk, quiet street",
+        "description": "Furnished attic room with a desk, bookshelves and a slanted ceiling. Shared bathroom with one person. Roosevelt station is about ten minutes on foot.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 112000,
+        "areaSqft": 170,
+        "neighborhood": "Roosevelt",
+        "address": "NE 66th St near 15th Ave NE",
+        "amenities": [
+          "WIFI",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1768080315797-892a70ce05ee?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1768548273807-275b0e16fff3?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "daniel",
+      "body": {
+        "title": "Room near Columbia City station, parking spot",
+        "description": "Private room in a friendly house with a backyard. One off-street parking spot included. Cats are welcome. Shops, the library and the station are close.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 98000,
+        "areaSqft": 160,
+        "neighborhood": "Columbia City",
+        "address": "Rainier Ave S near S Edmunds St",
+        "amenities": [
+          "PARKING",
+          "KITCHEN",
+          "PETS_ALLOWED"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1702255489644-392758161f1f?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1737737238595-099398e24649?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "priya",
+      "body": {
+        "title": "Cozy room with a view of the hill",
+        "description": "Warm room with afternoon sun and a window AC unit for summer. Laundry in the basement. A short walk to the Beacon Hill station and the park.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 105000,
+        "areaSqft": 175,
+        "neighborhood": "Beacon Hill",
+        "address": "15th Ave S near S Bayview St",
+        "amenities": [
+          "WIFI",
+          "WASHING_MACHINE",
+          "AIR_CONDITIONING"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1631642659688-ea5ee49f099e?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1630699144641-72fa7a6b8aa1?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "priya",
+      "body": {
+        "title": "Minimal room in a shared Ballard house",
+        "description": "Simple, calm room in a four-person house. Big shared kitchen, laundry and a covered porch for bikes. Buses run often to downtown.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 118000,
+        "areaSqft": 180,
+        "neighborhood": "Ballard",
+        "address": "NW 65th St near 24th Ave NW",
+        "amenities": [
+          "WIFI",
+          "KITCHEN",
+          "WASHING_MACHINE"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1533024115551-3925e1b0cd51?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1659205638001-c06fa01e03e4?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "grace",
+      "body": {
+        "title": "Private bath room in Fremont",
+        "description": "Furnished room with its own bathroom, a short walk to the canal trail and the Fremont shops. Utilities are split three ways.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 132000,
+        "areaSqft": 200,
+        "neighborhood": "Fremont",
+        "address": "N 36th St near Fremont Ave N",
+        "amenities": [
+          "PRIVATE_BATHROOM",
+          "WIFI",
+          "FURNISHED"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1732115970816-9c3f2aa14f74?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1656646523723-b660b32dbaaf?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "owner": "daniel",
+      "body": {
+        "title": "Spacious room close to Northgate station",
+        "description": "Larger room with blackout blinds and a shared living room. Northgate station and the mall are a few minutes away. Street parking is easy.\n\nDemo listing for the Finding House portfolio project. This room is not really for rent.",
+        "monthlyPriceCents": 110000,
+        "areaSqft": 210,
+        "neighborhood": "Northgate",
+        "address": "NE 103rd St near 5th Ave NE",
+        "amenities": [
+          "PARKING",
+          "WIFI",
+          "KITCHEN"
+        ],
+        "imageUrls": [
+          "https://images.unsplash.com/photo-1429117237875-aa29229d99f0?w=1200&q=70&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1649204873080-1564d1464c78?w=1200&q=70&auto=format&fit=crop"
+        ]
+      }
+    }
+  ],
+  "photoCredits": [
+    {
+      "photographer": "Luisa Brimble",
+      "page": "https://unsplash.com/photos/free3W2D_Ms",
+      "image": "https://images.unsplash.com/photo-1633836331520-e35c668f1f9d?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Clay Banks",
+      "page": "https://unsplash.com/photos/r8i3RwrVcRk",
+      "image": "https://images.unsplash.com/photo-1718717621302-a359be21a111?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Kirsten Miles",
+      "page": "https://unsplash.com/photos/NhNccu6YZAE",
+      "image": "https://images.unsplash.com/photo-1768080315797-892a70ce05ee?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Wes Hicks",
+      "page": "https://unsplash.com/photos/T6WRDVQBn8M",
+      "image": "https://images.unsplash.com/photo-1702255489644-392758161f1f?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Matthieu Lemarchal",
+      "page": "https://unsplash.com/photos/DoTKoAC5hqg",
+      "image": "https://images.unsplash.com/photo-1631642659688-ea5ee49f099e?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Ömürden Cengiz",
+      "page": "https://unsplash.com/photos/lnEtS2RnS4A",
+      "image": "https://images.unsplash.com/photo-1533024115551-3925e1b0cd51?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Thomas Heath",
+      "page": "https://unsplash.com/photos/xRjXFJmWlbA",
+      "image": "https://images.unsplash.com/photo-1732115970816-9c3f2aa14f74?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Quin Stevenson",
+      "page": "https://unsplash.com/photos/3oyeaivM_fE",
+      "image": "https://images.unsplash.com/photo-1429117237875-aa29229d99f0?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Andrew Kayani",
+      "page": "https://unsplash.com/photos/HiQxzJy1e8w",
+      "image": "https://images.unsplash.com/photo-1649068533606-0e7ef6786214?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Huy Phan",
+      "page": "https://unsplash.com/photos/bYWnQN-6um0",
+      "image": "https://images.unsplash.com/photo-1737737238595-099398e24649?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Point3D Commercial Imaging Ltd.",
+      "page": "https://unsplash.com/photos/TkprGwygO5Q",
+      "image": "https://images.unsplash.com/photo-1630699144641-72fa7a6b8aa1?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Meg Jenson",
+      "page": "https://unsplash.com/photos/39uhKdbWPGA",
+      "image": "https://images.unsplash.com/photo-1659205638001-c06fa01e03e4?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Clay Banks",
+      "page": "https://unsplash.com/photos/avPVKD07Fcg",
+      "image": "https://images.unsplash.com/photo-1769745241584-be9b8227e126?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Erika Mendes",
+      "page": "https://unsplash.com/photos/OLtzoieKmQs",
+      "image": "https://images.unsplash.com/photo-1649204873080-1564d1464c78?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Point3D Commercial Imaging Ltd.",
+      "page": "https://unsplash.com/photos/vwCEyRG1w00",
+      "image": "https://images.unsplash.com/photo-1656646523723-b660b32dbaaf?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    },
+    {
+      "photographer": "Interial Co.",
+      "page": "https://unsplash.com/photos/puEH-81OV50",
+      "image": "https://images.unsplash.com/photo-1768548273807-275b0e16fff3?w=1200&q=70&auto=format&fit=crop",
+      "license": "Unsplash License"
+    }
+  ]
+}
