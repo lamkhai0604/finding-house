@@ -5,6 +5,7 @@ import com.findinghouse.auth.AuthDtos.RegisterRequest;
 import com.findinghouse.auth.AuthDtos.TokenResponse;
 import com.findinghouse.auth.AuthDtos.UserResponse;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
+import com.findinghouse.common.ClientAddressResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthService authService;
+  private final ClientAddressResolver clientAddress;
 
-  public AuthController(AuthService authService) {
+  public AuthController(AuthService authService, ClientAddressResolver clientAddress) {
     this.authService = authService;
+    this.clientAddress = clientAddress;
   }
 
   @PostMapping("/auth/register")
@@ -40,7 +43,7 @@ public class AuthController {
   @PostMapping("/auth/login")
   public TokenResponse login(
       @Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-    TokenService.IssuedToken token = authService.login(request, httpRequest.getRemoteAddr());
+    TokenService.IssuedToken token = authService.login(request, clientAddress.resolve(httpRequest));
     return new TokenResponse(token.value(), "Bearer", token.expiresInSeconds());
   }
 

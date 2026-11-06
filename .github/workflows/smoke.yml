@@ -1,7 +1,8 @@
 name: smoke
 
 # T-008: runs the app the way a developer does (README) and checks it end to end:
-# docker compose PostgreSQL -> backend jar -> API calls -> Vite dev server -> headless browser.
+# docker compose PostgreSQL -> backend Docker image (the one Render runs, T-114a) -> API calls ->
+# Vite dev server -> headless browser.
 
 on:
   push:
@@ -49,16 +50,16 @@ jobs:
       - name: Start PostgreSQL with docker compose
         run: docker compose up -d --wait postgres
 
-      - name: Build backend jar
-        working-directory: backend
-        run: mvn -B -ntp -DskipTests package
+      - name: Build backend image (backend/Dockerfile, as deployed)
+        run: docker build -t finding-house-backend backend
 
-      - name: Start backend (reads ../.env like a local run)
-        working-directory: backend
+      - name: Start backend container (settings from .env, like the hosting dashboard)
         run: |
-          nohup java -jar target/finding-house-backend-0.0.1-SNAPSHOT.jar > ../backend.log 2>&1 &
-          echo $! > ../backend.pid
-          for i in $(seq 1 60); do
+          # Host network so the container reaches the Compose database on localhost:5432.
+          # Memory capped like the free hosting instance (512 MB).
+          docker run -d --name finding-house-backend --network host --memory 512m \
+            --env-file .env finding-house-backend
+          for i in $(seq 1 90); do
             curl -sf localhost:8080/actuator/health > /dev/null && echo "backend up after ${i}s" && exit 0
             sleep 1
           done
@@ -124,7 +125,7 @@ jobs:
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e
         run: |
-          kill "$(cat "$GITHUB_WORKSPACE/backend.pid")"
+          docker stop finding-house-backend
           sleep 3
           # The Vite proxy may answer 5xx ("down") or drop the connection ("unreachable").
           node browser-smoke.mjs "API is down|API is unreachable" /tmp/e2e/down.png
@@ -152,7 +153,7 @@ jobs:
       - name: Logs on failure
         if: failure()
         run: |
-          echo "--- backend.log ---"; tail -n 100 backend.log || true
+          echo "--- backend container ---"; docker logs --tail 150 finding-house-backend || true
           echo "--- frontend.log ---"; tail -n 50 frontend.log || true
           docker compose logs postgres | tail -n 50 || true
 
