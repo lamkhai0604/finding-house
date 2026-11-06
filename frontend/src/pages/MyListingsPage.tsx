@@ -95,7 +95,7 @@ export function MyListingsPage() {
         </StatusMessage>
       ) : (
         <>
-          <dl className="listing-counts" aria-label="Your rooms">
+          <dl className="listing-counts">
             <div>
               <dt>Rooms</dt>
               <dd className="display">{loaded.listings.length}</dd>
