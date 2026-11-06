@@ -1699,7 +1699,9 @@ a.line-stop:not(.button):hover {
 
 .chip-list {
   display: flex;
-  flex: 1 1 auto;
+  /* Shrink before wrapping, so "Clear filters" stays on the chips' row. */
+  flex: 1 1 0;
+  min-width: 0;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
