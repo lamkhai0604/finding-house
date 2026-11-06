@@ -121,7 +121,8 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | GET | `/api/v1/me/listings` | LANDLORD | FR-02 |
 | GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |
-| GET / PUT / DELETE | `/api/v1/me/favorites[/{listingId}]` | TENANT | FR-06 |
+| GET | `/api/v1/me/favorites` (saved, still-visible listings, newest saved first) and `/api/v1/me/favorites/ids` | TENANT | FR-06 |
+| PUT / DELETE | `/api/v1/me/favorites/{listingId}` (both idempotent, 204; saving a hidden or missing listing is 404; at most 200 per tenant) | TENANT | FR-06 |
 
 Listing image links are part of the listing body (`imageUrls`, up to 5) and are replaced on every edit; there are no separate image endpoints (D-021).
 

@@ -24,11 +24,11 @@ _Screenshots are taken automatically by the CI smoke test with fictional sample 
 - **Landlords:** post, edit, hide/unhide, and delete rooms with up to 5 photo links; prices in dollars and cents, areas in square feet.
 - **Everyone:** browse active rooms with filters for neighborhood, rent range, minimum area, and required amenities; three sort orders; pages of 12; the filters live in the URL so a search can be shared.
 - **Listing page:** photos, details, and the landlord's name and phone; hidden listings are visible only to their owner.
+- **Tenants:** save rooms with one click and find them under Saved rooms; a room the landlord hides drops out of the list.
 - Works on phones: menu, folding filter panel, number boxes that format as you type.
 
 **Planned**
 
-- **Favorites** for tenants (FR-06).
 - **AI search** (Sprint 4): type *"studio under $1,800 in Capitol Hill, pets allowed"*; an LLM turns it into the same filters, which the server validates like manual ones, with a fallback to manual filters if the AI is slow or unsure.
 
 ## How it is built
@@ -49,7 +49,7 @@ flowchart LR
 
 **Engineering highlights**
 
-- **Tests on every push:** 111 backend tests against a real PostgreSQL, 118 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 30 page checks on the production build. A separate workflow checks the live site.
+- **Tests on every push:** 119 backend tests against a real PostgreSQL, 125 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 30 page checks on the production build. A separate workflow checks the live site.
 - **Measured performance:** with 10,000 listings, browse requests take 40.8 ms at the 95th percentile (target: under 500 ms). The query plans are printed in every build, and no index was added before measuring.
 - **Security:** BCrypt passwords; failed-login and sign-up limits per client address, taken only from a header the host sets, never from forgeable `X-Forwarded-For`; CORS limited to the exact frontend origin; Content Security Policy; security headers at the host; request size limit; no secrets in the repository.
 - **Process:** requirements with acceptance criteria ([SRS](docs/SRS.md)), architecture and UML ([ARCHITECTURE](docs/ARCHITECTURE.md)), 31 recorded decisions ([DECISIONS](docs/DECISIONS.md)), one branch per task with evidence in [BACKLOG](docs/BACKLOG.md), and a report per sprint ([reports](docs/reports/)).
@@ -190,3 +190,4 @@ Free hosting on Neon, Render, and Vercel (D-029); step-by-step guide in [docs/DE
 | Deployment edge: CORS allows only the configured frontend origin; per-address limits follow `CF-Connecting-IP` and ignore a forged `X-Forwarded-For`; bodies over 64 KB get 413; the backend Docker image runs within 512 MB | Integration tests in a deployment-like context; smoke builds and runs `backend/Dockerfile` and serves the production frontend from another origin | Backend run 42153629641; smoke runs 42153629649, 42154410160 |
 | Sign-ups are limited to 10 attempts per address per hour (409 duplicates count); the page shows the wait time | Unit and integration tests; Vitest | Backend run 42154962043; frontend run 42154962010 |
 | The live site: API health, CORS, host security headers (nosniff, X-Frame-Options, frame-ancestors, HSTS), CSP naming the API, SPA routing, and home and browse pages on desktop and phone with no CSP or CORS errors | `live-smoke` workflow against https://finding-house.vercel.app and https://finding-house.onrender.com | Run 42168599403 |
+| FR-06 favorites: saving twice keeps one entry, a hidden listing drops out and returns when shown, each tenant sees only their own list, hidden or missing listings cannot be saved, landlords and visitors cannot use it; in the browser a tenant saves, finds, and unsaves a room | 8 integration tests, 7 Vitest tests, smoke checks 23a/23b | Backend run 42169385441; frontend run 42169652230; smoke run 42169798299 |
