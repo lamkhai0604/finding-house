@@ -128,6 +128,15 @@ jobs:
           # Production build with CSP; the script fails on any CSP violation.
           FRONTEND_URL=http://localhost:4173 node page-screenshots.mjs /tmp/e2e/pages
 
+      # T-405: the live-check scripts run here against the local stack, so they are known to work
+      # before they are pointed at the deployment.
+      - name: Live-check scripts against the local stack
+        run: |
+          FRONTEND_URL=http://localhost:4173 API_URL=http://localhost:8080 SKIP_FRONTEND_HEADERS=1 \
+            bash scripts/smoke/live-checks.sh
+          cp scripts/smoke/live-browser.mjs /tmp/e2e/
+          cd /tmp/e2e && FRONTEND_URL=http://localhost:4173 node live-browser.mjs /tmp/e2e/live
+
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e
         run: |

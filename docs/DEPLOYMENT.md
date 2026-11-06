@@ -75,7 +75,7 @@ Rules for every step:
 
 In Render → `finding-house-api` → **Environment**, add `CORS_ALLOWED_ORIGINS` = the Vercel production URL (exactly, no trailing slash) and save. Render redeploys by itself.
 
-Then send Claude the two URLs (they are public, not secrets) for the live checks (T-405).
+Then check the deployment (T-405): GitHub → **Actions** → **live-smoke** → **Run workflow**, enter the two URLs, and run. It is read-only: it creates nothing. It waits for the backend to wake up, then checks the API, CORS, the host's security headers, the CSP, SPA routing, and opens the home and browse pages in Chrome on desktop and phone sizes. Or send Claude the two URLs (they are public, not secrets) and Claude runs it.
 
 ## What to expect
 
