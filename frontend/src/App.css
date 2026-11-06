@@ -586,7 +586,9 @@ h2 {
   transform: translateY(1px);
 }
 
-a:hover {
+/* Plain links only: a link styled as a button keeps its button colours (white text on the
+   primary button used to turn the same dark green as its hover background). */
+a:not(.button):hover {
   color: var(--accent-dark);
 }
 
@@ -948,6 +950,59 @@ a.button {
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1.25rem;
+}
+
+/* T-207: number boxes with the unit inside ("$ 5,000", "420 sq ft"). */
+
+.input-affix {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.input-affix:hover {
+  border-color: #9fb3c8;
+}
+
+.input-affix:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgb(11 110 79 / 0.2);
+}
+
+.input-affix.invalid {
+  border-color: var(--danger);
+}
+
+.field .input-affix input,
+.field .input-affix input:hover,
+.field .input-affix input:focus {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  outline: none;
+}
+
+.affix {
+  color: var(--muted);
+  padding: 0 0.625rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.affix:first-child {
+  padding-right: 0;
+}
+
+.affix:last-child {
+  padding-left: 0;
 }
 
 /* Browse (T-202) */

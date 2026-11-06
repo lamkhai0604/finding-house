@@ -61,13 +61,14 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Done — backend run 42142023037: 94 tests passed; 10,000 listings, 400 timed requests over HTTP: p50 12.8 ms, **p95 40.8 ms** (target < 500 ms), max 52.4 ms; slowest type: two amenities (p95 46.2 ms). Plans: sequential scans of 10,000 rows take 2–4 ms, so no index added (CODE-15). Details in the Sprint 2 report |
 | T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
 | T-206 | Unique CI check names (`backend`, `frontend`, `smoke`) so they can be required on `main` | Review O3 | P2 | Done — runs 42142824394 (frontend) and 42142824388 (backend) report checks named `frontend` and `backend`; smoke already reports `smoke` |
+| T-207 | Khai's review of the live site: Sign up text vanished on hover; fewer duplicate sign-in buttons on the home page; Back on log-in and sign-up pages; money and area boxes with the unit inside and thousands separators; empty browse page says nothing is posted yet | D-027, FR-02, FR-03 | P2 | Done — frontend run 42166845797: 118 tests passed (12 new: number formatting and caret, NumberField, one hero action, Back on both account pages, empty-state wording); smoke run 42166845789: Sign up stays white on dark green when hovered (01c), filters and listing form work with the new boxes |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | In progress — guide `docs/DEPLOYMENT.md` written; waiting for Khai's accounts and dashboard steps |
-| T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | In progress — scripts and `live-smoke` workflow ready; self-tested in smoke run 42155362272 (all HTTP and browser checks pass against the local stack); live run after T-401 |
+| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | Done 2026-11-05 — live at https://finding-house.vercel.app (frontend) and https://finding-house.onrender.com (API), database on Neon (us-west-2). Deployed by Khai through the dashboards following docs/DEPLOYMENT.md; checked by live-smoke run 42165540632 |
+| T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | Done — live-smoke run 42165540632 against the deployment: 14 HTTP checks (health, public API, 401 without a token, actuator closed, CORS allows only the frontend, nosniff, X-Frame-Options, frame-ancestors, HSTS, CSP names the API, SPA routing) and 5 browser checks on desktop and phone, no CSP or CORS errors |
 | T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | Proposed |
 | T-403 | Favorites | FR-06 | P3 | Proposed |
 | T-404 | Image file upload to a free storage service (free tier verified first, D-007) | FR-02 | P3 | Proposed |

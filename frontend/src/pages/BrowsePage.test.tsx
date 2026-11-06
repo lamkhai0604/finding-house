@@ -73,16 +73,16 @@ describe("Browse rooms (FR-03, T-202)", () => {
     await screen.findByRole("option", { name: "Ballard" });
 
     fill("Neighborhood", "Ballard");
-    fill("Min rent ($)", "1,000");
-    fill("Max rent ($)", "2000.50");
-    fill("Min area (sq ft)", "200");
+    fill("Min rent", "1,000");
+    fill("Max rent", "2000.50");
+    fill("Min area", "200");
     fireEvent.click(screen.getByLabelText("Wi-Fi"));
     fill("Sort by", "price_asc");
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
 
     await waitFor(() => expect(queries).toHaveLength(2));
     expect(await screen.findByText("1 room found")).toBeInTheDocument();
-    expect(screen.getByLabelText("Max rent ($)")).toHaveValue("2000.50");
+    expect(screen.getByLabelText("Max rent")).toHaveValue("2,000.50");
     expect(queries.at(-1)).toBe(
       "?neighborhood=Ballard&minPriceCents=100000&maxPriceCents=200050&minAreaSqft=200&amenities=WIFI&sort=price_asc&page=0&size=12",
     );
@@ -93,14 +93,14 @@ describe("Browse rooms (FR-03, T-202)", () => {
     renderApp("/browse");
     await screen.findByText("1 room found");
 
-    fill("Min rent ($)", "2000");
-    fill("Max rent ($)", "1500");
+    fill("Min rent", "2000");
+    fill("Max rent", "1500");
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
 
     expect(
       await screen.findByText("Must be at least the minimum price."),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Max rent ($)")).toHaveAttribute(
+    expect(screen.getByLabelText("Max rent")).toHaveAttribute(
       "aria-invalid",
       "true",
     );
@@ -125,7 +125,7 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(queries).toEqual([
       "?neighborhood=Ballard&minPriceCents=100000&amenities=WIFI&sort=newest&page=1&size=12",
     ]);
-    expect(screen.getByLabelText("Min rent ($)")).toHaveValue("1000");
+    expect(screen.getByLabelText("Min rent")).toHaveValue("1,000");
     expect(screen.getByLabelText("Wi-Fi")).toBeChecked();
     expect(screen.getByText("Page 2 of 2")).toBeInTheDocument();
   });
@@ -191,6 +191,17 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(screen.getByLabelText("Neighborhood")).toHaveValue("");
   });
 
+  it("says nothing has been posted when there are no filters (T-207)", async () => {
+    browseApi(() => Response.json(page([])));
+    renderApp("/browse");
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "No rooms have been posted yet",
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("shows the server's reason when it rejects a filter", async () => {
     browseApi(() =>
       apiError(400, "VALIDATION_FAILED", "Invalid request", [
@@ -220,7 +231,7 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(toggle).toHaveTextContent("Hide filters (2 active)");
 
     // Applying new filters folds the panel again.
-    fill("Min rent ($)", "900");
+    fill("Min rent", "900");
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
     expect(
       await screen.findByRole("button", { name: "Filters (3 active)" }),

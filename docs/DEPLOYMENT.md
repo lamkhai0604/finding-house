@@ -26,6 +26,8 @@ Rules for every step:
    - `DB_USERNAME` = `ROLE`
    - `DB_PASSWORD` = `PASSWORD`
 
+   `DB_URL` holds **no username or password** and no `@`. A URL like `jdbc:postgresql://neondb_owner:...@ep-...` stops the backend with "Driver claims to not accept jdbcUrl", and it prints the password into the log. Drop `&channel_binding=require` too.
+
    The tables are created by the backend on its first start; do not create them by hand.
 
 ## 2. Backend on Render
@@ -85,13 +87,29 @@ Then check the deployment (T-405): GitHub → **Actions** → **live-smoke** →
 - **Sign-ups are limited** to 10 attempts per network address per hour (D-031). If you test sign-up many times from home, you may see "Too many sign-up attempts"; it clears within the hour.
 - **Changing a setting**: edit it in the dashboard; Render and Vercel redeploy. A change to `VITE_API_BASE_URL` needs a Vercel redeploy, because it is built into the page.
 
+## Live
+
+| Part | URL |
+| --- | --- |
+| Site | https://finding-house.vercel.app |
+| API | https://finding-house.onrender.com (health: `/actuator/health`) |
+| Database | Neon, AWS US West 2 (Oregon) |
+
+First deployed 2026-11-05; checked by live-smoke run 42165540632.
+
 ## If something goes wrong
+
+**Never share a screenshot that shows a password.** Before sending a log, hide anything after `npg_` or between `:` and `@` in a connection string. If a password was shown anywhere, reset it in Neon (Roles → Reset password) and update `DB_PASSWORD` in Render.
+
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
 | Render build fails | Root Directory not `backend` | Set it, redeploy |
 | Render log: `JWT_SECRET` too short / missing | Variable missing | Add a 48-byte random value |
 | Render log: connection refused / SSL error to Neon | `DB_URL` not in JDBC form | Use `jdbc:postgresql://HOST/DATABASE?sslmode=require` |
+| Render log: `UnknownHostException: HOST` | The template word `HOST` was pasted as is | Put the real Neon host (`ep-...neon.tech`) in `DB_URL` |
+| Render log: `Driver ... claims to not accept jdbcUrl` | Username and password inside `DB_URL` | Remove `user:password@`; they go in `DB_USERNAME` / `DB_PASSWORD`. Reset the password, it is now in the log |
+| Render log: `Could not bind properties to 'HttpProperties'` | `CORS_ALLOWED_ORIGINS` not exact origins | `https://name.vercel.app`, no trailing `/`, no path, comma between several; search the log for `cors-allowed-origins` to see the refused value |
 | Site loads, footer says "API is unreachable" | Backend asleep, or `VITE_API_BASE_URL` wrong | Wait a minute and reload; check the variable and redeploy Vercel |
 | Browser console: blocked by CORS | `CORS_ALLOWED_ORIGINS` missing or not exactly the Vercel URL | Fix the value in Render |
 | Browser console: violates Content Security Policy (connect-src) | Vercel built without the right `VITE_API_BASE_URL` | Fix the variable, redeploy Vercel |

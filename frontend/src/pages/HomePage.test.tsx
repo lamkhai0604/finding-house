@@ -95,4 +95,17 @@ describe("Home page newest rooms (T-122)", () => {
     expect(within(carousel).getAllByRole("listitem")).toHaveLength(1);
     expect(authHeaders).toEqual([undefined]);
   });
+
+  it("offers one main action; sign-in lives in the header (T-207)", async () => {
+    mockApi({ "GET /api/v1/listings": () => Response.json(page([])) });
+    renderApp("/");
+
+    const hero = (
+      await screen.findByRole("heading", { name: "Find a room in Seattle" })
+    ).closest("section")!;
+    expect(within(hero).getAllByRole("link")).toHaveLength(1);
+    expect(
+      within(hero).getByRole("link", { name: "Browse rooms" }),
+    ).toHaveAttribute("href", "/browse");
+  });
 });

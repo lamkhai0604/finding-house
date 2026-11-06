@@ -10,7 +10,8 @@ import { formatAmenity } from "../utils/format";
 import { Button } from "./Button";
 import { CheckboxGroup } from "./CheckboxGroup";
 import { SelectField } from "./SelectField";
-import { TextField } from "./TextField";
+import { AREA, MONEY } from "../utils/numberInput";
+import { NumberField } from "./NumberField";
 
 interface ListingFiltersProps {
   initial: FilterValues;
@@ -73,30 +74,33 @@ export function ListingFilters({
         ]}
       />
       <div className="field-row">
-        <TextField
-          label="Min rent ($)"
-          inputMode="decimal"
+        <NumberField
+          label="Min rent"
+          format={MONEY}
+          prefix="$"
           placeholder="Any"
           value={values.minPrice}
           error={errors.minPrice}
-          onChange={(e) => set("minPrice", e.target.value)}
+          onValueChange={(plain) => set("minPrice", plain)}
         />
-        <TextField
-          label="Max rent ($)"
-          inputMode="decimal"
+        <NumberField
+          label="Max rent"
+          format={MONEY}
+          prefix="$"
           placeholder="Any"
           value={values.maxPrice}
           error={errors.maxPrice}
-          onChange={(e) => set("maxPrice", e.target.value)}
+          onValueChange={(plain) => set("maxPrice", plain)}
         />
       </div>
-      <TextField
-        label="Min area (sq ft)"
-        inputMode="numeric"
+      <NumberField
+        label="Min area"
+        format={AREA}
+        suffix="sq ft"
         placeholder="Any"
         value={values.minArea}
         error={errors.minArea}
-        onChange={(e) => set("minArea", e.target.value)}
+        onValueChange={(plain) => set("minArea", plain)}
       />
       <CheckboxGroup
         legend="Must have"

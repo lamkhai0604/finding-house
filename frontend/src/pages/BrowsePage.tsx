@@ -149,11 +149,20 @@ export function BrowsePage() {
             <FormAlert message={current.message} />
           ) : current.page.totalItems === 0 ? (
             <div className="empty-results" role="status">
-              <h2>No rooms match these filters</h2>
-              <p className="muted">
-                Try a wider price range, another neighborhood, or fewer
-                amenities.
-              </p>
+              {activeFilters > 0 ? (
+                <>
+                  <h2>No rooms match these filters</h2>
+                  <p className="muted">
+                    Try a wider price range, another neighborhood, or fewer
+                    amenities.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h2>No rooms have been posted yet</h2>
+                  <p className="muted">Check back soon.</p>
+                </>
+              )}
             </div>
           ) : (
             <>

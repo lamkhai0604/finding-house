@@ -4,6 +4,7 @@ import { ApiError } from "../api/client";
 import type { Role } from "../api/types";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
+import { BackButton } from "../components/BackButton";
 import { FormAlert } from "../components/FormAlert";
 import { SelectField } from "../components/SelectField";
 import { TextField } from "../components/TextField";
@@ -76,59 +77,64 @@ export function RegisterPage() {
   }
 
   return (
-    <section className="card narrow">
-      <h1>Create an account</h1>
-      <form onSubmit={handleSubmit} noValidate>
-        <FormAlert message={error} />
-        <TextField
-          label="Name"
-          autoComplete="name"
-          value={form.displayName}
-          error={fieldErrors.displayName}
-          onChange={(e) => update("displayName", e.target.value)}
-        />
-        <TextField
-          label="Email"
-          type="email"
-          autoComplete="email"
-          value={form.email}
-          error={fieldErrors.email}
-          onChange={(e) => update("email", e.target.value)}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          autoComplete="new-password"
-          hint={`At least ${MIN_PASSWORD_LENGTH} characters`}
-          value={form.password}
-          error={fieldErrors.password}
-          onChange={(e) => update("password", e.target.value)}
-        />
-        <SelectField
-          label="Account type"
-          options={ROLE_OPTIONS}
-          value={form.role}
-          error={fieldErrors.role}
-          onChange={(e) => update("role", e.target.value)}
-        />
-        {form.role === "LANDLORD" && (
+    <>
+      <div className="page-toolbar narrow">
+        <BackButton fallback="/" />
+      </div>
+      <section className="card narrow">
+        <h1>Create an account</h1>
+        <form onSubmit={handleSubmit} noValidate>
+          <FormAlert message={error} />
           <TextField
-            label="Contact phone (optional)"
-            type="tel"
-            autoComplete="tel"
-            hint="Shown to people who view your listings"
-            value={form.phone}
-            error={fieldErrors.phone}
-            onChange={(e) => update("phone", e.target.value)}
+            label="Name"
+            autoComplete="name"
+            value={form.displayName}
+            error={fieldErrors.displayName}
+            onChange={(e) => update("displayName", e.target.value)}
           />
-        )}
-        <Button type="submit" busy={busy}>
-          Sign up
-        </Button>
-      </form>
-      <p className="muted">
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
-    </section>
+          <TextField
+            label="Email"
+            type="email"
+            autoComplete="email"
+            value={form.email}
+            error={fieldErrors.email}
+            onChange={(e) => update("email", e.target.value)}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            autoComplete="new-password"
+            hint={`At least ${MIN_PASSWORD_LENGTH} characters`}
+            value={form.password}
+            error={fieldErrors.password}
+            onChange={(e) => update("password", e.target.value)}
+          />
+          <SelectField
+            label="Account type"
+            options={ROLE_OPTIONS}
+            value={form.role}
+            error={fieldErrors.role}
+            onChange={(e) => update("role", e.target.value)}
+          />
+          {form.role === "LANDLORD" && (
+            <TextField
+              label="Contact phone (optional)"
+              type="tel"
+              autoComplete="tel"
+              hint="Shown to people who view your listings"
+              value={form.phone}
+              error={fieldErrors.phone}
+              onChange={(e) => update("phone", e.target.value)}
+            />
+          )}
+          <Button type="submit" busy={busy}>
+            Sign up
+          </Button>
+        </form>
+        <p className="muted">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+      </section>
+    </>
   );
 }

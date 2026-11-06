@@ -15,6 +15,8 @@ import { FormAlert } from "./FormAlert";
 import { ImageUrlsField } from "./ImageUrlsField";
 import { SelectField } from "./SelectField";
 import { TextAreaField } from "./TextAreaField";
+import { AREA, MONEY } from "../utils/numberInput";
+import { NumberField } from "./NumberField";
 import { TextField } from "./TextField";
 
 const MAX_IMAGES = 5;
@@ -125,21 +127,24 @@ export function ListingForm({
           onChange={(e) => set("title", e.target.value)}
         />
         <div className="field-row">
-          <TextField
-            label="Monthly rent (USD)"
-            inputMode="decimal"
-            placeholder="1650"
+          <NumberField
+            label="Monthly rent"
+            format={MONEY}
+            prefix="$"
+            suffix="/ month"
+            placeholder="1,650"
             value={values.price}
             error={errors.price}
-            onChange={(e) => set("price", e.target.value)}
+            onValueChange={(plain) => set("price", plain)}
           />
-          <TextField
-            label="Area (sq ft)"
-            inputMode="numeric"
+          <NumberField
+            label="Area"
+            format={AREA}
+            suffix="sq ft"
             placeholder="420"
             value={values.areaSqft}
             error={errors.areaSqft}
-            onChange={(e) => set("areaSqft", e.target.value)}
+            onValueChange={(plain) => set("areaSqft", plain)}
           />
         </div>
         <SelectField
