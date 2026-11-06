@@ -64,7 +64,7 @@ try {
   await shot(page, "D2-demo-browse", "/browse", (p) => p.getByRole("article").first());
   const title = "Bright room off Pine, 5 min to the station";
   await page.goto(`${frontend}/browse?neighborhood=Capitol+Hill`);
-  await page.getByRole("link", { name: title }).click();
+  await page.getByRole("link", { name: title, exact: true }).click();
   await page.waitForURL(/\/listings\/\d+$/);
   await shot(page, "D3-demo-listing", new URL(page.url()).pathname, (p) =>
     p.getByRole("heading", { level: 1, name: title }),
