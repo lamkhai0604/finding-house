@@ -58,7 +58,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-202 | Browse page with filter panel | FR-03 | P2 | Done — `/browse` with filters in the URL, 12 per page; frontend run 42135480928: 100 tests passed (9 browse-page and 7 filter unit tests); smoke run 42135480822: filtered prices checked against the real API, reload keeps filters, invalid range shown, phone layout |
 | T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Ready |
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Ready |
-| T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | In progress |
+| T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
