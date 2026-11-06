@@ -972,6 +972,18 @@ a.button {
   gap: 0.75rem;
 }
 
+/* Inputs have an intrinsic width; let them shrink to the narrow sidebar column. */
+.filter-panel .field {
+  min-width: 0;
+}
+
+.filter-panel .field input,
+.filter-panel .field select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .filter-panel .checkbox-options {
   display: grid;
   grid-template-columns: 1fr;
