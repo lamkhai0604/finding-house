@@ -977,7 +977,7 @@ a.button {
   min-width: 0;
 }
 
-.filter-panel .field input,
+.filter-panel .field input:not([type="checkbox"]),
 .filter-panel .field select {
   width: 100%;
   min-width: 0;
