@@ -38,25 +38,6 @@ export function ListingDetailSkeleton() {
   );
 }
 
-export function ListingListSkeleton({ count = 3 }: { count?: number }) {
-  return (
-    <PageLoading label="Loading listings">
-      <div className="listing-list">
-        {Array.from({ length: count }, (_, i) => (
-          <div key={i} className="listing-card">
-            <Skeleton className="skeleton-thumb" />
-            <div>
-              <Skeleton className="skeleton-title" />
-              <Skeleton className="skeleton-line short" />
-              <Skeleton className="skeleton-line" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </PageLoading>
-  );
-}
-
 /** Placeholder for a grid of ticket cards while listings load (T-210). */
 export function TicketGridSkeleton({ count = 4 }: { count?: number }) {
   return (

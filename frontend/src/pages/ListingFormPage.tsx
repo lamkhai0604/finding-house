@@ -89,7 +89,7 @@ export function ListingFormPage() {
   }
 
   return (
-    <section className="card">
+    <section className="listing-editor">
       <ListingForm
         key={key}
         heading={editing ? "Edit listing" : "Post a room"}
