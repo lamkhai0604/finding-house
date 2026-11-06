@@ -12,6 +12,7 @@ import {
   type FilterValues,
 } from "../browse/filters";
 import { Button } from "../components/Button";
+import { FavoriteButton } from "../components/FavoriteButton";
 import { FormAlert } from "../components/FormAlert";
 import { ListingCard } from "../components/ListingCard";
 import { ListingFilters } from "../components/ListingFilters";
@@ -176,7 +177,16 @@ export function BrowsePage() {
               ) : (
                 <div className="listing-list">
                   {current.page.items.map((listing) => (
-                    <ListingCard key={listing.id} listing={listing} />
+                    <ListingCard
+                      key={listing.id}
+                      listing={listing}
+                      actions={
+                        <FavoriteButton
+                          listingId={listing.id}
+                          title={listing.title}
+                        />
+                      }
+                    />
                   ))}
                 </div>
               )}

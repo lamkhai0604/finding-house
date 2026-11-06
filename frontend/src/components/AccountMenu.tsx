@@ -9,7 +9,8 @@ interface AccountMenuProps {
 }
 
 /**
- * D-027: avatar button with a dropdown (My listings, Post a room, Log out). Closes on Escape, on a
+ * D-027: avatar button with a dropdown (landlords: My listings, Post a room; tenants: Saved
+ * rooms; Log out). Closes on Escape, on a
  * click outside, and after choosing an item.
  */
 export function AccountMenu({ user, onLogout }: AccountMenuProps) {
@@ -68,6 +69,11 @@ export function AccountMenu({ user, onLogout }: AccountMenuProps) {
                 Post a room
               </Link>
             </>
+          )}
+          {user.role === "TENANT" && (
+            <Link to="/my/saved" onClick={() => setOpen(false)}>
+              Saved rooms
+            </Link>
           )}
           <button
             type="button"
