@@ -52,7 +52,7 @@ try {
       await page.goto(`${frontend}/browse`);
       await page.getByRole("heading", { name: "Browse rooms" }).waitFor({ timeout: 30000 });
       await page
-        .getByText(/rooms? found|No rooms match these filters/)
+        .getByText(/rooms? found|No rooms match these filters|No rooms have been posted yet/)
         .first()
         .waitFor({ timeout: 60000 });
       await page.screenshot({ path: `${outDir}/live-browse-${label}.jpg`, type: "jpeg", quality: 70 });

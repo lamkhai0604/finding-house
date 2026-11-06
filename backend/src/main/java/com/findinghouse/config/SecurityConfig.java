@@ -74,6 +74,9 @@ public class SecurityConfig {
                     .hasRole("LANDLORD")
                     .requestMatchers(HttpMethod.GET, "/api/v1/me/listings")
                     .hasRole("LANDLORD")
+                    // FR-06: favorites belong to tenants.
+                    .requestMatchers("/api/v1/me/favorites", "/api/v1/me/favorites/**")
+                    .hasRole("TENANT")
                     .anyRequest()
                     .authenticated())
         .oauth2ResourceServer(

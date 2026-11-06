@@ -1005,6 +1005,26 @@ a.button {
   padding-left: 0;
 }
 
+/* Favorites (T-403) */
+
+.favorite {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.favorite-button.saved {
+  border-color: #f4a6b0;
+  color: #b4233c;
+  background: #fff5f6;
+}
+
+.favorite-button.saved:hover:not(:disabled) {
+  background: #ffe9ec;
+  border-color: #e86a7d;
+}
+
 /* Browse (T-202) */
 
 .browse-layout {

@@ -5,6 +5,7 @@ import { getListing } from "../api/listings";
 import { useSession } from "../auth/session";
 import type { ListingDetail } from "../api/types";
 import { BackButton } from "../components/BackButton";
+import { FavoriteButton } from "../components/FavoriteButton";
 import { ButtonLink } from "../components/ButtonLink";
 import { ImageGallery } from "../components/ImageGallery";
 import { ListingDetailSkeleton } from "../components/Skeleton";
@@ -97,6 +98,11 @@ export function ListingDetailPage() {
           {formatPrice(listing.monthlyPriceCents)}
           <span className="muted"> / month</span>
         </p>
+        {listing.status === "ACTIVE" && (
+          <p>
+            <FavoriteButton listingId={listing.id} title={listing.title} />
+          </p>
+        )}
         <p className="muted">
           {listing.neighborhood}, {listing.city} ·{" "}
           {formatArea(listing.areaSqft)}
