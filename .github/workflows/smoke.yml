@@ -137,6 +137,13 @@ jobs:
           cp scripts/smoke/live-browser.mjs /tmp/e2e/
           cd /tmp/e2e && FRONTEND_URL=http://localhost:4173 node live-browser.mjs /tmp/e2e/live
 
+      # T-216: every page at 375 px, with a check that nothing scrolls sideways.
+      - name: Phone pass (375 px)
+        working-directory: /tmp/e2e
+        run: |
+          cp "$GITHUB_WORKSPACE/scripts/smoke/phone-shots.mjs" .
+          FRONTEND_URL=http://localhost:4173 node phone-shots.mjs /tmp/e2e/phone
+
       # T-215: the demo content loads (password from a throwaway variable, like the live secret),
       # loading it twice creates nothing new, and its photos show up in the app.
       - name: Load demo content and screenshot it
@@ -159,7 +166,7 @@ jobs:
       - name: Print screenshots (gzip + base64)
         if: always()
         run: |
-          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg; do
+          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg /tmp/e2e/phone/*.jpg; do
             [ -f "$f" ] || continue
             echo "SCREENSHOT-BEGIN $(basename "$f")"
             gzip -9 -c "$f" | base64 -w 1000
