@@ -1202,8 +1202,9 @@ a.button {
 
 .home-collage {
   position: relative;
-  flex: 1 1 20rem;
-  min-width: 18rem;
+  /* Wide enough that the two tickets overlap only at the edges. */
+  flex: 0 1 26rem;
+  min-width: 22rem;
   height: 22.5rem;
 }
 
