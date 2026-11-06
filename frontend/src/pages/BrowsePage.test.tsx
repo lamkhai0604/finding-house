@@ -72,19 +72,29 @@ describe("Browse rooms (FR-03, T-202)", () => {
     await screen.findByText("1 room found");
     await screen.findByRole("option", { name: "Ballard" });
 
-    fill("Neighborhood", "Ballard");
-    fill("Min rent", "1,000");
-    fill("Max rent", "2000.50");
-    fill("Min area", "200");
-    fireEvent.click(screen.getByLabelText("Wi-Fi"));
-    fill("Sort by", "price_asc");
+    fill("Rent from", "1,000");
+    fill("Rent up to", "2000.50");
+    fill("Area at least", "200");
+    // Typed amounts wait for Show rooms: no search per digit.
+    expect(queries).toHaveLength(1);
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
-
     await waitFor(() => expect(queries).toHaveLength(2));
+
+    // The neighborhood, the amenity chips and the sort apply at once.
+    fill("Neighborhood", "Ballard");
+    fireEvent.click(screen.getByRole("button", { name: "Wi-Fi" }));
+    fill("Sort by", "price_asc");
+
+    await waitFor(() =>
+      expect(queries.at(-1)).toBe(
+        "?neighborhood=Ballard&minPriceCents=100000&maxPriceCents=200050&minAreaSqft=200&amenities=WIFI&sort=price_asc&page=0&size=12",
+      ),
+    );
     expect(await screen.findByText("1 room found")).toBeInTheDocument();
-    expect(screen.getByLabelText("Max rent")).toHaveValue("2,000.50");
-    expect(queries.at(-1)).toBe(
-      "?neighborhood=Ballard&minPriceCents=100000&maxPriceCents=200050&minAreaSqft=200&amenities=WIFI&sort=price_asc&page=0&size=12",
+    expect(screen.getByLabelText("Rent up to")).toHaveValue("2,000.50");
+    expect(screen.getByRole("button", { name: "Wi-Fi" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
     );
   });
 
@@ -93,14 +103,14 @@ describe("Browse rooms (FR-03, T-202)", () => {
     renderApp("/browse");
     await screen.findByText("1 room found");
 
-    fill("Min rent", "2000");
-    fill("Max rent", "1500");
+    fill("Rent from", "2000");
+    fill("Rent up to", "1500");
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
 
     expect(
       await screen.findByText("Must be at least the minimum price."),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText("Max rent")).toHaveAttribute(
+    expect(screen.getByLabelText("Rent up to")).toHaveAttribute(
       "aria-invalid",
       "true",
     );
@@ -125,8 +135,11 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(queries).toEqual([
       "?neighborhood=Ballard&minPriceCents=100000&amenities=WIFI&sort=newest&page=1&size=12",
     ]);
-    expect(screen.getByLabelText("Min rent")).toHaveValue("1,000");
-    expect(screen.getByLabelText("Wi-Fi")).toBeChecked();
+    expect(screen.getByLabelText("Rent from")).toHaveValue("1,000");
+    expect(screen.getByRole("button", { name: "Wi-Fi" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     expect(screen.getByText("Page 2 of 2")).toBeInTheDocument();
   });
 
@@ -230,11 +243,17 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "true");
     expect(toggle).toHaveTextContent("Hide filters (2 active)");
 
-    // Applying new filters folds the panel again.
-    fill("Min rent", "900");
+    // A chip picked inside the panel leaves it open...
+    fireEvent.click(screen.getByRole("button", { name: "Kitchen" }));
+    expect(
+      await screen.findByRole("button", { name: "Hide filters (3 active)" }),
+    ).toHaveAttribute("aria-expanded", "true");
+
+    // ...and Show rooms folds it again.
+    fill("Rent from", "900");
     fireEvent.click(screen.getByRole("button", { name: "Show rooms" }));
     expect(
-      await screen.findByRole("button", { name: "Filters (3 active)" }),
+      await screen.findByRole("button", { name: "Filters (4 active)" }),
     ).toHaveAttribute("aria-expanded", "false");
   });
 
@@ -245,6 +264,31 @@ describe("Browse rooms (FR-03, T-202)", () => {
     expect(
       await screen.findByRole("button", { name: /Hide filters/ }),
     ).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("picks a neighborhood from a stop on the mini 1 Line (T-211)", async () => {
+    const queries = browseApi(() => Response.json(page([listing(7, "A")])));
+    renderApp("/browse");
+    await screen.findByText("1 room found");
+
+    const stops = screen.getByRole("group", { name: "Stops on the 1 Line" });
+    fireEvent.click(within(stops).getByRole("button", { name: "U District" }));
+
+    await waitFor(() =>
+      expect(queries.at(-1)).toBe(
+        "?neighborhood=University+District&sort=newest&page=0&size=12",
+      ),
+    );
+    const stop = within(
+      screen.getByRole("group", { name: "Stops on the 1 Line" }),
+    ).getByRole("button", { name: "U District" });
+    expect(stop).toHaveAttribute("aria-pressed", "true");
+
+    // Pressing the chosen stop again goes back to any neighborhood.
+    fireEvent.click(stop);
+    await waitFor(() =>
+      expect(queries.at(-1)).toBe("?sort=newest&page=0&size=12"),
+    );
   });
 
   it("is linked from the header", async () => {

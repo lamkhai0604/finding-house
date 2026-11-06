@@ -217,7 +217,7 @@ function LineStrip({ stats }: { stats: Load<NeighborhoodStats[]> }) {
   );
   return (
     <section className="home-line" aria-labelledby="line-title">
-      <div className="home-wide">
+      <div className="wide">
         <div className="home-section-head">
           <h2 id="line-title" className="display">
             Rooms along the 1 Line
@@ -257,7 +257,7 @@ function LineStrip({ stats }: { stats: Load<NeighborhoodStats[]> }) {
 
 function JustPosted({ newest }: { newest: Load<Listing[]> }) {
   return (
-    <section className="home-wide home-block" aria-labelledby="newest-title">
+    <section className="wide home-block" aria-labelledby="newest-title">
       <div className="home-section-head">
         <h2 id="newest-title" className="display">
           Just posted
@@ -292,7 +292,7 @@ function JustPosted({ newest }: { newest: Load<Listing[]> }) {
 
 function HowItWorks() {
   return (
-    <section className="home-wide home-how" aria-label="How it works">
+    <section className="wide home-how" aria-label="How it works">
       <div>
         <h2 className="display">Looking for a room</h2>
         <ol>

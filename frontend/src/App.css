@@ -965,65 +965,10 @@ a.button {
   border-color: #e86a7d;
 }
 
-/* Browse (T-202) */
-
-.browse-layout {
-  display: grid;
-  grid-template-columns: 17rem 1fr;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-.filter-panel {
-  padding: 1.25rem;
-}
-
-/* T-205: the toggle only exists on small screens; on wide screens the panel is always shown. */
-.filter-toggle {
-  display: none;
-}
-
-.filter-panel h2 {
-  margin: 0 0 1rem;
-  font-size: 1.125rem;
-}
-
-.filter-panel .field-row {
-  gap: 0.75rem;
-}
-
-/* Inputs have an intrinsic width; let them shrink to the narrow sidebar column. */
-.filter-panel .field {
-  min-width: 0;
-}
-
-.filter-panel .field input:not([type="checkbox"]),
-.filter-panel .field select {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.filter-panel .checkbox-options {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.25rem;
-}
-
 .form-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.browse-results {
-  min-width: 0;
-  scroll-margin-top: 5rem;
-}
-
-.results-count {
-  margin: 0 0 0.75rem;
-  font-weight: 600;
 }
 
 .empty-results {
@@ -1044,25 +989,6 @@ a.button {
   justify-content: center;
   gap: 1rem;
   margin-top: 1.5rem;
-}
-
-@media (max-width: 800px) {
-  .browse-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .filter-toggle {
-    display: inline-flex;
-    margin-bottom: 1rem;
-  }
-
-  .filter-wrap:not(.open) {
-    display: none;
-  }
-
-  .filter-panel .checkbox-options {
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-  }
 }
 
 @media (max-width: 640px) {
@@ -1115,13 +1041,14 @@ a.button {
 
 /* Home (T-210, D-033) */
 
-/* The home page runs edge to edge; its sections set their own width. */
-.page:has(> .home) {
+/* Home and browse run edge to edge; their sections set their own width. */
+.page:has(> .home),
+.page:has(> .browse) {
   max-width: none;
   padding: 0;
 }
 
-.home-wide {
+.wide {
   max-width: var(--wide);
   box-sizing: border-box;
   margin: 0 auto;
@@ -1596,12 +1523,305 @@ a.line-stop:not(.button):hover {
     height: 90px;
   }
 
-  .home-wide {
+  .wide {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
   .home-block {
     padding-top: 3rem;
+  }
+}
+
+/* Browse (T-202, T-211) */
+
+.browse-band {
+  background: var(--hero);
+  color: var(--hero-ink);
+}
+
+.browse-band-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-top: 2.5rem;
+  padding-bottom: 5.25rem;
+}
+
+.browse-band h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--hero-ink);
+}
+
+.results-count {
+  margin: 0.5rem 0 0;
+  font-size: 1.0625rem;
+}
+
+.browse-sort {
+  width: 14rem;
+}
+
+.browse-sort .field {
+  margin: 0;
+}
+
+.browse-sort label {
+  color: var(--hero-ink);
+}
+
+.browse-body {
+  padding-bottom: 4.5rem;
+}
+
+.filter-wrap {
+  position: relative;
+  margin-top: -3.5rem;
+}
+
+.filter-panel {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+}
+
+/* T-205: the toggle only exists on small screens; on wide screens the panel is always shown. */
+.filter-toggle {
+  display: none;
+}
+
+.mini-line {
+  overflow-x: auto;
+  padding: 0.25rem 0 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mini-stops {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(5rem, 1fr));
+  gap: 0.25rem;
+  min-width: 37.5rem;
+}
+
+.mini-stops::before {
+  content: "";
+  position: absolute;
+  left: calc(100% / 14);
+  right: calc(100% / 14);
+  top: 5px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.mini-stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 2.75rem;
+  padding: 0 0 0.25rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.mini-dot {
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 4px solid var(--text);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.mini-stop:hover .mini-dot,
+.mini-stop[aria-pressed="true"] .mini-dot {
+  background: var(--line);
+}
+
+.mini-stop[aria-pressed="true"] {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.filter-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.filter-fields .field {
+  flex: 1 1 8rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.filter-fields .field:first-child {
+  flex-basis: 12rem;
+}
+
+.filter-fields .field input,
+.filter-fields .field select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Line the button up with the inputs, below their labels. */
+.filter-submit {
+  align-self: flex-start;
+  margin-top: 1.5rem;
+  min-height: 2.75rem;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.chip-list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chip-legend {
+  margin-right: 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.filter-clear {
+  margin-left: auto;
+}
+
+.browse-results {
+  min-width: 0;
+  margin-top: 1.75rem;
+  scroll-margin-top: 5rem;
+}
+
+/* The save heart over a ticket's photo (T-211). */
+.ticket-action {
+  position: absolute;
+  z-index: 2;
+  top: 0.625rem;
+  right: 0.625rem;
+}
+
+.save-heart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 2px 8px rgb(11 43 41 / 0.18);
+  cursor: pointer;
+}
+
+.save-heart:hover,
+a.save-heart:not(.button):hover {
+  color: var(--saved);
+}
+
+.save-heart.saved {
+  color: var(--saved);
+}
+
+.save-error {
+  position: absolute;
+  top: 3.25rem;
+  right: 0;
+  width: 12rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 800px) {
+  .filter-wrap {
+    margin-top: 1rem;
+  }
+
+  .filter-toggle {
+    display: inline-flex;
+    position: relative;
+    margin-top: -3.5rem;
+  }
+
+  .filter-wrap:not(.open) {
+    display: none;
+  }
+
+  .browse-band-inner {
+    padding-bottom: 4.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .browse-sort {
+    width: 100%;
+  }
+
+  .filter-submit,
+  .filter-fields .field {
+    flex-basis: 100%;
+  }
+
+  .filter-submit {
+    margin-top: 0;
   }
 }

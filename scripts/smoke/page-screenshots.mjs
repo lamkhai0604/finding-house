@@ -274,15 +274,13 @@ try {
     }
   });
 
-  await page.getByLabel("Max rent").fill("1500");
+  await page.getByLabel("Rent up to").fill("1500");
   await page.getByLabel("Sort by").selectOption("price_asc");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await page.waitForURL(/maxPrice=1500/);
   await shot(page, "19-browse-filtered", "rooms found", browseResults.getByRole("article").first());
   await check("19b: filtered prices are at most $1,500 and ascending", async () => {
-    const prices = (await browseResults.locator(".listing-card-price").allTextContents()).map(
-      (text) => priceOf(text.split("/")[0]),
-    );
+    const prices = (await browseResults.locator(".ticket-price").allTextContents()).map(priceOf);
     if (prices.length === 0) throw new Error("no results");
     if (prices.some((p) => p > 1500)) throw new Error(`price above max: ${prices}`);
     if (prices.some((p, i) => i > 0 && p < prices[i - 1])) throw new Error(`not ascending: ${prices}`);
@@ -290,11 +288,28 @@ try {
   await check("19c: the URL restores the filters after a reload", async () => {
     await page.reload();
     await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
-    const max = await page.getByLabel("Max rent").inputValue();
+    const max = await page.getByLabel("Rent up to").inputValue();
     if (max !== "1,500") throw new Error(`max rent field is "${max}"`);
   });
 
-  await page.getByLabel("Min rent").fill("2000");
+  // T-211: a stop on the mini 1 Line filters by its neighborhood at once.
+  await check("19d: a stop on the mini line filters by neighborhood", async () => {
+    await page.goto(`${frontend}/browse`);
+    await page
+      .getByRole("group", { name: "Stops on the 1 Line" })
+      .getByRole("button", { name: "Capitol Hill" })
+      .click();
+    await page.waitForURL(/neighborhood=Capitol\+Hill/);
+    await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
+    const stops = await browseResults.locator(".ticket-stop").allTextContents();
+    if (stops.length === 0 || stops.some((t) => !t.startsWith("Capitol Hill"))) {
+      throw new Error(`results outside Capitol Hill: ${stops}`);
+    }
+  });
+  await page.goto(`${frontend}/browse?maxPrice=1500&sort=price_asc`);
+  await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
+
+  await page.getByLabel("Rent from").fill("2000");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await shot(page, "20-browse-invalid-range", "Must be at least the minimum price.");
 
@@ -351,10 +366,10 @@ try {
   await phone.goto(`${frontend}/browse`);
   await shot(phone, "21-browse-mobile", "rooms found", phone.getByRole("heading", { name: "Browse rooms" }));
   await check("21b: phone filters start folded", async () => {
-    if (await phone.getByLabel("Max rent").isVisible()) throw new Error("filter panel is open");
+    if (await phone.getByLabel("Rent up to").isVisible()) throw new Error("filter panel is open");
   });
   await phone.getByRole("button", { name: "Filters" }).click();
-  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent"));
+  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Rent up to"));
 } finally {
   await browser.close();
 }

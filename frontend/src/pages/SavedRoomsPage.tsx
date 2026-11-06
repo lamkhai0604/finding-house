@@ -4,8 +4,8 @@ import { getFavorites } from "../api/favorites";
 import type { Listing } from "../api/types";
 import { ButtonLink } from "../components/ButtonLink";
 import { FavoriteButton } from "../components/FavoriteButton";
-import { ListingCard } from "../components/ListingCard";
-import { ListingListSkeleton } from "../components/Skeleton";
+import { TicketGridSkeleton } from "../components/Skeleton";
+import { TicketCard } from "../components/TicketCard";
 import { StatusMessage } from "../components/StatusMessage";
 import { useFavorites } from "../favorites/favorites";
 import { usePageTitle } from "../hooks/usePageTitle";
@@ -37,7 +37,7 @@ export function SavedRoomsPage() {
   }, []);
 
   if (!loaded) {
-    return <ListingListSkeleton />;
+    return <TicketGridSkeleton count={3} />;
   }
   if (loaded.kind === "error") {
     return (
@@ -61,21 +61,27 @@ export function SavedRoomsPage() {
         <div className="empty-results" role="status">
           <h2>No saved rooms yet</h2>
           <p className="muted">
-            Press Save on a room you like and it will show up here.
+            Tap the heart on a room you like and it will show up here.
           </p>
         </div>
       ) : (
-        <div className="listing-list">
+        <ul className="ticket-grid">
           {shown.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              listing={listing}
-              actions={
-                <FavoriteButton listingId={listing.id} title={listing.title} />
-              }
-            />
+            <li key={listing.id}>
+              <TicketCard
+                listing={listing}
+                headingLevel={2}
+                action={
+                  <FavoriteButton
+                    listingId={listing.id}
+                    title={listing.title}
+                    compact
+                  />
+                }
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </section>
   );
