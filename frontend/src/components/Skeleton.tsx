@@ -38,35 +38,18 @@ export function ListingDetailSkeleton() {
   );
 }
 
-export function ListingListSkeleton({ count = 3 }: { count?: number }) {
+/** Placeholder for a grid of ticket cards while listings load (T-210). */
+export function TicketGridSkeleton({ count = 4 }: { count?: number }) {
   return (
-    <PageLoading label="Loading listings">
-      <div className="listing-list">
+    <PageLoading label="Loading rooms">
+      <div className="ticket-grid">
         {Array.from({ length: count }, (_, i) => (
-          <div key={i} className="listing-card">
-            <Skeleton className="skeleton-thumb" />
-            <div>
-              <Skeleton className="skeleton-title" />
+          <div key={i} className="ticket">
+            <Skeleton className="skeleton-photo" />
+            <div className="ticket-stub">
               <Skeleton className="skeleton-line short" />
               <Skeleton className="skeleton-line" />
             </div>
-          </div>
-        ))}
-      </div>
-    </PageLoading>
-  );
-}
-
-/** Placeholder for the home-page carousel while the newest listings load (T-122). */
-export function CarouselSkeleton({ count = 4 }: { count?: number }) {
-  return (
-    <PageLoading label="Loading newest rooms">
-      <div className="carousel-skeleton">
-        {Array.from({ length: count }, (_, i) => (
-          <div key={i} className="carousel-skeleton-slide">
-            <Skeleton className="skeleton-photo" />
-            <Skeleton className="skeleton-line" />
-            <Skeleton className="skeleton-line short" />
           </div>
         ))}
       </div>

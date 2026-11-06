@@ -57,11 +57,26 @@ describe("Post a room (FR-02)", () => {
     fireEvent.click(screen.getByLabelText("Wi-Fi"));
     fireEvent.click(screen.getByRole("button", { name: "Add photo link" }));
     fill("Photo link 1", "https://example.com/room.jpg");
+    // T-213: the live preview follows the form before anything is sent.
+    const preview = screen.getByRole("complementary", { name: "Preview" });
+    expect(preview).toHaveTextContent("$1,995.50 a month");
+    expect(preview).toHaveTextContent("Ballard/300 sq ft");
+    expect(
+      within(preview).getByRole("heading", { name: "Cozy room" }),
+    ).toBeInTheDocument();
+    expect(within(preview).queryByRole("link")).not.toBeInTheDocument();
+
     fireEvent.click(screen.getByRole("button", { name: "Post listing" }));
 
+    // The listing page's own title, not the preview's.
     expect(
-      await screen.findByRole("heading", { name: "Cozy room" }),
+      await screen.findByRole("heading", { level: 1, name: "Cozy room" }),
     ).toBeInTheDocument();
+    // T-214: a toast confirms it, and can be dismissed.
+    const toasts = screen.getByRole("region", { name: "Notifications" });
+    expect(toasts).toHaveTextContent("Your room is posted.");
+    fireEvent.click(within(toasts).getByRole("button", { name: "Dismiss" }));
+    expect(toasts).toBeEmptyDOMElement();
     expect(sent).toEqual({
       title: "Cozy room",
       description: "Near the park",
@@ -261,6 +276,9 @@ describe("My listings (FR-02 AC3, AC6)", () => {
     expect(
       within(hiddenCard).getByRole("button", { name: "Unhide" }),
     ).toBeInTheDocument();
+    // T-213: counts of shown and hidden rooms.
+    const counts = screen.getByText("Shown in Browse").closest("dl");
+    expect(counts).toHaveTextContent("Rooms2Shown in Browse1Hidden1");
 
     fireEvent.click(within(activeCard).getByRole("button", { name: "Hide" }));
 
@@ -268,6 +286,9 @@ describe("My listings (FR-02 AC3, AC6)", () => {
       await within(activeCard).findByRole("button", { name: "Unhide" }),
     ).toBeInTheDocument();
     expect(within(activeCard).getByText("Hidden")).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Notifications" }),
+    ).toHaveTextContent('"Active room" is hidden from Browse.');
   });
 
   it("invites the landlord to post when there are no listings", async () => {
@@ -336,6 +357,9 @@ describe("Delete a listing (FR-07)", () => {
     expect(
       screen.getByRole("heading", { name: "No listings yet" }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: "Notifications" }),
+    ).toHaveTextContent('"Mistake room" was deleted.');
   });
 
   it("can be deleted from the edit page, then returns to My listings", async () => {

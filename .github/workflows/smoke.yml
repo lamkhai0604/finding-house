@@ -137,6 +137,17 @@ jobs:
           cp scripts/smoke/live-browser.mjs /tmp/e2e/
           cd /tmp/e2e && FRONTEND_URL=http://localhost:4173 node live-browser.mjs /tmp/e2e/live
 
+      # T-215: the demo content loads (password from a throwaway variable, like the live secret),
+      # loading it twice creates nothing new, and its photos show up in the app.
+      - name: Load demo content and screenshot it
+        run: |
+          export DEMO_PASSWORD="$(openssl rand -hex 16)"
+          python3 scripts/demo-data/load_demo_data.py --base-url http://localhost:8080 --check-images
+          python3 scripts/demo-data/load_demo_data.py --base-url http://localhost:8080 | tee /tmp/demo-second.txt
+          grep -q "listings: 0 created" /tmp/demo-second.txt
+          cp scripts/smoke/demo-shots.mjs /tmp/e2e/
+          cd /tmp/e2e && FRONTEND_URL=http://localhost:4173 node demo-shots.mjs /tmp/e2e/demo
+
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e
         run: |
@@ -148,7 +159,7 @@ jobs:
       - name: Print screenshots (gzip + base64)
         if: always()
         run: |
-          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg; do
+          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg; do
             [ -f "$f" ] || continue
             echo "SCREENSHOT-BEGIN $(basename "$f")"
             gzip -9 -c "$f" | base64 -w 1000

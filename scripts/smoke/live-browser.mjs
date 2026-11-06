@@ -39,7 +39,7 @@ try {
 
     await check(`${label}: home page and API status`, async () => {
       await page.goto(`${frontend}/`);
-      await page.getByRole("heading", { name: "Find a room in Seattle" }).waitFor({ timeout: 30000 });
+      await page.getByRole("heading", { name: "Find a room near your stop" }).waitFor({ timeout: 30000 });
       await page
         .getByRole("contentinfo")
         .getByRole("status")

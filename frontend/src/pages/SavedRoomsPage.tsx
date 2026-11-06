@@ -4,16 +4,19 @@ import { getFavorites } from "../api/favorites";
 import type { Listing } from "../api/types";
 import { ButtonLink } from "../components/ButtonLink";
 import { FavoriteButton } from "../components/FavoriteButton";
-import { ListingCard } from "../components/ListingCard";
-import { ListingListSkeleton } from "../components/Skeleton";
+import { TicketGridSkeleton } from "../components/Skeleton";
+import { TicketCard } from "../components/TicketCard";
+import { EmptyState } from "../components/EmptyState";
 import { StatusMessage } from "../components/StatusMessage";
 import { useFavorites } from "../favorites/favorites";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Loaded =
   { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
 
 /** FR-06: a tenant's saved rooms. Unsaving a room removes it from the list at once. */
 export function SavedRoomsPage() {
+  usePageTitle("Saved rooms");
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const favorites = useFavorites();
 
@@ -35,7 +38,7 @@ export function SavedRoomsPage() {
   }, []);
 
   if (!loaded) {
-    return <ListingListSkeleton />;
+    return <TicketGridSkeleton count={3} />;
   }
   if (loaded.kind === "error") {
     return (
@@ -56,24 +59,32 @@ export function SavedRoomsPage() {
         <ButtonLink to="/browse">Browse rooms</ButtonLink>
       </div>
       {shown.length === 0 ? (
-        <div className="empty-results" role="status">
-          <h2>No saved rooms yet</h2>
-          <p className="muted">
-            Press Save on a room you like and it will show up here.
-          </p>
-        </div>
+        <EmptyState title="No saved rooms yet">
+          <p>Tap the heart on a room you like and it will show up here.</p>
+          <div className="empty-actions">
+            <ButtonLink to="/browse" variant="primary">
+              Browse rooms
+            </ButtonLink>
+          </div>
+        </EmptyState>
       ) : (
-        <div className="listing-list">
+        <ul className="ticket-grid">
           {shown.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              listing={listing}
-              actions={
-                <FavoriteButton listingId={listing.id} title={listing.title} />
-              }
-            />
+            <li key={listing.id}>
+              <TicketCard
+                listing={listing}
+                headingLevel={2}
+                action={
+                  <FavoriteButton
+                    listingId={listing.id}
+                    title={listing.title}
+                    compact
+                  />
+                }
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </section>
   );

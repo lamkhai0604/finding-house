@@ -77,24 +77,44 @@ try {
   const page = await desktop.newPage();
   watchForCspViolations(page);
 
-  // T-122: the home carousel shows the newest real listings (never the hidden one), and a slide
-  // opens that listing.
+  // T-122 / T-210: "Just posted" shows the newest real listings (never the hidden one) as tickets,
+  // and a ticket opens that listing. The 1 Line strip shows real room counts.
   await page.goto(`${frontend}/`);
-  const newest = page.getByRole("region", { name: "Newest rooms" });
-  await shot(page, "01-home-logged-out", "/month ·", newest);
+  const newest = page.getByRole("region", { name: "Just posted" });
+  const line = page.getByRole("region", { name: "Rooms along the 1 Line" });
+  await shot(page, "01-home-logged-out", " a month", newest.getByRole("article").first());
   try {
     if ((await newest.getByText("Basement studio (paused)").count()) > 0) {
-      throw new Error("the hidden listing is in the carousel");
+      throw new Error("the hidden listing is in Just posted");
     }
-    const firstSlide = newest.getByRole("link").first();
-    const title = (await firstSlide.locator("strong").textContent()) ?? "";
-    await firstSlide.click();
+    const counts = await line.getByText(/^\d+ rooms?$/).count();
+    if (counts === 0) throw new Error("no stop on the 1 Line shows a room count");
+    console.log(`ok   01a-line-counts: ${counts} stops show a room count`);
+    const firstTicket = newest.getByRole("article").first().getByRole("link");
+    const title = (await firstTicket.textContent()) ?? "";
+    await firstTicket.click();
     await page.getByRole("heading", { level: 1, name: title }).waitFor({ timeout: 15000 });
-    console.log(`ok   01b-carousel-opens-listing: "${title}"`);
+    console.log(`ok   01b-ticket-opens-listing: "${title}"`);
   } catch (error) {
     failures += 1;
-    console.error(`FAIL 01b-carousel-opens-listing: ${error.message.split("\n")[0]}`);
+    console.error(`FAIL 01b-ticket-opens-listing: ${error.message.split("\n")[0]}`);
   }
+
+  // T-210: the hero search opens browse with the neighborhood and max rent filled in.
+  await page.goto(`${frontend}/`);
+  {
+    const form = page.getByRole("form", { name: "Search rooms" });
+    await form.getByLabel("Neighborhood").selectOption("Capitol Hill");
+    await form.getByLabel("Max rent per month").fill("3000");
+    await form.getByRole("button", { name: "Search rooms" }).click();
+    await shot(page, "01d-home-search-to-browse", "Capitol Hill 1BR, pets welcome");
+    const url = new URL(page.url());
+    if (url.searchParams.get("neighborhood") !== "Capitol Hill" || url.searchParams.get("maxPrice") !== "3000") {
+      failures += 1;
+      console.error(`FAIL 01d: browse opened with ${url.search}`);
+    }
+  }
+  await page.goto(`${frontend}/`);
 
   // T-207: a primary button link keeps readable text on hover (it used to turn the same green as
   // its hover background).
@@ -192,6 +212,16 @@ try {
     "$1,450.75",
     page.getByRole("heading", { name: "Posted from the UI" }),
   );
+  // T-214: a toast confirms the post. It is fixed to the screen, so take the viewport only.
+  try {
+    const toasts = page.getByRole("region", { name: "Notifications" });
+    await toasts.getByText("Your room is posted.").waitFor({ timeout: 5000 });
+    await page.screenshot({ path: `${outDir}/14b-toast-posted.jpg`, type: "jpeg", quality: 70 });
+    console.log('ok   14b-toast-posted: shows "Your room is posted."');
+  } catch (error) {
+    failures += 1;
+    console.error(`FAIL 14b-toast-posted: ${error.message.split("\n")[0]}`);
+  }
 
   await openAccountMenu(page);
   await page.getByRole("link", { name: "My listings" }).click();
@@ -232,6 +262,10 @@ try {
   await page.goto(`${frontend}/listings/${ids["Basement studio (paused)"]}`);
   await shot(page, "09-detail-hidden-public-view", "Listing not found");
 
+  // T-214: an unknown address shows the not-found page with ways back.
+  await page.goto(`${frontend}/no/such/page`);
+  await shot(page, "09b-page-not-found", "This stop is not on our line");
+
   // T-202: browse page against the real API.
   const check = async (name, fn) => {
     try {
@@ -254,15 +288,13 @@ try {
     }
   });
 
-  await page.getByLabel("Max rent").fill("1500");
+  await page.getByLabel("Rent up to").fill("1500");
   await page.getByLabel("Sort by").selectOption("price_asc");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await page.waitForURL(/maxPrice=1500/);
   await shot(page, "19-browse-filtered", "rooms found", browseResults.getByRole("article").first());
   await check("19b: filtered prices are at most $1,500 and ascending", async () => {
-    const prices = (await browseResults.locator(".listing-card-price").allTextContents()).map(
-      (text) => priceOf(text.split("/")[0]),
-    );
+    const prices = (await browseResults.locator(".ticket-price").allTextContents()).map(priceOf);
     if (prices.length === 0) throw new Error("no results");
     if (prices.some((p) => p > 1500)) throw new Error(`price above max: ${prices}`);
     if (prices.some((p, i) => i > 0 && p < prices[i - 1])) throw new Error(`not ascending: ${prices}`);
@@ -270,11 +302,33 @@ try {
   await check("19c: the URL restores the filters after a reload", async () => {
     await page.reload();
     await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
-    const max = await page.getByLabel("Max rent").inputValue();
+    const max = await page.getByLabel("Rent up to").inputValue();
     if (max !== "1,500") throw new Error(`max rent field is "${max}"`);
   });
 
-  await page.getByLabel("Min rent").fill("2000");
+  // T-211: a stop on the mini 1 Line filters by its neighborhood at once.
+  await check("19d: a stop on the mini line filters by neighborhood", async () => {
+    await page.goto(`${frontend}/browse`);
+    await page
+      .getByRole("group", { name: "Stops on the 1 Line" })
+      .getByRole("button", { name: "Capitol Hill" })
+      .click();
+    await page.waitForURL(/neighborhood=Capitol\+Hill/);
+    // The old results stay until the new ones arrive, so wait for the filtered list itself.
+    let stops = [];
+    for (let tries = 0; tries < 30; tries += 1) {
+      stops = await browseResults.locator(".ticket-stop").allTextContents();
+      if (stops.length > 0 && stops.every((t) => t.startsWith("Capitol Hill"))) break;
+      await page.waitForTimeout(500);
+    }
+    if (stops.length === 0 || stops.some((t) => !t.startsWith("Capitol Hill"))) {
+      throw new Error(`results outside Capitol Hill: ${stops}`);
+    }
+  });
+  await page.goto(`${frontend}/browse?maxPrice=1500&sort=price_asc`);
+  await browseResults.getByRole("article").first().waitFor({ timeout: 15000 });
+
+  await page.getByLabel("Rent from").fill("2000");
   await page.getByRole("button", { name: "Show rooms" }).click();
   await shot(page, "20-browse-invalid-range", "Must be at least the minimum price.");
 
@@ -331,10 +385,10 @@ try {
   await phone.goto(`${frontend}/browse`);
   await shot(phone, "21-browse-mobile", "rooms found", phone.getByRole("heading", { name: "Browse rooms" }));
   await check("21b: phone filters start folded", async () => {
-    if (await phone.getByLabel("Max rent").isVisible()) throw new Error("filter panel is open");
+    if (await phone.getByLabel("Rent up to").isVisible()) throw new Error("filter panel is open");
   });
   await phone.getByRole("button", { name: "Filters" }).click();
-  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Max rent"));
+  await shot(phone, "22-browse-mobile-filters-open", "Show rooms", phone.getByLabel("Rent up to"));
 } finally {
   await browser.close();
 }

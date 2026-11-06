@@ -11,7 +11,7 @@ export function Footer() {
       <div className="footer-inner">
         <div className="footer-brand">
           <BrandMark />
-          <p className="muted">
+          <p>
             Rooms and studios for rent in Seattle, posted by local landlords.
           </p>
         </div>

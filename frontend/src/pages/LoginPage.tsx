@@ -6,8 +6,10 @@ import { Button } from "../components/Button";
 import { BackButton } from "../components/BackButton";
 import { FormAlert } from "../components/FormAlert";
 import { TextField } from "../components/TextField";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 export function LoginPage() {
+  usePageTitle("Log in");
   const { login } = useSession();
   const navigate = useNavigate();
   const location = useLocation();

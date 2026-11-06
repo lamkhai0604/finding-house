@@ -6,7 +6,6 @@ import { landlordMaya, listingDetail } from "../test/fixtures";
 import { mockApi } from "../test/mockApi";
 import { renderApp } from "../test/renderApp";
 import { BackButton } from "./BackButton";
-import { Carousel } from "./Carousel";
 
 function loggedInAsMaya() {
   window.sessionStorage.setItem(TOKEN_STORAGE_KEY, "tok");
@@ -102,46 +101,19 @@ describe("Header and footer (D-027)", () => {
     expect(within(footer).getByText(/Portfolio project/)).toBeInTheDocument();
   });
 
-  it("lets a visitor go back from a listing opened directly", async () => {
+  it("lets a visitor go back to the rooms from a listing opened directly", async () => {
     mockApi({
       "GET /api/v1/listings/7": () => Response.json(listingDetail()),
     });
     renderApp("/listings/7");
 
-    fireEvent.click(await screen.findByRole("button", { name: /Back/ }));
-
-    expect(
-      await screen.findByRole("heading", { name: "Find a room in Seattle" }),
-    ).toBeInTheDocument();
-  });
-});
-
-describe("Carousel (T-122)", () => {
-  it("lists every slide with its position, and starts at the beginning", () => {
-    render(
-      <MemoryRouter>
-        <Carousel
-          label="Neighborhoods"
-          items={[
-            { id: "a", title: "Ballard", subtitle: "By the locks" },
-            { id: "b", title: "Fremont", href: "/listings/1" },
-          ]}
-        />
-      </MemoryRouter>,
+    fireEvent.click(
+      await screen.findByRole("button", { name: /Back to rooms/ }),
     );
 
-    const carousel = screen.getByRole("region", { name: "Neighborhoods" });
-    expect(within(carousel).getAllByRole("listitem")).toHaveLength(2);
     expect(
-      within(carousel).getByLabelText("1 of 2: Ballard"),
+      await screen.findByRole("heading", { name: "Browse rooms" }),
     ).toBeInTheDocument();
-    expect(within(carousel).getByRole("link")).toHaveAttribute(
-      "href",
-      "/listings/1",
-    );
-    expect(
-      within(carousel).getByRole("button", { name: "Previous" }),
-    ).toBeDisabled();
   });
 });
 
@@ -169,5 +141,24 @@ describe("Listing form leaves safely (D-027)", () => {
     expect(
       screen.getByRole("dialog", { name: "Discard your changes?" }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("Page not found (T-214)", () => {
+  it("explains and offers a way back into the site", async () => {
+    mockApi({});
+    renderApp("/no/such/page");
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Page not found" }),
+    ).toBeInTheDocument();
+    const main = screen.getByRole("main");
+    expect(
+      within(main).getByRole("link", { name: "Browse rooms" }),
+    ).toHaveAttribute("href", "/browse");
+    expect(
+      within(main).getByRole("link", { name: "Back to home" }),
+    ).toHaveAttribute("href", "/");
+    expect(document.title).toBe("Page not found | Finding House");
   });
 });
