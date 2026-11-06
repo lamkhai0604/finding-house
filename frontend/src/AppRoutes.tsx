@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import { Layout } from "./components/Layout";
 import { RequireRole } from "./components/RequireRole";
+import { BrowsePage } from "./pages/BrowsePage";
 import { HomePage } from "./pages/HomePage";
 import { ListingDetailPage } from "./pages/ListingDetailPage";
 import { ListingFormPage } from "./pages/ListingFormPage";
@@ -15,6 +16,7 @@ export function AppRoutes() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="browse" element={<BrowsePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="listings/:id" element={<ListingDetailPage />} />

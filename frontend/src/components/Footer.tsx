@@ -17,6 +17,7 @@ export function Footer() {
         </div>
         <nav aria-label="Footer" className="footer-links">
           <Link to="/">Home</Link>
+          <Link to="/browse">Browse rooms</Link>
           <Link to="/listings/new">Post a room</Link>
           <a href={REPOSITORY_URL} target="_blank" rel="noopener noreferrer">
             Source on GitHub
