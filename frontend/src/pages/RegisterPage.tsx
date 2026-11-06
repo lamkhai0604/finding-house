@@ -8,6 +8,7 @@ import { BackButton } from "../components/BackButton";
 import { FormAlert } from "../components/FormAlert";
 import { SelectField } from "../components/SelectField";
 import { TextField } from "../components/TextField";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const ROLE_OPTIONS = [
   { value: "TENANT", label: "I'm looking for a room (tenant)" },
@@ -17,6 +18,7 @@ const ROLE_OPTIONS = [
 const MIN_PASSWORD_LENGTH = 8;
 
 export function RegisterPage() {
+  usePageTitle("Sign up");
   const { register } = useSession();
   const navigate = useNavigate();
   const [form, setForm] = useState({

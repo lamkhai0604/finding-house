@@ -6,6 +6,7 @@ import { ButtonLink } from "../components/ButtonLink";
 import { Carousel, type CarouselItem } from "../components/Carousel";
 import { CarouselSkeleton } from "../components/Skeleton";
 import { formatPrice } from "../utils/format";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 /** How many of the newest listings the home page shows (T-122). */
 export const NEWEST_COUNT = 8;
@@ -27,6 +28,7 @@ function toSlide(listing: Listing): CarouselItem {
 }
 
 export function HomePage() {
+  usePageTitle(null);
   const { status, user } = useSession();
   const [newest, setNewest] = useState<Newest>({ kind: "loading" });
   // Wait until a stored token has been checked: an expired token would otherwise turn this public

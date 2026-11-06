@@ -18,6 +18,7 @@ import { ListingCard } from "../components/ListingCard";
 import { ListingFilters } from "../components/ListingFilters";
 import { Pagination } from "../components/Pagination";
 import { ListingListSkeleton } from "../components/Skeleton";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Results =
   | { key: string; kind: "ready"; page: Page<Listing> }
@@ -33,6 +34,7 @@ function errorMessage(e: unknown): string {
 
 /** FR-03 / T-202: browse active listings with filters, sorting, and pages. */
 export function BrowsePage() {
+  usePageTitle("Browse rooms");
   const [params, setParams] = useSearchParams();
   const { status } = useSession();
   const sessionKnown = status !== "loading";

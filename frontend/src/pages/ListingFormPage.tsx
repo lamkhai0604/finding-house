@@ -15,6 +15,7 @@ import { DeleteListingDialog } from "../components/DeleteListingDialog";
 import { ListingForm } from "../components/ListingForm";
 import { FormSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 type Loaded =
   | { kind: "ready"; referenceData: ReferenceData; listing?: Listing }
@@ -31,6 +32,7 @@ export function ListingFormPage() {
     null,
   );
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  usePageTitle(id ? "Edit listing" : "Post a room");
 
   useEffect(() => {
     let active = true;

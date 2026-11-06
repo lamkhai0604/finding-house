@@ -1,20 +1,12 @@
 import { Link } from "react-router";
 
-/** Logo: a small house icon and the product name, linking home. */
+/** Logo (D-033): a stop on the line, and the product name, linking home. */
 export function BrandMark() {
   return (
     <Link to="/" className="brand">
-      <svg
-        className="brand-icon"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-        aria-hidden="true"
-      >
-        <path
-          d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"
-          fill="currentColor"
-        />
+      <svg viewBox="0 0 34 34" width="32" height="32" aria-hidden="true">
+        <rect className="brand-line" x="0" y="14" width="34" height="6" rx="3" />
+        <circle className="brand-stop" cx="17" cy="17" r="9" strokeWidth="4" />
       </svg>
       Finding House
     </Link>
