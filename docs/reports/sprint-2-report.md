@@ -96,7 +96,7 @@ Process slip carried from the start of the sprint: one docs commit (`0e48902`) w
 - **T-113** Registration rate limit; **T-114** deployment security (above).
 - **T-007** Maven wrapper: still blocked by the workspace's network access.
 - **T-404** Image upload: later, after its free tier is verified.
-- **Repository settings for Khai** (review findings O2, O3): Dependabot alerts and branch protection on `main`.
+- ~~Repository settings (review findings O2, O3)~~: done by Khai at the end of the sprint. Dependabot alerts are on, and ruleset `protect-main` requires a pull request and the `backend`, `frontend`, and `smoke` checks (named uniquely in T-206).
 - **Backend in Node.js?** Khai asked whether the backend could move to Node later. Answer given: possible, and the API smoke checks would prove the two backends behave the same, but it would cost about a sprint of rework; recommended to finish Sprints 3–4 in Java first. No decision recorded.
 
 ## 7. Metrics
@@ -118,4 +118,3 @@ Process slip carried from the start of the sprint: one docs commit (`0e48902`) w
 Before Sprint 3 starts, Khai's actions:
 1. Review `dev` and merge a `dev → main` PR for the rest of the sprint (T-202 onwards).
 2. Approve or change the hosting proposal in §6, and create the Vercel, Render, and Neon accounts (Claude cannot sign up on Khai's behalf).
-3. Optional: enable Dependabot alerts and branch protection on `main`.
