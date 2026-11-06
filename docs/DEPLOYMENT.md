@@ -99,6 +99,11 @@ First deployed 2026-11-05; checked by live-smoke run 42165540632.
 
 Incident during the first deploy: the Neon password appeared in a screenshot of the Render log (it had been pasted inside `DB_URL`). Khai reset the password in Neon and updated Render the same evening (confirmed 2026-11-05, 21:22 PT). The merge note for `docs/T-401-live` said the reset had already happened before Khai confirmed it; this entry is the confirmed record.
 
+## Demo content
+
+To fill the live site with the demo rooms (with photos), follow [DEMO-CONTENT.md](DEMO-CONTENT.md).
+Do not load `scripts/sample-data` on the live site: its passwords are public.
+
 ## If something goes wrong
 
 **Never share a screenshot that shows a password.** Before sending a log, hide anything after `npg_` or between `:` and `@` in a connection string. If a password was shown anywhere, reset it in Neon (Roles → Reset password) and update `DB_PASSWORD` in Render.
