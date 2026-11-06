@@ -47,7 +47,9 @@ describe("Saving rooms (FR-06, T-403)", () => {
     });
     renderApp("/browse");
 
-    const save = await screen.findByRole("button", { name: "Save Sunny studio" });
+    const save = await screen.findByRole("button", {
+      name: "Save Sunny studio",
+    });
     await waitFor(() =>
       expect(
         screen.getByRole("button", { name: "Save Ballard loft" }),
@@ -86,7 +88,8 @@ describe("Saving rooms (FR-06, T-403)", () => {
       ...loggedInAs(tenantAlex),
       "GET /api/v1/me/favorites": () => Response.json([studio, loft]),
       "GET /api/v1/me/favorites/ids": () => Response.json([7, 8]),
-      "DELETE /api/v1/me/favorites/8": () => new Response(null, { status: 204 }),
+      "DELETE /api/v1/me/favorites/8": () =>
+        new Response(null, { status: 204 }),
     });
     renderApp("/my/saved");
 

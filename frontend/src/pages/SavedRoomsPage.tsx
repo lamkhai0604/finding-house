@@ -10,8 +10,7 @@ import { StatusMessage } from "../components/StatusMessage";
 import { useFavorites } from "../favorites/favorites";
 
 type Loaded =
-  | { kind: "ready"; listings: Listing[] }
-  | { kind: "error"; message: string };
+  { kind: "ready"; listings: Listing[] } | { kind: "error"; message: string };
 
 /** FR-06: a tenant's saved rooms. Unsaving a room removes it from the list at once. */
 export function SavedRoomsPage() {
