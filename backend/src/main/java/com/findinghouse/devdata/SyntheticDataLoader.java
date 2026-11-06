@@ -95,7 +95,8 @@ public class SyntheticDataLoader implements ApplicationRunner {
     return count;
   }
 
-  int countSyntheticListings() {
+  /** How many synthetic listings exist (for the dev tools and the performance test). */
+  public int countSyntheticListings() {
     Integer count =
         jdbc.queryForObject(
             "SELECT count(*) FROM listings l JOIN users u ON u.id = l.landlord_id"
