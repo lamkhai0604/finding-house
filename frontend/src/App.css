@@ -963,6 +963,11 @@ a.button {
   padding: 1.25rem;
 }
 
+/* T-205: the toggle only exists on small screens; on wide screens the panel is always shown. */
+.filter-toggle {
+  display: none;
+}
+
 .filter-panel h2 {
   margin: 0 0 1rem;
   font-size: 1.125rem;
@@ -1035,6 +1040,15 @@ a.button {
 @media (max-width: 800px) {
   .browse-layout {
     grid-template-columns: 1fr;
+  }
+
+  .filter-toggle {
+    display: inline-flex;
+    margin-bottom: 1rem;
+  }
+
+  .filter-wrap:not(.open) {
+    display: none;
   }
 
   .filter-panel .checkbox-options {

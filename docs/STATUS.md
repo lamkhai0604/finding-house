@@ -5,9 +5,9 @@
 | Updated | 2026-11-05 |
 | Sprint | Sprint 2 — "A tenant can find a room" (Sprint 1 merged to `main` in PR #2, `620d7f3`) |
 | Repository | github.com/lamkhai0604/finding-house (`main` and `dev` created at `4de096d`) |
-| Active work | Sprint 2: T-121, T-120, T-115 to T-119 Done; T-201 browse/filter API, T-122 newest listings on the home page, and T-202 browse page Done. Next: T-203 synthetic data. |
+| Active work | Sprint 2: T-121, T-120, T-115 to T-119 Done; T-201 browse/filter API, T-122 newest listings on the home page, and T-202 browse page, and T-205 folding phone filters Done. Next: T-203 synthetic data. |
 | Source revision | `dev` (see `git log dev`) |
 | Outstanding changes | Engineering standard is held outside the repo (D-016) in `lamkhai0604/engineering-standard` (`2fae0b0`) |
-| Verification | Backend: run 42128660324 (86 tests). Frontend: run 42135480928 (100/100). Smoke: run 42135480822 (all page checks, CSP build). |
+| Verification | Backend: run 42128660324 (86 tests). Frontend: run 42141051469 (102/102). Smoke: run 42141051453 (all page checks, CSP build). |
 | Blockers | None. Environment gap: Maven Central, the npm registry, and GitHub artifact storage are unreachable from Claude's workspace, so checks run on GitHub Actions. |
 | Next action | T-203 synthetic data, then T-204 performance check. |
