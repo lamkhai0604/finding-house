@@ -55,7 +55,7 @@ jobs:
       - name: Deployment build checks
         run: |
           VITE_API_BASE_URL=https://api.example.test npm run build
-          grep -q "connect-src 'self' https://api.example.test;" dist/index.html
+          grep -qE "connect-src (&#39;|')self(&#39;|') https://api\\.example\\.test;" dist/index.html
           if VITE_API_BASE_URL=https://api.example.test/api npm run build > /tmp/bad-url.log 2>&1; then
             echo "a URL with a path was accepted as VITE_API_BASE_URL"; exit 1
           fi
