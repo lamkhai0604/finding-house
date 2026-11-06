@@ -66,7 +66,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | Ready (Sprint 3; Khai creates the accounts and approves go-live, D-012) |
+| T-401 | Deploy demo on free hosting (D-029) | NFR-05 | P1 | In progress — guide `docs/DEPLOYMENT.md` written; waiting for Khai's accounts and dashboard steps |
 | T-405 | Smoke checks against the live URLs (manual workflow) | NFR-05, NFR-08 | P2 | Ready (Sprint 3) |
 | T-402 | README with screenshots/GIF, architecture summary, and "what is verified" section | — | P2 | Proposed |
 | T-403 | Favorites | FR-06 | P3 | Proposed |

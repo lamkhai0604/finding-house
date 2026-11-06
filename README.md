@@ -120,6 +120,10 @@ npm test
 npm run build                   # type check + production build
 ```
 
+## Deployment
+
+Free hosting on Neon, Render, and Vercel (D-029); step-by-step guide in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Verified
 
 | What | How | Evidence |
