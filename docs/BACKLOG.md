@@ -59,7 +59,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-203 | Synthetic seed data generator (dev profile only) | NFR-02, NFR-06 | P2 | Done — dev-profile loader (D-028); backend run 42141631858: 93 tests passed (7 new: generator rules and variety, 300 loaded in 211 ms, idempotent, browsable, synthetic landlords cannot log in, loader absent outside dev); smoke run 42141631910 |
 | T-204 | Testcontainers integration tests + NFR-02 measurement | FR-03, NFR-02 | P2 | Done — backend run 42142023037: 94 tests passed; 10,000 listings, 400 timed requests over HTTP: p50 12.8 ms, **p95 40.8 ms** (target < 500 ms), max 52.4 ms; slowest type: two amenities (p95 46.2 ms). Plans: sequential scans of 10,000 rows take 2–4 ms, so no index added (CODE-15). Details in the Sprint 2 report |
 | T-205 | Fold the browse filters behind a "Filters" button on small screens (Khai, 2026-11-05: "theo ý cậu") | FR-03, D-027 | P3 | Done — frontend run 42141051469: 102 tests passed (2 new); smoke run 42141051453: phone view starts folded (21b) and opens (22) |
-| T-206 | Unique CI check names (`backend`, `frontend`, `smoke`) so they can be required on `main` | Review O3 | P2 | In progress |
+| T-206 | Unique CI check names (`backend`, `frontend`, `smoke`) so they can be required on `main` | Review O3 | P2 | Done — runs 42142824394 (frontend) and 42142824388 (backend) report checks named `frontend` and `backend`; smoke already reports `smoke` |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
