@@ -1,3 +1,4 @@
+import { apiUrl } from "./baseUrl";
 import type { ApiErrorBody } from "./types";
 
 const TIMEOUT_MS = 10000;
@@ -55,7 +56,7 @@ export async function apiRequest<T>(
 
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(apiUrl(path), {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),

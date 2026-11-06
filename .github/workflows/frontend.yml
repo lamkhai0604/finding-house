@@ -51,3 +51,23 @@ jobs:
         run: npm test
       - name: Type check and build
         run: npm run build
+      # T-114b: the deployed build talks to the backend on its own origin (D-030).
+      - name: Deployment build checks
+        run: |
+          VITE_API_BASE_URL=https://api.example.test npm run build
+          grep -qE "connect-src (&#39;|')self(&#39;|') https://api\\.example\\.test;" dist/index.html
+          if VITE_API_BASE_URL=https://api.example.test/api npm run build > /tmp/bad-url.log 2>&1; then
+            echo "a URL with a path was accepted as VITE_API_BASE_URL"; exit 1
+          fi
+          grep -q "VITE_API_BASE_URL must be an origin" /tmp/bad-url.log
+          node -e '
+            const config = JSON.parse(require("fs").readFileSync("vercel.json", "utf8"));
+            const headers = Object.fromEntries(config.headers[0].headers.map((h) => [h.key, h.value]));
+            const need = { "Content-Security-Policy": "frame-ancestors '"'"'none'"'"'",
+              "X-Frame-Options": "DENY", "X-Content-Type-Options": "nosniff" };
+            for (const [key, value] of Object.entries(need)) {
+              if (headers[key] !== value) throw new Error(`vercel.json: ${key} should be ${value}`);
+            }
+            if (config.rewrites[0].destination !== "/index.html") throw new Error("SPA rewrite missing");
+            console.log("vercel.json ok");
+          '

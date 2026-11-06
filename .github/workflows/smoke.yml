@@ -45,6 +45,8 @@ jobs:
             echo "DB_USERNAME=findinghouse"
             echo "DB_PASSWORD=$(openssl rand -hex 16)"
             echo "JWT_SECRET=$(openssl rand -base64 48 | tr -d '\n')"
+            # T-114b / D-030: the production build below runs on its own origin, like Vercel.
+            echo "CORS_ALLOWED_ORIGINS=http://localhost:4173"
           } > .env
 
       - name: Start PostgreSQL with docker compose
@@ -87,11 +89,13 @@ jobs:
           done
           echo "frontend did not start"; exit 1
 
-      - name: Build and serve the production frontend (with CSP)
+      - name: Build and serve the production frontend (with CSP, calling the API cross-origin)
         working-directory: frontend
         run: |
-          npm run build
+          # Like the deployment (D-030): page on :4173, API on :8080, CORS allows only :4173.
+          VITE_API_BASE_URL=http://localhost:8080 npm run build
           grep -q 'http-equiv="Content-Security-Policy"' dist/index.html
+          grep -qE "connect-src (&#39;|')self(&#39;|') http://localhost:8080;" dist/index.html
           nohup npx vite preview --port 4173 --strictPort > ../preview.log 2>&1 &
           for i in $(seq 1 60); do
             curl -sf localhost:4173 > /dev/null && echo "preview up after ${i}s" && exit 0
