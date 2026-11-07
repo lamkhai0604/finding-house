@@ -152,6 +152,10 @@ SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 ./mvnw spring-boot:run
 
 Synthetic listings belong to 20 landlords at `synthetic.landlord.NN@example.invalid` that cannot log in, and every description starts with "Synthetic listing for development and testing." The same `SYNTHETIC_SEED` (default 42) always gives the same data. To remove them, recreate the local database: `docker compose down -v && docker compose up -d postgres`.
 
+### AI search accuracy
+
+Measured on 30 fixed sentences with the live model: every filter right for **29 of 30** (97%), including nicknames ("SLU", "near UW"), price formats ("1.5k"), Vietnamese and Spanish, and a prompt-injection attempt. Details and limits: [evaluation report](docs/reports/ai-eval-report.md).
+
 ### AI search (optional)
 
 Without these settings AI search is off and the box is hidden. To try it locally with Groq (free plan), put a key in `.env` (never commit it):

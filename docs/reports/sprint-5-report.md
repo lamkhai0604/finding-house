@@ -7,7 +7,7 @@
 | Period | 2026-11-06 → 2026-11-07 (planned 2 weeks; code finished early) |
 | Product Owner / reviewer | Khai (lamkhai0604) |
 | Implementer | Claude |
-| Result | **Code complete, not yet switched on live.** AI search (T-301 to T-304) is in `main` through PR #12 and passes every check against a fake provider. On the live site it is off (`"available": false`) until Khai creates a provider key and sets it on Render. T-305 (accuracy report) needs that key and has not started |
+| Result | **Done.** AI search (T-301 to T-304) is live on Groq `openai/gpt-oss-20b` since 2026-11-07 (D-035). A live check found a token-limit failure, fixed in T-306. The evaluation (T-305) gets every filter right for 29 of 30 sentences ([report](ai-eval-report.md)) |
 
 ## 1. Summary
 

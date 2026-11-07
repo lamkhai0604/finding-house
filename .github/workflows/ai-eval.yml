@@ -3,10 +3,6 @@ name: ai-eval
 # T-305: accuracy of AI search against the real model (manual; uses about 30 provider requests).
 # The key comes from the AI_API_KEY repository secret and is never printed.
 on:
-  # TEMPORARY: lets the first run start before this file is on main; removed before merging.
-  push:
-    branches: [feature/T-305-ai-eval]
-    paths: [".github/workflows/ai-eval.yml", "backend/src/main/java/com/findinghouse/ai/**"]
   workflow_dispatch:
     inputs:
       base_url:
@@ -47,9 +43,9 @@ jobs:
       - name: Run the evaluation set
         env:
           AI_EVAL: "true"
-          AI_BASE_URL: ${{ inputs.base_url || 'https://api.groq.com/openai/v1' }}
-          AI_MODEL: ${{ inputs.model || 'openai/gpt-oss-20b' }}
-          AI_REASONING_EFFORT: ${{ github.event_name == 'push' && 'low' || inputs.reasoning_effort }}
+          AI_BASE_URL: ${{ inputs.base_url }}
+          AI_MODEL: ${{ inputs.model }}
+          AI_REASONING_EFFORT: ${{ inputs.reasoning_effort }}
           AI_API_KEY: ${{ secrets.AI_API_KEY }}
         run: ./mvnw -B -ntp -Dspotless.check.skip=true -Dtest=AiEvalTest -Dsurefire.failIfNoSpecifiedTests=false test
       - name: Report
