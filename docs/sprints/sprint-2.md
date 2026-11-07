@@ -13,7 +13,7 @@
 | --- | --- | --- | --- |
 | 1 | T-121 Token lifetime 2 h | — | Config default + tests |
 | 2 | T-120 Delete listing | — | API + reusable confirmation dialog |
-| 3 | T-115 to T-119 UI polish | — | Reusable components, screenshots for Khai |
+| 3 | T-115 to T-119 UI polish | — | Reusable components, screenshots for review |
 | 4 | T-201 Browse/filter API | — | Pagination; avoid the N+1 pattern noted in the review (O4) |
 | 5 | T-122 Home carousel | T-201 | Newest listings, scroll-snap, no auto-rotate |
 | 6 | T-202 Browse page | T-201 | Reuses ListingCard |

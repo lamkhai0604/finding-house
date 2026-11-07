@@ -6,9 +6,9 @@
 | Dates | 2026-11-07 → 2026-11-21 (2 weeks, proposed) |
 | Requirements | FR-05, NFR-04, NFR-06; D-008, D-019, D-032 |
 | Tasks | T-006, T-301 to T-304, T-305 (stretch) |
-| Approved | Plan: Khai, 2026-11-06 (chat). Provider (D-035): still open; the code is provider-neutral until then |
+| Approved | Plan: Khai, 2026-11-06. Provider (D-035): pending; the code is provider-neutral until then |
 
-## T-006: LLM provider check (done by Claude 2026-11-06; Khai creates the key)
+## T-006: LLM provider check (checked 2026-11-06; API key created by the PO)
 
 Checked on 2026-11-06. Sources: the provider pages and dated third-party summaries. Limits change, so T-301 reads them again when the key is created.
 
@@ -16,7 +16,7 @@ Checked on 2026-11-06. Sources: the provider pages and dated third-party summari
 | --- | --- | --- | --- | --- |
 | Card needed | No | No | No | No |
 | Limits | Per model, e.g. `openai/gpt-oss-20b` / `120b`: 30 requests/min, 1,000/day, 8,000 tokens/min, 200,000 tokens/day; per organisation, not per key | About 5–15 requests/min without billing; per-model numbers are only shown in AI Studio | 20/min, **50/day** (1,000/day after buying $10 of credits once) | Not published; console only |
-| Trains on our prompts | No, according to a dated summary of Groq's services agreement (Khai confirms in the console when creating the key) | **Yes**: unpaid use may be used to improve Google products, and human reviewers may read prompts; Google asks not to send personal information | Depends on the upstream model | **Yes** on the Experiment plan |
+| Trains on our prompts | No, according to a dated summary of Groq's services agreement (to be confirmed in the console when the key is created) | **Yes**: unpaid use may be used to improve Google products, and human reviewers may read prompts; Google asks not to send personal information | Depends on the upstream model | **Yes** on the Experiment plan |
 | Guaranteed JSON | Yes: `json_schema` with `strict: true` (constrained decoding) on `gpt-oss-20b` and `gpt-oss-120b` | Yes (response schema) | Depends on the model | Yes |
 | API shape | OpenAI-compatible | Own API (OpenAI-compatible endpoint also offered) | OpenAI-compatible | OpenAI-compatible |
 
@@ -30,7 +30,7 @@ Checked on 2026-11-06. Sources: the provider pages and dated third-party summari
 
 **Budget:** each search sends about 700 tokens (instructions, neighborhood and amenity lists, the query) and gets about 100 back. The 8,000 tokens/min limit allows about 10 searches a minute, so the backend caps itself below that (T-302) and answers "busy, use the filters" instead of hitting Groq's 429.
 
-**Khai's part:** create a Groq account and an API key at console.groq.com, then put it only in Render as `AI_API_KEY`. Never paste it in chat, the repository or a screenshot. CI never uses the key: tests run against a fake AI server.
+**Product Owner action:** create a Groq account and an API key at console.groq.com, then put it only in Render as `AI_API_KEY`. It never goes into the repository, a message or a screenshot. CI never uses the key: tests run against a fake AI server.
 
 ## Plan
 
