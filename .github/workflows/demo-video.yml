@@ -1,0 +1,31 @@
+name: demo-video
+
+# Records the README demo on the live site (manual; uses 1 AI search). The video is printed
+# to the log; docs/images/demo.gif is made from it with ffmpeg (10 fps, 800 px wide).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Install Playwright
+        run: mkdir -p /tmp/demo && cp scripts/demo/record-demo.mjs /tmp/demo/ && cd /tmp/demo && npm init -y > /dev/null && npm install --no-audit --no-fund playwright@1 && npx playwright install ffmpeg
+      - name: Record
+        working-directory: /tmp/demo
+        env:
+          FRONTEND_URL: https://finding-house.vercel.app
+          API_URL: https://finding-house.onrender.com
+        run: node record-demo.mjs /tmp/demo/out
+      - name: Print the video
+        run: |
+          ls -la /tmp/demo/out/demo.webm
+          echo "VIDEO-BEGIN demo.webm"; gzip -c /tmp/demo/out/demo.webm | base64 -w 4000; echo "VIDEO-END"

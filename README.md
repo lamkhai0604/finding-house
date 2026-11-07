@@ -6,6 +6,10 @@ Rooms and studios for rent in Seattle: landlords post, tenants browse and filter
 
 > The API runs on a free instance that sleeps after 15 idle minutes, so the first request can take about a minute. Current progress: [docs/STATUS.md](docs/STATUS.md).
 
+<p align="center">
+  <img src="docs/images/demo.gif" alt="Typing a sentence into AI search opens Browse with Capitol Hill and up to $2,200 as filters, then the listing page" width="800">
+</p>
+
 | Home: rooms along the 1 Line | Browse with filters |
 | --- | --- |
 | ![Home page with the 1 Line strip and newest rooms](docs/images/home.jpg) | ![Browse page with filters and ticket cards](docs/images/browse.jpg) |
@@ -20,7 +24,7 @@ Rooms and studios for rent in Seattle: landlords post, tenants browse and filter
   <img src="docs/images/ai-search-phone.jpg" alt="AI search result on a phone" width="240">
 </p>
 
-_Screenshots are taken automatically by CI: the live site with its fictional demo rooms, and the AI search against a fake AI provider. Demo photos are from Unsplash ([credits](docs/DEMO-CONTENT.md#photo-credits))._
+_The demo and screenshots are recorded automatically by CI on the live site with its fictional demo rooms (the screenshot of AI search uses a fake provider; the demo uses the real model). Demo photos are from Unsplash ([credits](docs/DEMO-CONTENT.md#photo-credits))._
 
 ## What it does
 
@@ -33,13 +37,13 @@ _Screenshots are taken automatically by CI: the live site with its fictional dem
 - **Tenants:** save rooms with the heart and find them under Saved rooms.
 - **Feels finished:** a designed look ("along the line"), phone layouts checked at 375 px on every push, toasts, empty states, a progress line while the server answers, and a note when the free server is waking up.
 
-**AI search (built, switched on per deployment)**
+**AI search (live)**
 
 Type *"quiet room in Ballard under $1,500 with laundry"* and an LLM turns it into the same filters you could set by hand. The model's reply must follow a strict JSON schema whose neighborhoods and amenities are the only values the market knows; the server then checks every value again with the manual filters' rules, drops what does not fit with a note, and the browse page shows the result as chips you can remove. Only the sentence is sent, never logged. If the AI is off, slow, busy or confused, the page says so and the manual filters keep working. Limits keep it inside the provider's free tier. On the live site it turns on when an API key is configured; until then the box is hidden.
 
 **Planned**
 
-- Photo upload instead of photo links; moderation tools for a public site; an accuracy report for AI search on 30 example sentences (T-305).
+- Photo upload instead of photo links; moderation tools for a public site.
 
 ## How it is built
 
@@ -56,12 +60,12 @@ flowchart LR
 | Backend | Java 21, Spring Boot 4.1, Spring Security (stateless JWT), Spring Data JPA, Flyway |
 | Database | PostgreSQL 16 (Testcontainers in tests, Docker Compose locally, Neon in production) |
 | Quality | JUnit 5, Testcontainers, Playwright smoke tests, Spotless, ESLint, Prettier, GitHub Actions |
-| AI | Any OpenAI-compatible chat API (Groq proposed, D-035); JDK `HttpClient`, no SDK |
+| AI | Groq `openai/gpt-oss-20b` (D-035), through any OpenAI-compatible chat API; JDK `HttpClient`, no SDK |
 | Hosting | Vercel, Render, Neon, all on free tiers (D-029) |
 
 **Engineering highlights**
 
-- **Tests on every push:** 140 backend tests against a real PostgreSQL, 144 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 50 checks on the production build: every page at 375 px, AI search against a fake provider (including timeouts, rate limits and broken replies), and the demo content's photos. A separate workflow checks the live site.
+- **Tests on every push:** 145 backend tests against a real PostgreSQL, 146 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 50 checks on the production build: every page at 375 px, AI search against a fake provider (including timeouts, rate limits and broken replies), and the demo content's photos. A separate workflow checks the live site.
 - **Measured performance:** with 10,000 listings, browse requests take 40.8 ms at the 95th percentile (target: under 500 ms). The query plans are printed in every build, and no index was added before measuring.
 - **AI that cannot break search:** the model only proposes filters; strict schema, our own validation, visible removable chips, per-address and global limits under the free tier, and manual search that never depends on it (NFR-04).
 - **Security:** BCrypt passwords; failed-login and sign-up limits per client address, taken only from a header the host sets, never from forgeable `X-Forwarded-For`; CORS limited to the exact frontend origin; Content Security Policy; security headers at the host; request size limit; no secrets in the repository.
