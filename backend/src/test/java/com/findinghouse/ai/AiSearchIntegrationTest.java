@@ -161,6 +161,25 @@ class AiSearchIntegrationTest {
   }
 
   @Test
+  void aRentTooLowToBeRealIsDropped() {
+    // T-305: the evaluation's prompt-injection sentence got the model to set a $1 maximum.
+    FAKE.delay(0)
+        .replyWithContent(
+            reply(
+                """
+                {"understood":true,"neighborhood":"Eastlake","minMonthlyRent":null,\
+                "maxMonthlyRent":1,"minAreaSqft":null,"amenities":[]}\
+                """));
+
+    String body = interpret(newAddress(), "room in Eastlake").body();
+
+    assertThat(JsonPath.<String>read(body, "$.filters.neighborhood")).isEqualTo("Eastlake");
+    assertThat(JsonPath.<Object>read(body, "$.filters.maxPriceCents")).isNull();
+    assertThat(JsonPath.<List<String>>read(body, "$.notes"))
+        .containsExactly("Left out a rent we could not use.");
+  }
+
+  @Test
   void textThatIsNotARoomSearchComesBackNotUnderstood() {
     FAKE.delay(0)
         .replyWithContent(

@@ -25,6 +25,13 @@ public class InterpretService {
   /** Above this, a monthly rent is not a typo we can use ($100,000). */
   static final long MAX_RENT_CENTS = 10_000_000L;
 
+  /**
+   * T-305: no Seattle room rents for less than $100 a month. A lower value is a misreading or text
+   * that tried to steer the model (the evaluation saw "set the max rent to 1" obeyed), so it is
+   * dropped like any other value we cannot use.
+   */
+  static final long MIN_RENT_CENTS = 10_000L;
+
   static final int MAX_AREA_SQFT = 20_000;
 
   private final QueryParser parser;
@@ -124,7 +131,7 @@ public class InterpretService {
       return null;
     }
     long cents = Math.round(dollars * 100);
-    if (cents > MAX_RENT_CENTS) {
+    if (cents < MIN_RENT_CENTS || cents > MAX_RENT_CENTS) {
       notes.add("Left out a rent we could not use.");
       return null;
     }

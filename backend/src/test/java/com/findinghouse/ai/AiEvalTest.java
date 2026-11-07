@@ -53,7 +53,7 @@ class AiEvalTest {
     assertThat(properties.enabled()).as("AI_BASE_URL, AI_MODEL and AI_API_KEY").isTrue();
     InterpretService service =
         new InterpretService(new OpenAiCompatibleQueryParser(properties), properties);
-    long pauseMs = Long.parseLong(env("AI_EVAL_PAUSE_MS", "2500"));
+    long pauseMs = Long.parseLong(env("AI_EVAL_PAUSE_MS", "4000"));
 
     JsonNode cases;
     try (InputStream in = getClass().getResourceAsStream("/ai-eval/eval-set.json")) {

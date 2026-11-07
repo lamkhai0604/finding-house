@@ -6,7 +6,7 @@ on:
   # TEMPORARY: lets the first run start before this file is on main; removed before merging.
   push:
     branches: [feature/T-305-ai-eval]
-    paths: [".github/workflows/ai-eval.yml"]
+    paths: [".github/workflows/ai-eval.yml", "backend/src/main/java/com/findinghouse/ai/**"]
   workflow_dispatch:
     inputs:
       base_url:
