@@ -1,0 +1,55 @@
+name: ai-eval
+
+# T-305: accuracy of AI search against the real model (manual; uses about 30 provider requests).
+# The key comes from the AI_API_KEY repository secret and is never printed.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "OpenAI-compatible API base URL"
+        default: "https://api.groq.com/openai/v1"
+        required: true
+      model:
+        description: "Model"
+        default: "openai/gpt-oss-20b"
+        required: true
+      reasoning_effort:
+        description: "Reasoning effort (empty, low, medium, high)"
+        default: "low"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Check the key is configured
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: |
+          [ -n "$AI_API_KEY" ] || { echo "The AI_API_KEY repository secret is not set."; exit 1; }
+      - name: Run the evaluation set
+        env:
+          AI_EVAL: "true"
+          AI_BASE_URL: ${{ inputs.base_url }}
+          AI_MODEL: ${{ inputs.model }}
+          AI_REASONING_EFFORT: ${{ inputs.reasoning_effort }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        run: ./mvnw -B -ntp -Dspotless.check.skip=true -Dtest=AiEvalTest -Dsurefire.failIfNoSpecifiedTests=false test
+      - name: Report
+        if: always()
+        run: |
+          echo "AI-EVAL-REPORT-BEGIN"; cat target/ai-eval-report.md 2>/dev/null || echo "(no report)"; echo "AI-EVAL-REPORT-END"
+          cat target/ai-eval-report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
