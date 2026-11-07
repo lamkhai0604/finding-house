@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: "22"
       - name: Install Playwright
-        run: mkdir -p /tmp/demo && cp scripts/demo/record-demo.mjs /tmp/demo/ && cd /tmp/demo && npm init -y > /dev/null && npm install --no-audit --no-fund playwright@1
+        run: mkdir -p /tmp/demo && cp scripts/demo/record-demo.mjs /tmp/demo/ && cd /tmp/demo && npm init -y > /dev/null && npm install --no-audit --no-fund playwright@1 && npx playwright install ffmpeg
       - name: Record
         working-directory: /tmp/demo
         env:
