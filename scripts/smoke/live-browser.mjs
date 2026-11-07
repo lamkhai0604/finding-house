@@ -15,6 +15,26 @@ let failures = 0;
 const problems = [];
 const browser = await chromium.launch({ channel: "chrome" });
 
+// Best effort before a screenshot: let lazy photos load so the picture shows the real page, not
+// grey placeholders. Never fails a check; the checks above decide pass or fail.
+async function settle(page) {
+  await page
+    .evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 600) {
+        window.scrollTo(0, y);
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+      window.scrollTo(0, 0);
+    })
+    .catch(() => {});
+  await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+  await page
+    .waitForFunction(() => [...document.images].every((img) => img.complete), null, {
+      timeout: 15000,
+    })
+    .catch(() => {});
+}
+
 async function check(name, fn) {
   try {
     await fn();
@@ -45,7 +65,8 @@ try {
         .getByRole("status")
         .filter({ hasText: /^API is up$/ })
         .waitFor({ timeout: 90000 });
-      await page.screenshot({ path: `${outDir}/live-home-${label}.jpg`, type: "jpeg", quality: 70 });
+      await settle(page);
+      await page.screenshot({ path: `${outDir}/live-home-${label}.jpg`, type: "jpeg", quality: 70, fullPage: true });
     });
 
     await check(`${label}: browse page loads results from the API`, async () => {
@@ -55,7 +76,8 @@ try {
         .getByText(/rooms? found|No rooms match these filters|No rooms have been posted yet/)
         .first()
         .waitFor({ timeout: 60000 });
-      await page.screenshot({ path: `${outDir}/live-browse-${label}.jpg`, type: "jpeg", quality: 70 });
+      await settle(page);
+      await page.screenshot({ path: `${outDir}/live-browse-${label}.jpg`, type: "jpeg", quality: 70, fullPage: true });
     });
 
     await context.close();
