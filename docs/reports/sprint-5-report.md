@@ -7,7 +7,7 @@
 | Period | 2026-11-06 → 2026-11-07 (planned 2 weeks; code finished early) |
 | Product Owner / reviewer | Khai (lamkhai0604) |
 | Implementer | Claude |
-| Result | **Code complete, not yet switched on live.** AI search (T-301 to T-304) is in `main` through PR #12 and passes every check against a fake provider. On the live site it is off (`"available": false`) until Khai creates a provider key and sets it on Render. T-305 (accuracy report) needs that key and has not started |
+| Result | **Done.** AI search (T-301 to T-304) is live on Groq `openai/gpt-oss-20b` since 2026-11-07 (D-035). A live check found a token-limit failure, fixed in T-306. The evaluation (T-305) gets every filter right for 29 of 30 sentences ([report](ai-eval-report.md)) |
 
 ## 1. Summary
 
@@ -40,7 +40,7 @@ Role-based access was re-checked at the start of the sprint: landlord and tenant
 | Smoke | Earlier checks, plus a fake AI provider (`fake-ai.mjs`): sentence → browse URL, chips and note on desktop and phone; not understood, timeout, busy and unreadable replies, each with manual search working | All passed | 42329077496 |
 | Live | 19 checks after PR #12, plus the AI status check | All passed; AI off | 42332371251, 42332466693 |
 
-**Not verified:** a real model. The fake provider proves the plumbing and every failure path, not how well a model reads Seattle room searches. T-305 measures that once a key exists.
+**Real model:** verified after enablement. Live run 42393151023 passes three fixed sentences on the deployed site; the T-305 evaluation gets every filter right for 29 of 30 sentences (run 42414603562, [report](ai-eval-report.md)).
 
 ## 4. Decisions
 
@@ -54,20 +54,19 @@ Role-based access was re-checked at the start of the sprint: landlord and tenant
 | --- | --- | --- |
 | The backend check failed on PR #13 and on the `dev` PR: a timeout case was followed by a 504 where a 429 was expected | CI on the pull requests | The fake provider in tests handled one request at a time, so a deliberately slow reply could delay the next test's request. It now serves requests in parallel; three runs in a row pass. Production code was not affected |
 | PR #13 targeted `main` directly from a task branch, outside the branch model (D-014) | Check of the open PRs | PR #13 closed; the changes reached `main` through the `dev → main` PR (#12), which also had the fix |
-| Provider account sign-in failed, so no API key yet | Product Owner | Postponed; live enablement and T-305 wait for the key |
+| Provider account sign-in failed at first | Product Owner | Key created 2026-11-07; AI search switched on the same day |
 
 ## 6. Not Done / Carried Over
 
-- **Switch AI search on:** Khai creates a key (D-035), sets `AI_BASE_URL`, `AI_MODEL` and `AI_API_KEY` on Render; then `live-smoke` should report `"available": true`.
-- **T-305:** 30 example sentences with expected filters, run against the real model by a manual workflow; accuracy per field. Needs the key and Khai's approval to run.
-- **Optional, from the role-based access check:** show the role in the account menu; role choice as two cards at sign-up; send landlords to My listings after logging in. Larger and not planned: an admin role for moderation; one account with both roles.
-- **T-404** photo upload, **T-007** Maven wrapper: unchanged.
+- Known miss from T-305: a search for a place outside Seattle (E25, Tacoma) is marked "not a room search".
+- Role clarity was done after the sprint as T-218. Larger and not planned: an admin role for moderation; one account with both roles.
+- **T-404** photo upload: not planned yet. T-007 (Maven wrapper) was done after the sprint.
 
 ## 7. Metrics
 
 | Metric | Value |
 | --- | --- |
-| Tasks done | T-301 to T-304, the T-006 check; T-305 waiting for a key |
+| Tasks done | T-301 to T-306, the T-006 check |
 | Automated tests | 284 (backend 140, frontend 144), up from 260 |
 | New endpoints | 2 (`GET` and `POST /api/v1/search/interpret`) |
 | Running cost | $0; AI search will use the provider's free plan within the limits above |
