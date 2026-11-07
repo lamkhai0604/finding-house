@@ -2680,6 +2680,12 @@ a.save-heart:not(.button):hover {
   color: var(--hero-ink);
 }
 
+/* A reply to the visitor (not understood, busy, failed) stands out from the hint. */
+.ai-search-message {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
 .ai-result-note {
   margin-bottom: 1rem;
   padding: 0.875rem 1rem;

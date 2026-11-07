@@ -95,7 +95,11 @@ export function AiSearchBox({ placement }: AiSearchBoxProps) {
           Ask
         </Button>
       </div>
-      <p id={messageId} className="ai-search-help" aria-live="polite">
+      <p
+        id={messageId}
+        className={message ? "ai-search-help ai-search-message" : "ai-search-help"}
+        aria-live="polite"
+      >
         {message ??
           "Please don't include names, phone numbers or other personal details."}
       </p>
