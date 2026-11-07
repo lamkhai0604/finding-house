@@ -88,7 +88,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
 | T-301 | `QueryParser` interface + OpenAI-compatible adapter (Groq by default, D-035 proposed; timeout, strict JSON) | FR-05 | P2 | Done — backend run 42326899523: 130 tests (9 new against a fake provider: only the sentence is sent, strict schema with enums of known values, good reply read, not understood carries no filters, timeout, 429 busy, 5xx/401/garbage/schema mismatch fail, no key sends nothing, key never over plain HTTP); smoke run 42326899528 |
-| T-302 | AI search endpoint: validation via `SearchFilter`, rate limit | FR-05 | P2 | Proposed |
+| T-302 | AI search endpoint: validation via `SearchFilter`, rate limit | FR-05 | P2 | Done — backend run 42327463544: 140 tests (10 new: sentence → validated filters, wrong values dropped with notes, not understood, empty and long queries refused before the provider, per-address limit with Retry-After, shared budget per minute and day, every provider failure mapped to a clear code without echoing the query, AI off by default with browse unaffected); smoke run 42327463552 |
 | T-303 | AI search UI with editable filter chips | FR-05 | P2 | Proposed |
 | T-304 | Failure-path tests: timeout, invalid JSON, not understood, 429 | FR-05, NFR-04 | P2 | Proposed |
 | T-305 | Stretch: evaluation set of 30 queries run against the real model by a manual workflow, reported as accuracy | FR-05 | P3 | Proposed |

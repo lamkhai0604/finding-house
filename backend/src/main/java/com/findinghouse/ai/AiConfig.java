@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /** T-301: wires the AI search provider from {@code app.ai.*} (off when no key is set). */
 @Configuration
-@EnableConfigurationProperties(AiProperties.class)
+@EnableConfigurationProperties({AiProperties.class, AiLimitsProperties.class})
 public class AiConfig {
 
   @Bean

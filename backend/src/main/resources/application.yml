@@ -68,6 +68,11 @@ app:
     model: ${AI_MODEL:}
     api-key: ${AI_API_KEY:}
     timeout: ${AI_TIMEOUT:5s}
+    # T-302: per address per hour, and overall per minute and per day (below Groq's free limits).
+    limits:
+      per-address-per-hour: ${AI_LIMIT_PER_ADDRESS_PER_HOUR:20}
+      per-minute: ${AI_LIMIT_PER_MINUTE:8}
+      per-day: ${AI_LIMIT_PER_DAY:800}
   # T-203 (D-028): synthetic listings for development and load tests. Only used under the "dev"
   # profile (SPRING_PROFILES_ACTIVE=dev); 0 turns it off. Same seed -> same data.
   synthetic-data:
