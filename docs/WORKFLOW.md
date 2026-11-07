@@ -29,7 +29,7 @@ Languages, versions, platforms:
   Java 21 (Temurin), Spring Boot 4.1.x, Maven 3.9+ (Maven wrapper to be added, see tracked debt); Node 22 LTS, TypeScript 5.9, React 19, Vite 8, Vitest 5, ESLint 10;
   PostgreSQL 16; modern evergreen browsers, 360 px minimum width.
 Style, formatter, linter, commands:
-  Backend: Spotless with google-java-format  ->  mvn spotless:check / mvn spotless:apply (check also runs in mvn verify)
+  Backend: Spotless with google-java-format  ->  ./mvnw spotless:check / ./mvnw spotless:apply (check also runs in mvn verify)
   Frontend: ESLint + Prettier                ->  npm run lint / npm run format
 Architecture, boundaries, dependency direction:
   See ARCHITECTURE.md §1–2 (controller -> service -> repository; search -> QueryParser interface).
@@ -44,11 +44,11 @@ Error handling, logging, state, concurrency:
 Dependency management:
   Maven + pinned parent version; frontend package-lock.json committed and installed with `npm ci`. New runtime dependencies are noted in the PR (CODE-14).
 Tests and commands:
-  Backend: JUnit 5 + Mockito (unit), Spring Boot Test + Testcontainers PostgreSQL (integration) -> mvn verify
+  Backend: JUnit 5 + Mockito (unit), Spring Boot Test + Testcontainers PostgreSQL (integration) -> ./mvnw verify
   Frontend: Vitest + React Testing Library for components with logic -> npm test
   Requires Docker for integration tests.
 Required CI checks and branch protection:
-  CI (T-005): `backend` workflow (mvn verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main;
+  CI (T-005): `backend` workflow (./mvnw verify) and `frontend` workflow (npm ci, lint, format check, test, build), on every push and on PRs into dev/main;
   `smoke` workflow (docker compose + backend jar + API script + Vite dev server + headless Chromium) on pushes
   touching backend/frontend/compose, on every PR into dev/main, and on demand. Branch protection on main: ruleset `protect-main`
   (pull request required; `backend`, `frontend` and `smoke` checks required), configured 2026-11-05.

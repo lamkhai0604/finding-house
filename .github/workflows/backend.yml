@@ -33,4 +33,4 @@ jobs:
           java-version: "21"
           cache: maven
       - name: Format check, build, and tests (Testcontainers uses the runner's Docker)
-        run: mvn -B -ntp verify
+        run: ./mvnw -B -ntp verify
