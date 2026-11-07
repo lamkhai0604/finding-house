@@ -6,30 +6,40 @@ Rooms and studios for rent in Seattle: landlords post, tenants browse and filter
 
 > The API runs on a free instance that sleeps after 15 idle minutes, so the first request can take about a minute. Current progress: [docs/STATUS.md](docs/STATUS.md).
 
-| Browse with filters | Listing page |
+| Home: rooms along the 1 Line | Browse with filters |
 | --- | --- |
-| ![Browse page with filters](docs/images/browse.jpg) | ![Listing page with photos](docs/images/listing-detail.jpg) |
-| **Home: newest rooms** | **Landlord: my listings** |
-| ![Home page with the newest rooms](docs/images/home.jpg) | ![My listings with edit, hide, and delete](docs/images/my-listings.jpg) |
+| ![Home page with the 1 Line strip and newest rooms](docs/images/home.jpg) | ![Browse page with filters and ticket cards](docs/images/browse.jpg) |
+| **Listing page** | **AI search: words become filters** |
+| ![Listing page with photos, amenities and contact card](docs/images/listing-detail.jpg) | ![Browse opened by AI search with removable filter chips](docs/images/ai-search.jpg) |
+| **Landlord: my listings** | **Landlord: post a room with a live preview** |
+| ![My listings with counts and Edit, Hide, Delete](docs/images/my-listings.jpg) | ![Post a room form with a live ticket preview](docs/images/post-form.jpg) |
 
-<p align="center"><img src="docs/images/browse-phone.jpg" alt="Browse page on a phone" width="260"></p>
+<p align="center">
+  <img src="docs/images/home-phone.jpg" alt="Home page on a phone" width="240">
+  &nbsp;
+  <img src="docs/images/ai-search-phone.jpg" alt="AI search result on a phone" width="240">
+</p>
 
-_Screenshots are taken automatically by the CI smoke test with fictional sample data._
+_Screenshots are taken automatically by CI: the live site with its fictional demo rooms, and the AI search against a fake AI provider. Demo photos are from Unsplash ([credits](docs/DEMO-CONTENT.md#photo-credits))._
 
 ## What it does
 
 **Working now**
 
-- **Accounts:** sign up as a tenant or landlord, log in, stay logged in for the tab (JWT, 2-hour tokens).
-- **Landlords:** post, edit, hide/unhide, and delete rooms with up to 5 photo links; prices in dollars and cents, areas in square feet.
-- **Everyone:** browse active rooms with filters for neighborhood, rent range, minimum area, and required amenities; three sort orders; pages of 12; the filters live in the URL so a search can be shared.
-- **Listing page:** photos, details, and the landlord's name and phone; hidden listings are visible only to their owner.
-- **Tenants:** save rooms with one click and find them under Saved rooms; a room the landlord hides drops out of the list.
-- Works on phones: menu, folding filter panel, number boxes that format as you type.
+- **Accounts:** sign up as a tenant or landlord, log in, stay logged in for the tab (JWT, 2-hour tokens). What each role can do is enforced by the API, not just hidden in the UI.
+- **Landlords:** post, edit, hide/unhide, and delete rooms with up to 5 photo links, with a live preview while typing; My listings shows how many rooms are shown and hidden.
+- **Everyone:** browse with filters for neighborhood, rent range, minimum area, and amenities; a 1 Line strip with real room counts per stop; three sort orders; the filters live in the URL so a search can be shared; every filter in use is a chip you can remove.
+- **Listing page:** photo grid, amenities, the nearest 1 Line stations, and a contact card with the landlord's phone (a call bar on phones); hidden listings are visible only to their owner.
+- **Tenants:** save rooms with the heart and find them under Saved rooms.
+- **Feels finished:** a designed look ("along the line"), phone layouts checked at 375 px on every push, toasts, empty states, a progress line while the server answers, and a note when the free server is waking up.
+
+**AI search (built, switched on per deployment)**
+
+Type *"quiet room in Ballard under $1,500 with laundry"* and an LLM turns it into the same filters you could set by hand. The model's reply must follow a strict JSON schema whose neighborhoods and amenities are the only values the market knows; the server then checks every value again with the manual filters' rules, drops what does not fit with a note, and the browse page shows the result as chips you can remove. Only the sentence is sent, never logged. If the AI is off, slow, busy or confused, the page says so and the manual filters keep working. Limits keep it inside the provider's free tier. On the live site it turns on when an API key is configured; until then the box is hidden.
 
 **Planned**
 
-- **AI search** (Sprint 4): type *"studio under $1,800 in Capitol Hill, pets allowed"*; an LLM turns it into the same filters, which the server validates like manual ones, with a fallback to manual filters if the AI is slow or unsure.
+- Photo upload instead of photo links; moderation tools for a public site; an accuracy report for AI search on 30 example sentences (T-305).
 
 ## How it is built
 
@@ -37,6 +47,7 @@ _Screenshots are taken automatically by the CI smoke test with fictional sample 
 flowchart LR
   B["Browser<br/>React 19 + TypeScript<br/>(Vercel)"] -- "HTTPS, JSON, JWT<br/>CORS: this origin only" --> A["REST API<br/>Java 21, Spring Boot 4.1<br/>(Docker on Render)"]
   A -- "JPA + Flyway, TLS" --> D[("PostgreSQL 16<br/>(Neon)")]
+  A -. "search sentence only<br/>strict JSON, 5 s timeout" .-> L["LLM API<br/>(OpenAI-compatible,<br/>e.g. Groq)"]
 ```
 
 | Layer | Technology |
@@ -45,14 +56,16 @@ flowchart LR
 | Backend | Java 21, Spring Boot 4.1, Spring Security (stateless JWT), Spring Data JPA, Flyway |
 | Database | PostgreSQL 16 (Testcontainers in tests, Docker Compose locally, Neon in production) |
 | Quality | JUnit 5, Testcontainers, Playwright smoke tests, Spotless, ESLint, Prettier, GitHub Actions |
+| AI | Any OpenAI-compatible chat API (Groq proposed, D-035); JDK `HttpClient`, no SDK |
 | Hosting | Vercel, Render, Neon, all on free tiers (D-029) |
 
 **Engineering highlights**
 
-- **Tests on every push:** 119 backend tests against a real PostgreSQL, 125 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 30 page checks on the production build. A separate workflow checks the live site.
+- **Tests on every push:** 140 backend tests against a real PostgreSQL, 144 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 50 checks on the production build: every page at 375 px, AI search against a fake provider (including timeouts, rate limits and broken replies), and the demo content's photos. A separate workflow checks the live site.
 - **Measured performance:** with 10,000 listings, browse requests take 40.8 ms at the 95th percentile (target: under 500 ms). The query plans are printed in every build, and no index was added before measuring.
+- **AI that cannot break search:** the model only proposes filters; strict schema, our own validation, visible removable chips, per-address and global limits under the free tier, and manual search that never depends on it (NFR-04).
 - **Security:** BCrypt passwords; failed-login and sign-up limits per client address, taken only from a header the host sets, never from forgeable `X-Forwarded-For`; CORS limited to the exact frontend origin; Content Security Policy; security headers at the host; request size limit; no secrets in the repository.
-- **Process:** requirements with acceptance criteria ([SRS](docs/SRS.md)), architecture and UML ([ARCHITECTURE](docs/ARCHITECTURE.md)), 31 recorded decisions ([DECISIONS](docs/DECISIONS.md)), one branch per task with evidence in [BACKLOG](docs/BACKLOG.md), and a report per sprint ([reports](docs/reports/)).
+- **Process:** requirements with acceptance criteria ([SRS](docs/SRS.md)), architecture and UML ([ARCHITECTURE](docs/ARCHITECTURE.md)), 35 recorded decisions ([DECISIONS](docs/DECISIONS.md)), one branch per task with evidence in [BACKLOG](docs/BACKLOG.md), and a report per sprint ([reports](docs/reports/)).
 - **Built with an AI pair:** Claude wrote most of the code under the process above; every change was checked in CI and reviewed by me before reaching `main`.
 
 ## Documentation
@@ -139,9 +152,21 @@ SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 mvn spring-boot:run
 
 Synthetic listings belong to 20 landlords at `synthetic.landlord.NN@example.invalid` that cannot log in, and every description starts with "Synthetic listing for development and testing." The same `SYNTHETIC_SEED` (default 42) always gives the same data. To remove them, recreate the local database: `docker compose down -v && docker compose up -d postgres`.
 
+### AI search (optional)
+
+Without these settings AI search is off and the box is hidden. To try it locally with Groq (free plan), put a key in `.env` (never commit it):
+
+```bash
+AI_BASE_URL=https://api.groq.com/openai/v1
+AI_MODEL=openai/gpt-oss-20b
+AI_API_KEY=<your key>
+```
+
+Or run the fake provider the smoke test uses (no key, answers by keyword): `node scripts/smoke/fake-ai.mjs 9099` with `AI_BASE_URL=http://localhost:9099/v1`, any `AI_MODEL`, and any `AI_API_KEY`.
+
 ### Frontend
 
-Pages so far: home (with a carousel of the newest listings), browse with filters (`/browse`), sign up, log in, listing detail (`/listings/:id`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Every page has the header (avatar menu, mobile menu) and footer. Built from reusable components in `frontend/src/components` (D-023).
+Pages: home (hero search, AI search box, the 1 Line strip, just posted), browse with filters and chips (`/browse`), sign up, log in, listing detail (`/listings/:id`), Saved rooms for tenants (`/my/saved`), and for landlords: My listings (`/my/listings`), Post a room (`/listings/new`), and Edit (`/listings/:id/edit`) with delete. Built from reusable components in `frontend/src/components` (D-023), in the Lagoon design (D-033).
 
 Prerequisites: Node.js 22.
 
@@ -190,4 +215,7 @@ Free hosting on Neon, Render, and Vercel (D-029); step-by-step guide in [docs/DE
 | Deployment edge: CORS allows only the configured frontend origin; per-address limits follow `CF-Connecting-IP` and ignore a forged `X-Forwarded-For`; bodies over 64 KB get 413; the backend Docker image runs within 512 MB | Integration tests in a deployment-like context; smoke builds and runs `backend/Dockerfile` and serves the production frontend from another origin | Backend run 42153629641; smoke runs 42153629649, 42154410160 |
 | Sign-ups are limited to 10 attempts per address per hour (409 duplicates count); the page shows the wait time | Unit and integration tests; Vitest | Backend run 42154962043; frontend run 42154962010 |
 | The live site: API health, CORS, host security headers (nosniff, X-Frame-Options, frame-ancestors, HSTS), CSP naming the API, SPA routing, and home and browse pages on desktop and phone with no CSP or CORS errors | `live-smoke` workflow against https://finding-house.vercel.app and https://finding-house.onrender.com | Run 42168599403 |
+| Sprint 4 design on every page, checked in Chrome on desktop and at 375 px: home with real counts per 1 Line stop (new `GET /api/v1/neighborhoods`), browse with tickets and instant filters, listing page, landlord form with live preview, toasts, empty states, loading line and waking-up notice; no page scrolls sideways on a phone | Backend and Vitest tests; smoke page checks incl. `phone-shots.mjs` and a held API request | Backend run 42233683068; frontend run 42269788245; smoke run 42269787959; [Sprint 4 report](docs/reports/sprint-4-report.md) |
+| Demo content: 16 photo links answer, accounts and 8 listings load through the API without a password in the repository, a second load creates nothing, and every photo renders; loaded on the live site by a manual workflow | `load_demo_data.py` in smoke with a throwaway password; `demo-data` workflow | Smoke run 42262894914; demo-data run 42324955711; live-smoke run 42325394120 |
+| FR-05 AI search: only the sentence is sent, with a strict schema of known values; every value re-checked with the manual filters' rules; per-address and global limits; timeout, rate limit, provider errors and broken replies each give a clear message while manual search keeps working; in Chrome a sentence opens browse with removable chips | 19 backend tests against a fake provider; 5 Vitest tests; smoke `ai-search.mjs` with `fake-ai.mjs` on desktop and phone | Backend run 42330648718 (3 runs); frontend run 42329077479; smoke run 42329077496 |
 | FR-06 favorites: saving twice keeps one entry, a hidden listing drops out and returns when shown, each tenant sees only their own list, hidden or missing listings cannot be saved, landlords and visitors cannot use it; in the browser a tenant saves, finds, and unsaves a room | 8 integration tests, 7 Vitest tests, smoke checks 23a/23b | Backend run 42169385441; frontend run 42169652230; smoke run 42169798299 |
