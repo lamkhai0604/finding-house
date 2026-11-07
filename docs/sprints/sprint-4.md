@@ -6,8 +6,8 @@
 | Dates | 2026-11-06 → 2026-11-20 (2 weeks, proposed) |
 | Requirements | NFR-07; D-027, D-032, D-033 |
 | Tasks | T-208 to T-216 |
-| Approved | Khai, 2026-11-05 (chat: agreed to the six UI areas; design chosen) |
-| Status | **Done** 2026-11-06, plus T-217 added at Khai's request. [Report](../reports/sprint-4-report.md) |
+| Approved | Khai, 2026-11-05 (six UI areas and the visual design, D-033) |
+| Status | **Done** 2026-11-06, plus T-217 (added during the sprint). [Report](../reports/sprint-4-report.md) |
 
 ## Plan
 
@@ -27,7 +27,7 @@
 
 - Existing tests keep passing; tests change only where text or structure changed on purpose.
 - New behaviour gets tests (stats endpoint, toasts, preview).
-- Screenshots from the smoke run after every frontend task, sent to Khai (standing request).
+- Screenshots from the smoke run after every frontend task, attached for review.
 - Contrast of every text colour pair checked against WCAG AA.
 
 ## Sprint review

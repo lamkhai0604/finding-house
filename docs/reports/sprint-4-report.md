@@ -11,9 +11,9 @@
 
 ## 1. Summary
 
-The goal was to make the app look and feel finished before adding AI search (D-032). Every page now follows the design Khai chose: neighborhoods as stops on a Link 1 Line-style strip, listings as tickets, and the Lagoon palette with Archivo and Public Sans. The only API change is one public, read-only endpoint, `GET /api/v1/neighborhoods`, which gives the home page real room counts and the lowest rent per stop.
+The goal was to make the app look and feel finished before adding AI search (D-032). Every page now follows the approved design (D-033): neighborhoods as stops on a Link 1 Line-style strip, listings as tickets, and the Lagoon palette with Archivo and Public Sans. The only API change is one public, read-only endpoint, `GET /api/v1/neighborhoods`, which gives the home page real room counts and the lowest rent per stop.
 
-Two items were added during the sprint at Khai's request. T-215 needed demo content without public passwords, so the demo accounts get their password from a GitHub secret. T-217 came from Khai's review of the live site: there was no feedback while a page waited for the server. Claude argued against a full-screen loader and proposed a progress line plus a "waking up the server" notice instead (the free backend sleeps). Khai agreed.
+Two items were added during the sprint. T-215 needed demo content without public passwords, so the demo accounts get their password from a GitHub secret. T-217 came from the live-site review: there was no feedback while a page waited for the server. A full-screen loader was considered and rejected in favour of a progress line plus a "waking up the server" notice, because the free backend sleeps and most waits are short.
 
 The smoke run caught two real bugs before merge. Changing the sort on Browse dropped amounts typed in the filter panel (T-211). An old CSS rule squeezed the rent field on phones below 480 px (T-216).
 
@@ -73,7 +73,7 @@ The smoke run caught two real bugs before merge. Changing the sort on Browse dro
 
 | Metric | Value |
 | --- | --- |
-| Tasks done | 9 planned (T-208 to T-216) plus T-217 added at Khai's request |
+| Tasks done | 9 planned (T-208 to T-216) plus T-217 added during the sprint |
 | Non-merge commits since Sprint 3 in `main` (`d24fcf1`) | 45 (on `dev`) |
 | Files changed in the sprint | 72 (+4,962 / −1,141 lines) |
 | Automated tests | 260 (backend 121, frontend 139), up from 244; about 35 browser checks and 10 phone pages in smoke; 19 live checks |

@@ -11,7 +11,7 @@
 
 ## 1. Summary
 
-The goal was that a landlord can register, log in, and post a listing with photo links, and that anyone can open the listing's page. All six planned tasks (T-101 to T-106) are done, verified on GitHub Actions, and merged into `dev`. Two extra tasks were added at Khai's request: an end-to-end smoke workflow (T-008) and synthetic sample data (T-009). The smoke workflow now runs the app the way a developer does (Docker Compose database, backend jar, Vite dev server) and drives a real browser through 15 page checks, including posting and hiding a listing through the UI.
+The goal was that a landlord can register, log in, and post a listing with photo links, and that anyone can open the listing's page. All six planned tasks (T-101 to T-106) are done, verified on GitHub Actions, and merged into `dev`. Two tasks were added by the Product Owner during the sprint: an end-to-end smoke workflow (T-008) and synthetic sample data (T-009). The smoke workflow now runs the app the way a developer does (Docker Compose database, backend jar, Vite dev server) and drives a real browser through 15 page checks, including posting and hiding a listing through the UI.
 
 Independent review has not happened yet: every merge into `dev` was self-reviewed, as recorded in each merge commit. Khai's review of the `dev → main` PR is the independent review for this sprint.
 

@@ -15,7 +15,7 @@ The goal was that a tenant can browse and filter active listings, and that the a
 
 The performance target was measured, not assumed: with 10,000 listings, the 95th-percentile browse response is **40.8 ms** against a target of 500 ms (NFR-02). The plans show that PostgreSQL scans 10,000 rows in 2–4 ms, so no index was added.
 
-All planned tasks are done, plus two added at Khai's request (T-123 hover states, T-205 folding the filters on phones). Independent review has not happened yet: every merge into `dev` was self-reviewed, as recorded in each merge commit. Khai reviewed and merged PR #3 (everything up to T-122) during the sprint; the next `dev → main` PR completes this sprint's independent review.
+All planned tasks are done, plus two added by the Product Owner (T-123 hover states, T-205 folding the filters on phones). Independent review has not happened yet: every merge into `dev` was self-reviewed, as recorded in each merge commit. Khai reviewed and merged PR #3 (everything up to T-122) during the sprint; the next `dev → main` PR completes this sprint's independent review.
 
 ## 2. Delivered Work
 
@@ -92,12 +92,12 @@ Process slip carried from the start of the sprint: one docs commit (`0e48902`) w
 
 ## 6. Not Done / Carried Over
 
-- **Deployment (Sprint 3).** Khai asked about Vercel. Proposal for review: frontend on Vercel Hobby, backend on Render free (Docker; sleeps after 15 minutes idle), database on Neon free, all $0. Needs T-114 first: trust forwarded client addresses only from the known proxy (otherwise every user shares one address and the login limit could block everyone; review finding O1), security headers, secrets on the hosting dashboards. Deployment needs Khai's approval.
+- **Deployment (Sprint 3).** Proposed hosting: frontend on Vercel Hobby, backend on Render free (Docker; sleeps after 15 minutes idle), database on Neon free, all $0. Needs T-114 first: trust forwarded client addresses only from the known proxy (otherwise every user shares one address and the login limit could block everyone; review finding O1), security headers, secrets on the hosting dashboards. Deployment needs Khai's approval.
 - **T-113** Registration rate limit; **T-114** deployment security (above).
 - **T-007** Maven wrapper: still blocked by the workspace's network access.
 - **T-404** Image upload: later, after its free tier is verified.
 - ~~Repository settings (review findings O2, O3)~~: done by Khai at the end of the sprint. Dependabot alerts are on, and ruleset `protect-main` requires a pull request and the `backend`, `frontend`, and `smoke` checks (named uniquely in T-206).
-- **Backend in Node.js?** Khai asked whether the backend could move to Node later. Answer given: possible, and the API smoke checks would prove the two backends behave the same, but it would cost about a sprint of rework; recommended to finish Sprints 3–4 in Java first. No decision recorded.
+- **Backend in Node.js (evaluated, not planned).** A port is possible and the API smoke checks would prove both backends behave the same, but it would cost about a sprint of rework. The backend stays in Java.
 
 ## 7. Metrics
 

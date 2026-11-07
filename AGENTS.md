@@ -24,7 +24,7 @@ Branch / commit / merge: one task branch per task, cut from `dev` and named per 
 `main`: Khai's branch; never push to it. Only Khai merges `dev → main`
 Merge / deployment / release: Khai only
 Paid services / destructive actions: not permitted without Khai's explicit approval (D-007)
-Delegation / communication: through Khai; chat in Vietnamese, records in English
+Delegation / communication: through Khai; records in English
 
 ## Project-specific rules
 

@@ -15,9 +15,9 @@ A visitor types what they want in plain words and gets the same results as with 
 
 The design goal was that AI can never break search (NFR-04). Every failure (no key, timeout, rate limit, provider error, unreadable reply, a sentence that is not a room search) gives a short message, and the manual filters keep working. Each case is tested in the backend and in Chrome.
 
-The provider is configuration: any OpenAI-compatible API. T-006 compared the free plans on 2026-11-06 and proposes Groq over Gemini (D-035). Groq does not train on prompts, has higher free limits and offers strict JSON. Khai has not decided yet: his GitHub login to the Groq console looped back to the login page, so creating the key was postponed.
+The provider is configuration: any OpenAI-compatible API. T-006 compared the free plans on 2026-11-06 and proposes Groq over Gemini (D-035). Groq does not train on prompts, has higher free limits and offers strict JSON. The decision and the API key are pending.
 
-Before the sprint started, Khai asked whether landlord and tenant permissions had been forgotten. The check showed they were in place since Sprint 1 (role at sign-up, enforced by the API and covered by tests). The only gap was that the UI made them hard to see; possible improvements are listed in section 6.
+Role-based access was re-checked at the start of the sprint: landlord and tenant roles have been in place since Sprint 1 (chosen at sign-up, enforced by the API, covered by tests). The UI does not show the role clearly; improvements are listed in section 6.
 
 ## 2. Delivered Work
 
@@ -46,21 +46,21 @@ Before the sprint started, Khai asked whether landlord and tenant permissions ha
 
 | ID | Decision | Status |
 | --- | --- | --- |
-| D-035 | Groq as the primary provider (`openai/gpt-oss-20b`, strict JSON), Gemini as the fallback; switching is configuration only | Proposed; waiting for Khai |
+| D-035 | Groq as the primary provider (`openai/gpt-oss-20b`, strict JSON), Gemini as the fallback; switching is configuration only | Proposed; pending approval |
 
 ## 5. Problems and How They Were Handled
 
 | Problem | Found by | Handling |
 | --- | --- | --- |
 | The backend check failed on PR #13 and on the `dev` PR: a timeout case was followed by a 504 where a 429 was expected | CI on the pull requests | The fake provider in tests handled one request at a time, so a deliberately slow reply could delay the next test's request. It now serves requests in parallel; three runs in a row pass. Production code was not affected |
-| PR #13 was opened from a task branch straight to `main` | Claude's check of the open PRs | Khai closed it and merged the `dev → main` PR (#12), which had everything plus the fix |
-| Creating a Groq key: GitHub login to the console loops back to the login page | Khai | Postponed. Suggested: a private window, Google or email login, or allowing the site's cookies |
+| PR #13 targeted `main` directly from a task branch, outside the branch model (D-014) | Check of the open PRs | PR #13 closed; the changes reached `main` through the `dev → main` PR (#12), which also had the fix |
+| Provider account sign-in failed, so no API key yet | Product Owner | Postponed; live enablement and T-305 wait for the key |
 
 ## 6. Not Done / Carried Over
 
 - **Switch AI search on:** Khai creates a key (D-035), sets `AI_BASE_URL`, `AI_MODEL` and `AI_API_KEY` on Render; then `live-smoke` should report `"available": true`.
 - **T-305:** 30 example sentences with expected filters, run against the real model by a manual workflow; accuracy per field. Needs the key and Khai's approval to run.
-- **Optional, from the permissions question:** show the role in the account menu; role choice as two cards at sign-up; send landlords to My listings after logging in. Larger and not planned: an admin role for moderation; one account with both roles.
+- **Optional, from the role-based access check:** show the role in the account menu; role choice as two cards at sign-up; send landlords to My listings after logging in. Larger and not planned: an admin role for moderation; one account with both roles.
 - **T-404** photo upload, **T-007** Maven wrapper: unchanged.
 
 ## 7. Metrics
