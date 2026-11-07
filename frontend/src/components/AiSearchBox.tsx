@@ -97,7 +97,9 @@ export function AiSearchBox({ placement }: AiSearchBoxProps) {
       </div>
       <p
         id={messageId}
-        className={message ? "ai-search-help ai-search-message" : "ai-search-help"}
+        className={
+          message ? "ai-search-help ai-search-message" : "ai-search-help"
+        }
         aria-live="polite"
       >
         {message ??
