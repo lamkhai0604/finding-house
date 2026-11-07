@@ -135,7 +135,9 @@ try {
   }
 
   await page.goto(`${frontend}/register`);
-  await page.getByLabel("Account type").selectOption("LANDLORD");
+  // T-218: the account type is two cards (native radios); tenant is the default.
+  await shot(page, "02a-register-role-cards", "Rent out a room");
+  await page.getByRole("radio", { name: /Rent out a room/ }).check();
   await shot(page, "02-register-landlord", "Contact phone (optional)");
 
   await page.goto(`${frontend}/login`);
@@ -146,7 +148,17 @@ try {
 
   await page.getByLabel("Password").fill(MAYA.password);
   await page.getByRole("button", { name: "Log in" }).click();
-  await shot(page, "04-home-logged-in", "Welcome back, Maya Chen.");
+  // T-218: a landlord starts on My listings, and the header shows the role.
+  await shot(page, "04-landlord-login-my-listings", "Basement studio (paused)");
+  {
+    const badge = page.getByRole("banner").getByText("Landlord", { exact: true });
+    if (await badge.isVisible()) {
+      console.log("ok   04b: header shows the Landlord role badge");
+    } else {
+      failures += 1;
+      console.error("FAIL 04b: no Landlord role badge in the header");
+    }
+  }
 
   await page.goto(`${frontend}/listings/${ids["Capitol Hill 1BR, pets welcome"]}`);
   await shot(page, "05-detail-five-photos", "Capitol Hill 1BR, pets welcome");

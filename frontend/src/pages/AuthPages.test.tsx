@@ -2,6 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TOKEN_STORAGE_KEY } from "../auth/session";
 import { landlordMaya } from "../test/fixtures";
+import type { UserProfile } from "../api/types";
 import { apiError, mockApi } from "../test/mockApi";
 import { renderApp } from "../test/renderApp";
 
@@ -9,9 +10,18 @@ function fill(label: string, value: string) {
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 }
 
+const tenantSam: UserProfile = {
+  id: 2,
+  email: "sam.tenant@example.com",
+  displayName: "Sam Rivera",
+  role: "TENANT",
+  phone: null,
+};
+
 describe("Login page (FR-01)", () => {
-  it("logs in, stores the session, and shows the user in the header", async () => {
+  it("logs a landlord in, stores the session, shows the role and opens My listings (T-218)", async () => {
     mockApi({
+      "GET /api/v1/me/listings": () => Response.json([]),
       "POST /api/v1/auth/login": () =>
         Response.json({
           accessToken: "tok-1",
@@ -29,14 +39,55 @@ describe("Login page (FR-01)", () => {
     fill("Password", "sample-pass-maya");
     fireEvent.click(screen.getByRole("button", { name: "Log in" }));
 
-    const header = await screen.findByRole("banner");
     expect(
-      await within(header).findByText("Maya Chen (Landlord)"),
+      await screen.findByRole("heading", { name: "My listings", level: 1 }),
     ).toBeInTheDocument();
-    expect(
-      await screen.findByText("Welcome back, Maya Chen."),
-    ).toBeInTheDocument();
+    const header = screen.getByRole("banner");
+    expect(within(header).getByText("Maya Chen")).toBeInTheDocument();
+    expect(within(header).getByText("Landlord")).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBe("tok-1");
+  });
+
+  it("sends a tenant to the home page after logging in (T-218)", async () => {
+    mockApi({
+      "POST /api/v1/auth/login": () =>
+        Response.json({ accessToken: "tok-t", tokenType: "Bearer", expiresIn: 7200 }),
+      "GET /api/v1/me": () => Response.json(tenantSam),
+    });
+    renderApp("/login");
+
+    fill("Email", tenantSam.email);
+    fill("Password", "sample-pass-sam");
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(
+      await screen.findByText("Welcome back, Sam Rivera."),
+    ).toBeInTheDocument();
+    const header = screen.getByRole("banner");
+    expect(within(header).getByText("Tenant")).toBeInTheDocument();
+    fireEvent.click(within(header).getByRole("button", { name: /Account menu/ }));
+    expect(within(header).getByText(/Signed in as/)).toHaveTextContent(
+      "Signed in as Tenant",
+    );
+  });
+
+  it("returns a landlord to the page that asked for a login (T-218)", async () => {
+    mockApi({
+      "POST /api/v1/auth/login": () =>
+        Response.json({ accessToken: "tok-4", tokenType: "Bearer", expiresIn: 7200 }),
+      "GET /api/v1/me": () => Response.json(landlordMaya),
+      "GET /api/v1/reference-data": () =>
+        Response.json({ city: "Seattle", neighborhoods: ["Ballard"], amenities: [] }),
+    });
+    renderApp("/listings/new");
+
+    fill("Email", landlordMaya.email);
+    fill("Password", "sample-pass-maya");
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Post a room", level: 1 }),
+    ).toBeInTheDocument();
   });
 
   it("shows the server's message for wrong credentials and stays on the page", async () => {
@@ -61,7 +112,7 @@ describe("Login page (FR-01)", () => {
     mockApi({ "GET /api/v1/me": () => Response.json(landlordMaya) });
     renderApp("/");
 
-    expect(await screen.findByText("Maya Chen (Landlord)")).toBeInTheDocument();
+    expect(await screen.findByText("Maya Chen")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Account menu/ }));
     fireEvent.click(screen.getByRole("button", { name: "Log out" }));
@@ -100,9 +151,8 @@ describe("Register page (FR-01)", () => {
       screen.queryByLabelText("Contact phone (optional)"),
     ).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Account type"), {
-      target: { value: "LANDLORD" },
-    });
+    expect(screen.getByRole("radio", { name: /Find a room/ })).toBeChecked();
+    fireEvent.click(screen.getByRole("radio", { name: /Rent out a room/ }));
 
     expect(
       screen.getByLabelText("Contact phone (optional)"),
@@ -126,7 +176,7 @@ describe("Register page (FR-01)", () => {
     expect(posts).toHaveLength(0);
   });
 
-  it("registers a landlord with a phone, then logs in", async () => {
+  it("registers a landlord with a phone, logs in and opens My listings", async () => {
     let registered: unknown;
     mockApi({
       "POST /api/v1/auth/register": ({ body }) => {
@@ -140,20 +190,19 @@ describe("Register page (FR-01)", () => {
           expiresIn: 86400,
         }),
       "GET /api/v1/me": () => Response.json(landlordMaya),
+      "GET /api/v1/me/listings": () => Response.json([]),
     });
     renderApp("/register");
 
     fill("Name", "Maya Chen");
     fill("Email", landlordMaya.email);
     fill("Password", "sample-pass-maya");
-    fireEvent.change(screen.getByLabelText("Account type"), {
-      target: { value: "LANDLORD" },
-    });
+    fireEvent.click(screen.getByRole("radio", { name: /Rent out a room/ }));
     fill("Contact phone (optional)", "(206) 555-0101");
     fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
 
     expect(
-      await screen.findByText("Welcome back, Maya Chen."),
+      await screen.findByRole("heading", { name: "My listings", level: 1 }),
     ).toBeInTheDocument();
     expect(registered).toEqual({
       displayName: "Maya Chen",

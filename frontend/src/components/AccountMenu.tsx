@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router";
 import type { UserProfile } from "../api/types";
+import { roleLabel } from "../auth/homePath";
 import { initials } from "../utils/format";
 
 interface AccountMenuProps {
@@ -9,7 +10,7 @@ interface AccountMenuProps {
 }
 
 /**
- * D-027: avatar button with a dropdown (landlords: My listings, Post a room; tenants: Saved
+ * D-027: avatar button with the user's role badge and a dropdown (landlords: My listings, Post a room; tenants: Saved
  * rooms; Log out). Closes on Escape, on a
  * click outside, and after choosing an item.
  */
@@ -18,7 +19,7 @@ export function AccountMenu({ user, onLogout }: AccountMenuProps) {
   const menuId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const roleLabel = user.role === "LANDLORD" ? "Landlord" : "Tenant";
+  const role = roleLabel(user);
 
   useEffect(() => {
     if (!open) return;
@@ -52,14 +53,20 @@ export function AccountMenu({ user, onLogout }: AccountMenuProps) {
         <span className="avatar" aria-hidden="true">
           {initials(user.displayName)}
         </span>
-        <span className="account-name">
-          {user.displayName} ({roleLabel})
+        <span className="account-name">{user.displayName}</span>
+        <span className={`role-badge role-${user.role.toLowerCase()}`}>
+          {role}
         </span>
         <span className="sr-only">Account menu</span>
       </button>
       {open && (
         <div id={menuId} className="account-dropdown">
-          <p className="account-email">{user.email}</p>
+          <div className="account-summary">
+            <p className="account-signed-in">
+              Signed in as <strong>{role}</strong>
+            </p>
+            <p className="account-email">{user.email}</p>
+          </div>
           {user.role === "LANDLORD" && (
             <>
               <Link to="/my/listings" onClick={() => setOpen(false)}>
