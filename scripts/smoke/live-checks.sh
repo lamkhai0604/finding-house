@@ -36,6 +36,14 @@ if [ "$code" = 200 ] && grep -q '"Seattle"' /tmp/live-ref.json; then ok "referen
 code=$(status "$API_URL/api/v1/listings?size=1")
 [ "$code" = 200 ] && ok "browse API" || bad "browse API -> $code"
 
+# T-302: the AI search endpoint answers (on or off). Read-only: it only reports availability.
+ai=$(curl -s --max-time 20 "$API_URL/api/v1/search/interpret" || true)
+if printf '%s' "$ai" | grep -Eq '"available":(true|false)'; then
+  ok "AI search status: $(printf '%s' "$ai" | grep -Eo '"available":(true|false)')"
+else
+  bad "AI search status endpoint -> $ai"
+fi
+
 code=$(status "$API_URL/api/v1/me")
 [ "$code" = 401 ] && ok "/me without a token -> 401" || bad "/me without a token -> $code"
 

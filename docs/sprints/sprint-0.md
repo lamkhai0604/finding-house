@@ -10,7 +10,7 @@
 ## Capacity assumptions
 
 - Claude: drafts and implements during sessions started by Khai.
-- Khai: about 2–3 hours this week for reviewing docs and PRs, around classes.
+- Khai: about 2–3 hours this week for reviewing docs and PRs.
 
 ## Dependencies and decisions needed
 

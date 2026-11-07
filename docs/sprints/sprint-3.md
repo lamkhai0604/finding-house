@@ -6,7 +6,7 @@
 | Dates | 2026-11-05 → 2026-11-19 (2 weeks, proposed) |
 | Requirements | NFR-01, NFR-05; D-029, D-030 |
 | Tasks | T-114a, T-114b, T-401, T-405, T-113; stretch: T-402, T-403 (both done); added: T-206, T-207 |
-| Approved | Khai, 2026-11-05 (chat: "okay tớ duyệt") |
+| Approved | Khai, 2026-11-05 |
 
 ## Plan
 
@@ -17,12 +17,12 @@
 | 3 | T-401 Deploy | T-114a, T-114b; Khai's accounts | Neon (database), Render (backend, Docker), Vercel (frontend); secrets only in the dashboards |
 | 4 | T-405 Smoke checks against the live URLs | T-401 | Read-only checks plus a throwaway account; manual `workflow_dispatch` |
 | 5 | T-113 Registration rate limit | T-114a | Uses the same client-address resolver |
-| — | Stretch: T-402 README with screenshots; T-403 Favorites (FR-06) | — | FR-06 is part of the core set in D-019; Khai to decide whether it goes before AI search |
+| — | Stretch: T-402 README with screenshots; T-403 Favorites (FR-06) | — | FR-06 is part of the core set in D-019; order relative to AI search set by the PO |
 
-## What Khai does
+## Product Owner actions
 
 - Create accounts on Vercel, Render, and Neon (sign in with GitHub); no payment method.
-- Enter secrets in the dashboards when Claude gives the step-by-step list (never paste secrets in chat).
+- Enter secrets in the hosting dashboards following `docs/DEPLOYMENT.md`; secrets never go into the repository or any message.
 - Approve the go-live (D-012) before the first public deploy.
 
 ## Verification approach
