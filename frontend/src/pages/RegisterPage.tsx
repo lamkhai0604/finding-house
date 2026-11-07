@@ -2,18 +2,14 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { ApiError } from "../api/client";
 import type { Role } from "../api/types";
+import { homePathFor } from "../auth/homePath";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
 import { BackButton } from "../components/BackButton";
 import { FormAlert } from "../components/FormAlert";
-import { SelectField } from "../components/SelectField";
+import { RoleChoice } from "../components/RoleChoice";
 import { TextField } from "../components/TextField";
 import { usePageTitle } from "../hooks/usePageTitle";
-
-const ROLE_OPTIONS = [
-  { value: "TENANT", label: "I'm looking for a room (tenant)" },
-  { value: "LANDLORD", label: "I have a room to rent (landlord)" },
-];
 
 const MIN_PASSWORD_LENGTH = 8;
 
@@ -53,7 +49,7 @@ export function RegisterPage() {
 
     setBusy(true);
     try {
-      await register({
+      const profile = await register({
         displayName: form.displayName,
         email: form.email,
         password: form.password,
@@ -63,7 +59,7 @@ export function RegisterPage() {
             ? form.phone
             : undefined,
       });
-      navigate("/", { replace: true });
+      navigate(homePathFor(profile), { replace: true });
     } catch (e) {
       if (e instanceof ApiError && e.body.code === "EMAIL_TAKEN") {
         setFieldErrors({ email: e.body.message });
@@ -111,12 +107,10 @@ export function RegisterPage() {
             error={fieldErrors.password}
             onChange={(e) => update("password", e.target.value)}
           />
-          <SelectField
-            label="Account type"
-            options={ROLE_OPTIONS}
+          <RoleChoice
             value={form.role}
             error={fieldErrors.role}
-            onChange={(e) => update("role", e.target.value)}
+            onChange={(role) => update("role", role)}
           />
           {form.role === "LANDLORD" && (
             <TextField

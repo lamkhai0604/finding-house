@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { ApiError } from "../api/client";
+import { homePathFor } from "../auth/homePath";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
 import { BackButton } from "../components/BackButton";
@@ -18,15 +19,16 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const returnTo = (location.state as { from?: string } | null)?.from ?? "/";
+  // A page that sent the visitor here wins; otherwise each role starts on its own home.
+  const returnTo = (location.state as { from?: string } | null)?.from;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setBusy(true);
     try {
-      await login(email, password);
-      navigate(returnTo, { replace: true });
+      const profile = await login(email, password);
+      navigate(returnTo ?? homePathFor(profile), { replace: true });
     } catch (e) {
       setError(
         e instanceof ApiError ? e.body.message : "Something went wrong.",
