@@ -1,6 +1,7 @@
 package com.findinghouse.ai;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.findinghouse.listing.Amenity;
 import com.findinghouse.listing.Market;
 import java.io.IOException;
@@ -112,7 +113,14 @@ public class OpenAiCompatibleQueryParser implements QueryParser {
       throw new AiException(AiException.Kind.FAILED, "AI provider answered " + status);
     }
 
-    ParsedQuery parsed = readReply(response.body());
+    ParsedQuery parsed;
+    try {
+      parsed = readReply(response.body());
+    } catch (AiException e) {
+      // The reason only (e.g. "cut off at the token limit"); never the sentence or the reply.
+      log.warn("AI reply rejected: {}", e.getMessage());
+      throw e;
+    }
     log.info(
         "AI search parsed {} chars in {} ms (understood={})",
         query.length(),
@@ -127,7 +135,10 @@ public class OpenAiCompatibleQueryParser implements QueryParser {
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("model", properties.model());
     body.put("temperature", 0);
-    body.put("max_tokens", 300);
+    body.put("max_tokens", properties.maxTokens());
+    if (!properties.reasoningEffort().isEmpty()) {
+      body.put("reasoning_effort", properties.reasoningEffort());
+    }
     body.put(
         "messages",
         List.of(
@@ -172,7 +183,7 @@ public class OpenAiCompatibleQueryParser implements QueryParser {
   record ChatResponse(List<Choice> choices) {}
 
   @JsonIgnoreProperties(ignoreUnknown = true)
-  record Choice(Message message) {}
+  record Choice(Message message, @JsonProperty("finish_reason") String finishReason) {}
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record Message(String content) {}
@@ -188,12 +199,19 @@ public class OpenAiCompatibleQueryParser implements QueryParser {
 
   private static ParsedQuery readReply(String body) {
     String content;
+    String finishReason;
     try {
       ChatResponse chat = JSON.readValue(body, ChatResponse.class);
-      content = chat.choices().getFirst().message().content();
+      Choice choice = chat.choices().getFirst();
+      content = choice.message().content();
+      finishReason = choice.finishReason();
     } catch (RuntimeException e) {
       // Jackson errors, no choices, or no message: all mean the reply is not what we asked for.
       throw new AiException(AiException.Kind.FAILED, "AI reply is not a chat completion", e);
+    }
+    if ("length".equals(finishReason)) {
+      // Reasoning models can spend the whole budget before writing the JSON (app.ai.max-tokens).
+      throw new AiException(AiException.Kind.FAILED, "AI reply cut off at the token limit");
     }
     if (content == null || content.isBlank()) {
       throw new AiException(AiException.Kind.FAILED, "AI reply is empty");

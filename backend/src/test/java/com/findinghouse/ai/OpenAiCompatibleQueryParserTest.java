@@ -56,6 +56,8 @@ class OpenAiCompatibleQueryParserTest {
     assertThat(JsonPath.<String>read(body, "$.messages[1].content")).isEqualTo(QUERY);
     assertThat(JsonPath.<Map<String, Object>>read(body, "$").keySet())
         .containsExactly("model", "temperature", "max_tokens", "messages", "response_format");
+    assertThat(JsonPath.<Integer>read(body, "$.max_tokens"))
+        .isEqualTo(AiProperties.DEFAULT_MAX_TOKENS);
     assertThat(JsonPath.<Boolean>read(body, "$.response_format.json_schema.strict")).isTrue();
     String schema = "$.response_format.json_schema.schema";
     assertThat(JsonPath.<Boolean>read(body, schema + ".additionalProperties")).isFalse();
@@ -73,6 +75,52 @@ class OpenAiCompatibleQueryParserTest {
             "maxMonthlyRent",
             "minAreaSqft",
             "amenities");
+  }
+
+  @Test
+  void sendsTheReasoningEffortAndTokenLimitWhenConfigured() {
+    fake.replyWithContent(
+        """
+        {"understood":false,"neighborhood":null,"minMonthlyRent":null,"maxMonthlyRent":null,\
+        "minAreaSqft":null,"amenities":[]}\
+        """);
+    QueryParser tuned =
+        new OpenAiCompatibleQueryParser(
+            new AiProperties(
+                fake.baseUrl(), "openai/gpt-oss-20b", "k", Duration.ofSeconds(2), 2048, " LOW "));
+
+    tuned.parse(QUERY);
+
+    assertThat(JsonPath.<String>read(fake.lastBody, "$.reasoning_effort")).isEqualTo("low");
+    assertThat(JsonPath.<Integer>read(fake.lastBody, "$.max_tokens")).isEqualTo(2048);
+  }
+
+  @Test
+  void aReplyCutOffAtTheTokenLimitIsAFailureNotAnEmptySearch() {
+    // T-306: a reasoning model that spends the budget on reasoning stops with finish_reason
+    // "length" and no JSON; that must be reported as such, not read as filters.
+    fake.reply(
+        200,
+        """
+        {"id":"x","object":"chat.completion","choices":[{"index":0,"message":\
+        {"role":"assistant","content":""},"finish_reason":"length"}]}\
+        """);
+
+    assertThatThrownBy(() -> parser.parse(QUERY))
+        .isInstanceOfSatisfying(
+            AiException.class, e -> assertThat(e.kind()).isEqualTo(AiException.Kind.FAILED))
+        .hasMessageContaining("token limit");
+  }
+
+  @Test
+  void rejectsUnknownReasoningEffortAndOutOfRangeTokenLimits() {
+    assertThatThrownBy(
+            () -> new AiProperties("https://x.example/v1", "m", "k", null, null, "extreme"))
+        .isInstanceOf(IllegalStateException.class);
+    assertThatThrownBy(() -> new AiProperties("https://x.example/v1", "m", "k", null, 10, null))
+        .isInstanceOf(IllegalStateException.class);
+    assertThat(new AiProperties("https://x.example/v1", "m", "k", null).reasoningEffort())
+        .isEmpty();
   }
 
   @Test

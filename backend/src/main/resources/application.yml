@@ -68,6 +68,10 @@ app:
     model: ${AI_MODEL:}
     api-key: ${AI_API_KEY:}
     timeout: ${AI_TIMEOUT:5s}
+    # Room for a reasoning model's hidden reasoning plus the JSON reply.
+    max-tokens: ${AI_MAX_TOKENS:1024}
+    # Optional: low / medium / high for models that support it (low suits openai/gpt-oss-20b).
+    reasoning-effort: ${AI_REASONING_EFFORT:}
     # T-302: per address per hour, and overall per minute and per day (below Groq's free limits).
     limits:
       per-address-per-hour: ${AI_LIMIT_PER_ADDRESS_PER_HOUR:20}
