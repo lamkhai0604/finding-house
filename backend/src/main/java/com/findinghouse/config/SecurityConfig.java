@@ -59,13 +59,19 @@ public class SecurityConfig {
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login")
+                auth.requestMatchers(
+                        HttpMethod.POST,
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/login",
+                        // T-302: AI search is public, like browse.
+                        "/api/v1/search/interpret")
                     .permitAll()
                     .requestMatchers(
                         HttpMethod.GET,
                         "/actuator/health",
                         "/api/v1/reference-data",
                         "/api/v1/neighborhoods",
+                        "/api/v1/search/interpret",
                         "/api/v1/listings",
                         "/api/v1/listings/{id}")
                     .permitAll()

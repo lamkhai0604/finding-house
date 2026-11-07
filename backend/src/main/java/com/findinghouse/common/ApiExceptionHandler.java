@@ -1,5 +1,7 @@
 package com.findinghouse.common;
 
+import com.findinghouse.ai.AiException;
+import com.findinghouse.ai.AiSearchLimitException;
 import com.findinghouse.auth.AuthExceptions.EmailAlreadyRegisteredException;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
 import com.findinghouse.auth.AuthExceptions.TooManyLoginAttemptsException;
@@ -89,6 +91,44 @@ public class ApiExceptionHandler {
   @ExceptionHandler(TooManyRegistrationsException.class)
   ResponseEntity<ApiError> tooManyRegistrations(TooManyRegistrationsException e) {
     return tooManyAttempts("Too many sign-up attempts from your network.", e.getRetryAfter());
+  }
+
+  @ExceptionHandler(AiSearchLimitException.class)
+  ResponseEntity<ApiError> tooManyAiSearches(AiSearchLimitException e) {
+    return tooManyAttempts(
+        "Too many AI searches from your network. The filters still work.", e.getRetryAfter());
+  }
+
+  /**
+   * T-302 / T-304: AI search could not answer. Each case says that the filters still work, since
+   * manual search does not depend on the AI (NFR-04).
+   */
+  @ExceptionHandler(AiException.class)
+  ResponseEntity<ApiError> aiSearchFailed(AiException e) {
+    return switch (e.kind()) {
+      case UNAVAILABLE ->
+          ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+              .body(ApiError.of("AI_UNAVAILABLE", "AI search is not available right now."));
+      case TIMEOUT ->
+          ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT)
+              .body(
+                  ApiError.of(
+                      "AI_TIMEOUT", "AI search took too long. Try again or use the filters."));
+      case BUSY -> {
+        long seconds =
+            e.retryAfter().map(d -> Math.max(1, (d.toMillis() + 999) / 1000)).orElse(60L);
+        yield ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+            .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
+            .body(
+                ApiError.of(
+                    "AI_BUSY", "AI search is busy right now. Try again soon or use the filters."));
+      }
+      case FAILED ->
+          ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+              .body(
+                  ApiError.of(
+                      "AI_FAILED", "AI search could not read that. Try again or use the filters."));
+    };
   }
 
   private static ResponseEntity<ApiError> tooManyAttempts(String reason, Duration retryAfter) {

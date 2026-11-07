@@ -1,5 +1,8 @@
 package com.findinghouse.ai;
 
+import java.time.Duration;
+import java.util.Optional;
+
 /**
  * T-301 / T-304: why AI search could not answer. Messages are for logs and never contain the user's
  * query. Every kind leaves manual search working (NFR-04).
@@ -18,18 +21,29 @@ public class AiException extends RuntimeException {
   }
 
   private final Kind kind;
+  private final Duration retryAfter;
 
   public AiException(Kind kind, String message) {
-    super(message);
-    this.kind = kind;
+    this(kind, message, null, null);
   }
 
   public AiException(Kind kind, String message, Throwable cause) {
+    this(kind, message, cause, null);
+  }
+
+  /** BUSY because our own budget is used up: {@code retryAfter} says when it frees up (T-302). */
+  public AiException(Kind kind, String message, Throwable cause, Duration retryAfter) {
     super(message, cause);
     this.kind = kind;
+    this.retryAfter = retryAfter;
   }
 
   public Kind kind() {
     return kind;
+  }
+
+  /** How long to wait before trying again, when known. */
+  public Optional<Duration> retryAfter() {
+    return Optional.ofNullable(retryAfter);
   }
 }
