@@ -53,7 +53,8 @@ await pause(1200);
 await page.mouse.wheel(0, 380);
 await pause(2200);
 
-await page.getByRole("article").first().getByRole("link").first().click();
+await page.getByRole("article").first().locator("a[href^='/listings/']").first().click();
+await page.waitForURL(/\/listings\/\d+/, { timeout: 20000 });
 await page.waitForLoadState("networkidle").catch(() => {});
 await pause(2000);
 await page.mouse.wheel(0, 450);
