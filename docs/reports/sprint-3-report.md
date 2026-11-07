@@ -15,7 +15,7 @@ The goal was to put the app on the public internet at no cost, with the same kin
 
 Getting there needed one design change, reported to Khai when it was found: the browser now calls the backend directly instead of through a Vercel rewrite (D-030). Through a rewrite, Render would see Vercel's servers as every user's address, and Render passes `X-Forwarded-For` through unchanged, so it can be forged. The backend now reads the client address only from `CF-Connecting-IP`, which Cloudflare sets in front of every Render service, and the login and sign-up limits key on it.
 
-All planned tasks are done, and both stretch tasks were added at Khai's request (translated: "do them in order"): a README for visitors (T-402) and favorites (T-403, FR-06). Khai's review of the live site produced five UI fixes (T-207). Independent review happened through Khai's merges of PR #6 and PR #7; T-402 and T-403 are self-reviewed on `dev` until the next merge.
+All planned tasks are done, and both stretch tasks were added at Khai's request: a README for visitors (T-402) and favorites (T-403, FR-06). Khai's review of the live site produced five UI fixes (T-207). Independent review happened through Khai's merges of PR #6 and PR #7; T-402 and T-403 are self-reviewed on `dev` until the next merge.
 
 ## 2. Delivered Work
 
