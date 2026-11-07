@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
+import type { AiSearchState } from "../ai/aiSearch";
 import { ApiError } from "../api/client";
 import { getReferenceData, searchListings } from "../api/listings";
 import type { Listing, ListingSort, Page, ReferenceData } from "../api/types";
@@ -13,6 +14,8 @@ import {
   type FilterErrors,
   type FilterValues,
 } from "../browse/filters";
+import { ActiveFilterChips } from "../components/ActiveFilterChips";
+import { AiSearchBox } from "../components/AiSearchBox";
 import { Button } from "../components/Button";
 import { FavoriteButton } from "../components/FavoriteButton";
 import { EmptyState } from "../components/EmptyState";
@@ -40,6 +43,8 @@ function errorMessage(e: unknown): string {
 export function BrowsePage() {
   usePageTitle("Browse rooms");
   const [params, setParams] = useSearchParams();
+  // T-303: set when this page was opened by AI search; any change to the filters drops it.
+  const aiSearch = useLocation().state as AiSearchState | null;
   const { status } = useSession();
   const sessionKnown = status !== "loading";
   const queryKey = params.toString();
@@ -153,6 +158,9 @@ export function BrowsePage() {
             />
           </div>
         </div>
+        <div className="wide browse-ai">
+          <AiSearchBox placement="band" />
+        </div>
       </div>
       <div className="wide browse-body">
         <Button
@@ -183,6 +191,30 @@ export function BrowsePage() {
           />
         </div>
         <div className="browse-results">
+          {aiSearch?.aiQuery && (
+            <div className="ai-result-note" role="status">
+              <p>
+                <span className="ai-spark" aria-hidden="true">
+                  ✦
+                </span>{" "}
+                Rooms for “{aiSearch.aiQuery}”. Remove any filter that is not
+                what you meant.
+              </p>
+              {aiSearch.aiNotes.length > 0 && (
+                <ul>
+                  {aiSearch.aiNotes.map((note) => (
+                    <li key={note}>{note}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+          {!invalid && (
+            <ActiveFilterChips
+              values={values}
+              onChange={(next) => apply(next, false)}
+            />
+          )}
           {invalid ? (
             <FormAlert message="Some filters are not valid. Fix them and press Show rooms." />
           ) : !current ? (
