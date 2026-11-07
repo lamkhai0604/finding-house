@@ -16,7 +16,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-005 | CI workflow | NFR-08 | Claude | P1 | Done — `backend` and `frontend` workflows run on every push and on PRs into `dev`/`main` (runs 42069891558, 42074077400). Branch protection on `main` is not configured or verified (Khai\'s setting) | T-003, T-004 | GitHub Actions runs backend `mvn verify` and frontend lint + build on every push to `dev`, task branches, and PRs into `main`; result visible in GitHub Actions |
 | T-008 | End-to-end smoke workflow: `docker compose` PostgreSQL, backend jar with `.env`, API calls, Vite dev server, headless browser | NFR-08 | Claude | P2 | Done — commit `504c909`, run 42096337624 (ubuntu-latest): PostgreSQL container healthy; backend healthy after 9 s; 6 API checks passed (register 201, duplicate 409, wrong password 401, login 200, `/me` 200 / 401); Chromium (Playwright 1.64.1) showed "API is up", then "API is down" after stopping the backend; screenshots reviewed | T-003, T-004, T-101 | Workflow green; screenshots match |
 | T-009 | Synthetic sample data JSON with every API field + idempotent loader script | FR-01, FR-02 | Claude | P2 | Done — commit `998031a`, smoke run 42103027735: 5 users and 12 listings loaded through the API; 8/8 invalid examples returned the expected status and field errors; second load created 0 duplicates. Requested by Khai | T-103 | Loads cleanly twice; invalid examples behave as documented |
-| T-006 | Verify LLM free tier and get API key (Sprint 5, D-032) | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Deferred to Sprint 4 (D-019) | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
+| T-006 | Verify LLM free tier and get API key (Sprint 5, D-032) | FR-05, D-008 | Khai (key), Claude (verify docs) | P2 | Check done 2026-11-06 (see sprint-5.md, D-035 proposed); key: waiting for Khai | — | Current model name, limits, and terms checked against the provider's official pages and recorded in D-008; key stored only as a secret, never in the repo |
 | T-007 | Add Maven wrapper (`mvnw`) and switch docs/CI to it | — | Claude | P3 | Proposed | Maven Central reachable from workspace | `./mvnw verify` passes locally and in CI |
 
 ## Sprint 1 — "A landlord can post a room" ([plan](sprints/sprint-1.md))
@@ -87,7 +87,8 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-301 | `QueryParser` interface + Gemini adapter (timeout, JSON parsing) | FR-05 | P2 | Proposed |
+| T-301 | `QueryParser` interface + OpenAI-compatible adapter (Groq by default, D-035 proposed; timeout, strict JSON) | FR-05 | P2 | Proposed |
 | T-302 | AI search endpoint: validation via `SearchFilter`, rate limit | FR-05 | P2 | Proposed |
 | T-303 | AI search UI with editable filter chips | FR-05 | P2 | Proposed |
 | T-304 | Failure-path tests: timeout, invalid JSON, not understood, 429 | FR-05, NFR-04 | P2 | Proposed |
+| T-305 | Stretch: evaluation set of 30 queries run against the real model by a manual workflow, reported as accuracy | FR-05 | P3 | Proposed |
