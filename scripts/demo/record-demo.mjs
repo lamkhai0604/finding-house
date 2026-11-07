@@ -13,10 +13,22 @@ mkdirSync(outDir, { recursive: true });
 const size = { width: 1200, height: 750 };
 
 // Wake the free API before recording, so the video does not start with a long wait.
+const api = (process.env.API_URL ?? "").replace(/\/+$/, "");
+for (let i = 0; i < 36; i += 1) {
+  const ok = await fetch(`${api}/api/v1/listings?size=1`).then((r) => r.ok).catch(() => false);
+  if (ok) break;
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+}
 const warm = await chromium.launch({ channel: "chrome" });
 const warmPage = await warm.newPage();
 await warmPage.goto(`${frontend}/browse`);
-await warmPage.getByRole("article").first().waitFor({ timeout: 120000 });
+try {
+  await warmPage.getByRole("article").first().waitFor({ timeout: 60000 });
+} catch (error) {
+  await warmPage.screenshot({ path: `${outDir}/warm-failed.png` });
+  console.log("SHOT-BEGIN"); console.log((await import("node:fs")).readFileSync(`${outDir}/warm-failed.png`).toString("base64")); console.log("SHOT-END");
+  throw error;
+}
 await warm.close();
 
 const browser = await chromium.launch({ channel: "chrome" });
