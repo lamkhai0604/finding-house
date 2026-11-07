@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getAiSearchAvailability, type InterpretedFilters } from "../api/aiSearch";
+import {
+  getAiSearchAvailability,
+  type InterpretedFilters,
+} from "../api/aiSearch";
 import { EMPTY_FILTERS, type FilterValues } from "../browse/filters";
 import { centsToDollarsInput } from "../utils/money";
 

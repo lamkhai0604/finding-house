@@ -36,7 +36,9 @@ export function AiSearchBox({ placement }: AiSearchBoxProps) {
     event.preventDefault();
     const text = query.trim();
     if (!text) {
-      setMessage("Describe the room first, for example: “room in Ballard under $1,200 with laundry”.");
+      setMessage(
+        "Describe the room first, for example: “room in Ballard under $1,200 with laundry”.",
+      );
       return;
     }
     setBusy(true);
@@ -94,7 +96,8 @@ export function AiSearchBox({ placement }: AiSearchBoxProps) {
         </Button>
       </div>
       <p id={messageId} className="ai-search-help" aria-live="polite">
-        {message ?? "Please don't include names, phone numbers or other personal details."}
+        {message ??
+          "Please don't include names, phone numbers or other personal details."}
       </p>
     </form>
   );

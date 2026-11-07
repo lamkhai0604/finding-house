@@ -163,7 +163,9 @@ describe("AI search (T-303)", () => {
 
     const box = await ask("   ");
 
-    expect(within(box).getByText(/Describe the room first/)).toBeInTheDocument();
+    expect(
+      within(box).getByText(/Describe the room first/),
+    ).toBeInTheDocument();
     expect(sent).toEqual([]);
   });
 });
