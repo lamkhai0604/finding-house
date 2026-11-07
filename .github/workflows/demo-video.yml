@@ -28,8 +28,7 @@ jobs:
           FRONTEND_URL: https://finding-house.vercel.app
           API_URL: https://finding-house.onrender.com
         run: node record-demo.mjs /tmp/demo/out
-      - name: Encode and print
+      - name: Print the video
         run: |
-          ffmpeg -loglevel error -i /tmp/demo/out/demo.webm -c:v libx264 -preset veryfast -crf 26 -pix_fmt yuv420p -an /tmp/demo/demo.mp4
-          ls -la /tmp/demo/demo.mp4
-          echo "VIDEO-BEGIN demo.mp4"; gzip -c /tmp/demo/demo.mp4 | base64 -w 0; echo; echo "VIDEO-END"
+          ls -la /tmp/demo/out/demo.webm
+          echo "VIDEO-BEGIN demo.webm"; gzip -c /tmp/demo/out/demo.webm | base64 -w 0; echo; echo "VIDEO-END"
