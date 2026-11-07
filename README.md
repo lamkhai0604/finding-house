@@ -160,7 +160,10 @@ Without these settings AI search is off and the box is hidden. To try it locally
 AI_BASE_URL=https://api.groq.com/openai/v1
 AI_MODEL=openai/gpt-oss-20b
 AI_API_KEY=<your key>
+AI_REASONING_EFFORT=low     # gpt-oss is a reasoning model; low is enough for reading filters
 ```
+
+Optional: `AI_MAX_TOKENS` (default 1024, includes the model's hidden reasoning) and `AI_TIMEOUT` (default 5s).
 
 Or run the fake provider the smoke test uses (no key, answers by keyword): `node scripts/smoke/fake-ai.mjs 9099` with `AI_BASE_URL=http://localhost:9099/v1`, any `AI_MODEL`, and any `AI_API_KEY`.
 
