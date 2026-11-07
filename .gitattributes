@@ -1,0 +1,3 @@
+# Maven wrapper: Unix script needs LF, Windows script needs CRLF (T-007).
+backend/mvnw text eol=lf
+*.cmd text eol=crlf

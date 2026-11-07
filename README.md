@@ -85,7 +85,7 @@ flowchart LR
 
 ### Backend
 
-Prerequisites: Java 21, Maven 3.9+, Docker (for the local database and for integration tests).
+Prerequisites: Java 21 and Docker (for the local database and for integration tests). Maven is not needed: the Maven wrapper (`./mvnw`, or `mvnw.cmd` on Windows) downloads the pinned version, Maven 3.9.11, on first use.
 
 > **Windows:** use `copy .env.example .env` instead of `cp`, generate the secret in PowerShell with `$b = New-Object byte[] 48; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)`, run Python as `py`, and keep the project outside OneDrive (e.g. `C:\dev\finding-house`) so `node_modules` and `target` are not synced.
 
@@ -93,7 +93,7 @@ Prerequisites: Java 21, Maven 3.9+, Docker (for the local database and for integ
 cp .env.example .env            # then set JWT_SECRET (required): openssl rand -base64 48
 docker compose up -d postgres   # local PostgreSQL 16 on port 5432
 cd backend
-mvn spring-boot:run             # API on http://localhost:8080
+./mvnw spring-boot:run          # API on http://localhost:8080
 curl localhost:8080/actuator/health   # {"status":"UP"}
 ```
 
@@ -123,8 +123,8 @@ Run the checks CI runs (format check, build, tests with a throwaway PostgreSQL c
 
 ```bash
 cd backend
-mvn verify
-mvn spotless:apply              # fix formatting if the check fails
+./mvnw verify
+./mvnw spotless:apply           # fix formatting if the check fails
 ```
 
 ### Sample data
@@ -146,8 +146,8 @@ For load testing and for a browse page that feels full, the backend can generate
 
 ```bash
 cd backend
-SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 mvn spring-boot:run
-# Windows PowerShell: $env:SPRING_PROFILES_ACTIVE="dev"; $env:SYNTHETIC_LISTINGS="10000"; mvn spring-boot:run
+SPRING_PROFILES_ACTIVE=dev SYNTHETIC_LISTINGS=10000 ./mvnw spring-boot:run
+# Windows PowerShell: $env:SPRING_PROFILES_ACTIVE="dev"; $env:SYNTHETIC_LISTINGS="10000"; .\mvnw.cmd spring-boot:run
 ```
 
 Synthetic listings belong to 20 landlords at `synthetic.landlord.NN@example.invalid` that cannot log in, and every description starts with "Synthetic listing for development and testing." The same `SYNTHETIC_SEED` (default 42) always gives the same data. To remove them, recreate the local database: `docker compose down -v && docker compose up -d postgres`.
