@@ -43,12 +43,16 @@ jobs:
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: |
-          mkdir -p /tmp/live && cp scripts/smoke/live-browser.mjs /tmp/live/
+          mkdir -p /tmp/live && cp scripts/smoke/live-browser.mjs scripts/smoke/live-ai.mjs /tmp/live/
           cd /tmp/live && npm init -y > /dev/null && npm install --no-audit --no-fund playwright@1
 
       - name: Browser checks (desktop and phone, read-only)
         working-directory: /tmp/live
         run: node live-browser.mjs /tmp/live/shots
+
+      - name: AI search with the real model (3 fixed sentences; skipped when AI is off)
+        working-directory: /tmp/live
+        run: node live-ai.mjs /tmp/live/shots
 
       - name: Print screenshots (gzip + base64)
         if: always()
