@@ -31,4 +31,4 @@ jobs:
       - name: Print the video
         run: |
           ls -la /tmp/demo/out/demo.webm
-          echo "VIDEO-BEGIN demo.webm"; gzip -c /tmp/demo/out/demo.webm | base64 -w 0; echo; echo "VIDEO-END"
+          echo "VIDEO-BEGIN demo.webm"; gzip -c /tmp/demo/out/demo.webm | base64 -w 4000; echo "VIDEO-END"
