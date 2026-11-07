@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { getNeighborhoodStats, searchListings } from "../api/listings";
 import type { Listing, NeighborhoodStats } from "../api/types";
 import { useSession } from "../auth/session";
+import { AiSearchBox } from "../components/AiSearchBox";
 import { Button } from "../components/Button";
 import { ButtonLink } from "../components/ButtonLink";
 import { NumberField } from "../components/NumberField";
@@ -137,6 +138,7 @@ function Hero({
               Search rooms
             </Button>
           </form>
+          <AiSearchBox placement="hero" />
         </div>
         <Collage listings={collage} />
       </div>
