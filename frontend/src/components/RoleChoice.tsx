@@ -2,20 +2,42 @@ import { useId, type ReactNode } from "react";
 import type { Role } from "../api/types";
 
 const SEARCH_ICON = (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+  >
     <circle cx="11" cy="11" r="6.5" />
     <path d="m16 16 4.5 4.5" />
   </svg>
 );
 
 const KEY_ICON = (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <circle cx="8" cy="15" r="4.5" />
     <path d="m11.2 11.8 8.3-8.3M16.5 6.5l2.5 2.5M14 9l2 2" />
   </svg>
 );
 
-const CHOICES: { role: Role; title: string; detail: string; icon: ReactNode }[] = [
+const CHOICES: {
+  role: Role;
+  title: string;
+  detail: string;
+  icon: ReactNode;
+}[] = [
   {
     role: "TENANT",
     title: "Find a room",

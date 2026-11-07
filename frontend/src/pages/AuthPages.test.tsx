@@ -51,7 +51,11 @@ describe("Login page (FR-01)", () => {
   it("sends a tenant to the home page after logging in (T-218)", async () => {
     mockApi({
       "POST /api/v1/auth/login": () =>
-        Response.json({ accessToken: "tok-t", tokenType: "Bearer", expiresIn: 7200 }),
+        Response.json({
+          accessToken: "tok-t",
+          tokenType: "Bearer",
+          expiresIn: 7200,
+        }),
       "GET /api/v1/me": () => Response.json(tenantSam),
     });
     renderApp("/login");
@@ -65,7 +69,9 @@ describe("Login page (FR-01)", () => {
     ).toBeInTheDocument();
     const header = screen.getByRole("banner");
     expect(within(header).getByText("Tenant")).toBeInTheDocument();
-    fireEvent.click(within(header).getByRole("button", { name: /Account menu/ }));
+    fireEvent.click(
+      within(header).getByRole("button", { name: /Account menu/ }),
+    );
     expect(within(header).getByText(/Signed in as/)).toHaveTextContent(
       "Signed in as Tenant",
     );
@@ -74,10 +80,18 @@ describe("Login page (FR-01)", () => {
   it("returns a landlord to the page that asked for a login (T-218)", async () => {
     mockApi({
       "POST /api/v1/auth/login": () =>
-        Response.json({ accessToken: "tok-4", tokenType: "Bearer", expiresIn: 7200 }),
+        Response.json({
+          accessToken: "tok-4",
+          tokenType: "Bearer",
+          expiresIn: 7200,
+        }),
       "GET /api/v1/me": () => Response.json(landlordMaya),
       "GET /api/v1/reference-data": () =>
-        Response.json({ city: "Seattle", neighborhoods: ["Ballard"], amenities: [] }),
+        Response.json({
+          city: "Seattle",
+          neighborhoods: ["Ballard"],
+          amenities: [],
+        }),
     });
     renderApp("/listings/new");
 
