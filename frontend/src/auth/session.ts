@@ -6,8 +6,9 @@ export type SessionStatus = "loading" | "anonymous" | "authenticated";
 export interface Session {
   status: SessionStatus;
   user: UserProfile | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (request: RegisterRequest) => Promise<void>;
+  /** Resolves with the signed-in user, so callers can route by role. */
+  login: (email: string, password: string) => Promise<UserProfile>;
+  register: (request: RegisterRequest) => Promise<UserProfile>;
   logout: () => void;
 }
 

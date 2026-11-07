@@ -41,6 +41,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     storeToken(token);
     setUser(profile);
     setStatus("authenticated");
+    return profile;
   }, []);
 
   // An expired token ends the session (T-110).
@@ -78,7 +79,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const login = useCallback(
     async (email: string, password: string) => {
       const response = await loginRequest(email, password);
-      await startSession(response.accessToken);
+      return startSession(response.accessToken);
     },
     [startSession],
   );
@@ -86,7 +87,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (request: RegisterRequest) => {
       await registerAccount(request);
-      await login(request.email, request.password);
+      return login(request.email, request.password);
     },
     [login],
   );

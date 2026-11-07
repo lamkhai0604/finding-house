@@ -84,6 +84,8 @@ try {
   await page.goto(`${frontend}/login`);
   await phoneShot(page, "P05-login", page.getByRole("button", { name: "Log in" }));
   await page.goto(`${frontend}/register`);
+  await phoneShot(page, "P05b-register-role-cards", page.getByRole("radio", { name: /Rent out a room/ }));
+  await page.goto(`${frontend}/register`);
   await phoneShot(page, "P06-register", page.getByRole("heading", { name: /Create/ }));
   await page.goto(`${frontend}/no/such/page`);
   await phoneShot(page, "P07-not-found", page.getByRole("heading", { name: "Page not found" }));
@@ -94,8 +96,8 @@ try {
   // Log out by dropping the stored token (the session lives in sessionStorage).
   await page.evaluate(() => window.sessionStorage.clear());
 
-  await logIn(page, "maya.landlord@example.com", "sample-pass-maya", "Welcome back, Maya Chen.");
-  await page.goto(`${frontend}/my/listings`);
+  // T-218: landlords land on My listings after logging in.
+  await logIn(page, "maya.landlord@example.com", "sample-pass-maya", "Basement studio (paused)");
   await phoneShot(page, "P09-my-listings", page.getByRole("article").first());
   await page.goto(`${frontend}/listings/new`);
   await phoneShot(page, "P10-post-form", page.getByRole("button", { name: "Post listing" }));
