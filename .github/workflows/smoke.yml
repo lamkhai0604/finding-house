@@ -49,7 +49,21 @@ jobs:
             echo "CORS_ALLOWED_ORIGINS=http://localhost:4173"
             # T-113: every check here signs up from one address (localhost); the live default is 10/hour.
             echo "REGISTRATION_MAX_PER_ADDRESS=1000"
+            # T-303 / T-304: AI search against the fake provider in scripts/smoke/fake-ai.mjs.
+            echo "AI_BASE_URL=http://localhost:9099/v1"
+            echo "AI_MODEL=fake-model"
+            echo "AI_API_KEY=smoke-$(openssl rand -hex 8)"
+            echo "AI_LIMIT_PER_MINUTE=100"
           } > .env
+
+      - name: Start the fake AI provider
+        run: |
+          nohup node scripts/smoke/fake-ai.mjs 9099 > /tmp/fake-ai.log 2>&1 &
+          for i in $(seq 1 20); do
+            (echo > /dev/tcp/127.0.0.1/9099) 2>/dev/null && echo "fake AI up" && exit 0
+            sleep 0.5
+          done
+          cat /tmp/fake-ai.log; exit 1
 
       - name: Start PostgreSQL with docker compose
         run: docker compose up -d --wait postgres
@@ -144,6 +158,14 @@ jobs:
           cp "$GITHUB_WORKSPACE/scripts/smoke/phone-shots.mjs" .
           FRONTEND_URL=http://localhost:4173 node phone-shots.mjs /tmp/e2e/phone
 
+      # T-303 / T-304: AI search end to end with the fake provider, every failure message, and
+      # manual search still working.
+      - name: AI search in the browser
+        working-directory: /tmp/e2e
+        run: |
+          cp "$GITHUB_WORKSPACE/scripts/smoke/ai-search.mjs" .
+          FRONTEND_URL=http://localhost:4173 node ai-search.mjs /tmp/e2e/ai
+
       # T-215: the demo content loads (password from a throwaway variable, like the live secret),
       # loading it twice creates nothing new, and its photos show up in the app.
       - name: Load demo content and screenshot it
@@ -166,7 +188,7 @@ jobs:
       - name: Print screenshots (gzip + base64)
         if: always()
         run: |
-          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg /tmp/e2e/phone/*.jpg; do
+          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg /tmp/e2e/phone/*.jpg /tmp/e2e/ai/*.jpg; do
             [ -f "$f" ] || continue
             echo "SCREENSHOT-BEGIN $(basename "$f")"
             gzip -9 -c "$f" | base64 -w 1000

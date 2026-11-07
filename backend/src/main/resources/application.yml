@@ -60,6 +60,19 @@ app:
   registration-throttle:
     max-per-address: ${REGISTRATION_MAX_PER_ADDRESS:10}
     window: ${REGISTRATION_THROTTLE_WINDOW:1h}
+  # T-301 (FR-05): AI search through an OpenAI-compatible chat API (D-035 proposed: Groq,
+  # AI_BASE_URL=https://api.groq.com/openai/v1, AI_MODEL=openai/gpt-oss-20b). Off unless all three
+  # are set. AI_API_KEY only ever comes from the host's secret settings, never from a file.
+  ai:
+    base-url: ${AI_BASE_URL:}
+    model: ${AI_MODEL:}
+    api-key: ${AI_API_KEY:}
+    timeout: ${AI_TIMEOUT:5s}
+    # T-302: per address per hour, and overall per minute and per day (below Groq's free limits).
+    limits:
+      per-address-per-hour: ${AI_LIMIT_PER_ADDRESS_PER_HOUR:20}
+      per-minute: ${AI_LIMIT_PER_MINUTE:8}
+      per-day: ${AI_LIMIT_PER_DAY:800}
   # T-203 (D-028): synthetic listings for development and load tests. Only used under the "dev"
   # profile (SPRING_PROFILES_ACTIVE=dev); 0 turns it off. Same seed -> same data.
   synthetic-data:
