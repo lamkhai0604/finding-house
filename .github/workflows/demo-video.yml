@@ -1,0 +1,34 @@
+name: demo-video
+
+# Records the README demo GIF's source video on the live site (manual; uses 1 AI search).
+on:
+  # TEMPORARY: first run before this file is on main; removed before merging.
+  push:
+    branches: [docs/demo-gif]
+    paths: [".github/workflows/demo-video.yml", "scripts/demo/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Install Playwright
+        run: mkdir -p /tmp/demo && cp scripts/demo/record-demo.mjs /tmp/demo/ && cd /tmp/demo && npm init -y > /dev/null && npm install --no-audit --no-fund playwright@1
+      - name: Record
+        working-directory: /tmp/demo
+        env:
+          FRONTEND_URL: https://finding-house.vercel.app
+        run: node record-demo.mjs /tmp/demo/out
+      - name: Encode and print
+        run: |
+          ffmpeg -loglevel error -i /tmp/demo/out/demo.webm -c:v libx264 -preset veryfast -crf 26 -pix_fmt yuv420p -an /tmp/demo/demo.mp4
+          ls -la /tmp/demo/demo.mp4
+          echo "VIDEO-BEGIN demo.mp4"; gzip -c /tmp/demo/demo.mp4 | base64 -w 0; echo; echo "VIDEO-END"
