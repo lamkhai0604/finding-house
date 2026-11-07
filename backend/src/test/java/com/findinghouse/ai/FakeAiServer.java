@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 final class FakeAiServer implements AutoCloseable {
 
   private final HttpServer server;
+  private final ExecutorService executor;
   private final AtomicInteger requests = new AtomicInteger();
   private volatile int status = 200;
   private volatile String body = "{}";
@@ -50,6 +53,10 @@ final class FakeAiServer implements AutoCloseable {
             // The client gave up (timeout test); nothing to do.
           }
         });
+    // One thread per request: a deliberately slow answer (the timeout case) must not hold up the
+    // next test's request, or that one times out too and the tests depend on timing.
+    executor = Executors.newCachedThreadPool();
+    server.setExecutor(executor);
     server.start();
   }
 
@@ -87,5 +94,6 @@ final class FakeAiServer implements AutoCloseable {
   @Override
   public void close() {
     server.stop(0);
+    executor.shutdownNow();
   }
 }
