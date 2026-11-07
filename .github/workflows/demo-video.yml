@@ -1,11 +1,8 @@
 name: demo-video
 
-# Records the README demo GIF's source video on the live site (manual; uses 1 AI search).
+# Records the README demo on the live site (manual; uses 1 AI search). The video is printed
+# to the log; docs/images/demo.gif is made from it with ffmpeg (10 fps, 800 px wide).
 on:
-  # TEMPORARY: first run before this file is on main; removed before merging.
-  push:
-    branches: [docs/demo-gif]
-    paths: [".github/workflows/demo-video.yml", "scripts/demo/**"]
   workflow_dispatch:
 
 permissions:
