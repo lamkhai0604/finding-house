@@ -6,7 +6,7 @@
 | Dates | 2026-11-07 → 2026-11-21 (2 weeks, proposed) |
 | Requirements | FR-05, NFR-04, NFR-06; D-008, D-019, D-032 |
 | Tasks | T-006, T-301 to T-304, T-305 (stretch) |
-| Approved | Plan: Khai, 2026-11-06 (chat: "làm tiếp đi" after the plan). Provider (D-035): still open; the code is provider-neutral until then |
+| Approved | Plan: Khai, 2026-11-06 (chat: translated: "keep going" after the plan). Provider (D-035): still open; the code is provider-neutral until then |
 
 ## T-006: LLM provider check (done by Claude 2026-11-06; Khai creates the key)
 

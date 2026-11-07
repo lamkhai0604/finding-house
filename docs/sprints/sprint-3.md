@@ -6,7 +6,7 @@
 | Dates | 2026-11-05 → 2026-11-19 (2 weeks, proposed) |
 | Requirements | NFR-01, NFR-05; D-029, D-030 |
 | Tasks | T-114a, T-114b, T-401, T-405, T-113; stretch: T-402, T-403 (both done); added: T-206, T-207 |
-| Approved | Khai, 2026-11-05 (chat: "okay tớ duyệt") |
+| Approved | Khai, 2026-11-05 (chat: translated: "okay, I approve") |
 
 ## Plan
 
