@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 import { ApiError } from "../api/client";
 import { getListing } from "../api/listings";
 import { useSession } from "../auth/session";
@@ -10,6 +10,8 @@ import { AmenityIcon } from "../components/AmenityIcon";
 import { ButtonLink } from "../components/ButtonLink";
 import { buttonClassName } from "../components/buttonStyles";
 import { ImageGallery } from "../components/ImageGallery";
+import { ReportListingDialog } from "../components/ReportListingDialog";
+import { useToast } from "../toast/toast";
 import { ListingDetailSkeleton } from "../components/Skeleton";
 import { StatusMessage } from "../components/StatusMessage";
 import { LINE_ORDER } from "../home/lineStops";
@@ -31,6 +33,9 @@ type Result =
 export function ListingDetailPage() {
   const { id = "" } = useParams();
   const { status, user } = useSession();
+  const location = useLocation();
+  const toast = useToast();
+  const [reporting, setReporting] = useState(false);
   // Who is looking matters: the owner may see a hidden listing (FR-04 AC2). Wait until the
   // session is restored, and load again when the viewer changes (login, logout).
   const viewer = status === "loading" ? null : String(user?.id ?? "anonymous");
@@ -116,7 +121,12 @@ export function ListingDetailPage() {
           {listing.status === "HIDDEN" && (
             <span className="badge">Hidden — only you can see this</span>
           )}
-          {user?.id === listing.landlordId && (
+          {listing.status === "REMOVED" && (
+            <p className="removed-note" role="note">
+              <strong>Removed by a moderator.</strong> {listing.removedReason}
+            </p>
+          )}
+          {user?.id === listing.landlordId && listing.status !== "REMOVED" && (
             <p>
               <ButtonLink to={`/listings/${listing.id}/edit`}>
                 Edit this listing
@@ -202,7 +212,37 @@ export function ListingDetailPage() {
             Finding House never asks for deposits or payments. Meet the landlord
             and see the room before paying anything.
           </p>
+          {listing.status === "ACTIVE" &&
+            user?.id !== listing.landlordId &&
+            user?.role !== "ADMIN" &&
+            (user ? (
+              <button
+                type="button"
+                className="link-button report-link"
+                onClick={() => setReporting(true)}
+              >
+                Report this listing
+              </button>
+            ) : (
+              <Link
+                className="report-link"
+                to="/login"
+                state={{ from: location.pathname }}
+              >
+                Log in to report this listing
+              </Link>
+            ))}
         </aside>
+        <ReportListingDialog
+          open={reporting}
+          listingId={listing.id}
+          title={listing.title}
+          onCancel={() => setReporting(false)}
+          onReported={() => {
+            setReporting(false);
+            toast.show("Thanks. A moderator will review this listing.");
+          }}
+        />
       </div>
 
       {/* T-216: on phones the contact card is far down; keep the price and Call in reach. */}

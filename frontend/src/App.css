@@ -2312,6 +2312,12 @@ a.save-heart:not(.button):hover {
   background: var(--card);
 }
 
+/* T-604: a fourth count (removed by a moderator) only when there is one. */
+.listing-counts:has(> div:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 48rem;
+}
+
 .listing-counts > div {
   padding: 0.875rem 1.25rem;
 }
@@ -2860,5 +2866,186 @@ a.save-heart:not(.button):hover {
 
   .ai-search-row .button {
     width: 100%;
+  }
+}
+
+/* --- T-604 moderation (FR-08) --------------------------------------------------------------- */
+
+.role-badge.role-admin {
+  background: var(--text);
+  color: var(--card);
+}
+
+.badge-removed {
+  background: var(--danger);
+  color: #fff;
+}
+
+.removed-note {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--danger);
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 0.875rem;
+}
+
+.report-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.report-reasons {
+  border: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.375rem;
+}
+
+.report-reasons legend {
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+  padding: 0;
+}
+
+.report-reason {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dialog textarea {
+  width: 100%;
+  font: inherit;
+}
+
+.admin-section {
+  margin-bottom: 2.5rem;
+}
+
+.admin-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-count {
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-size: 0.875rem;
+}
+
+.report-list,
+.removed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.report-card {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--sun);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.report-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.report-head h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.report-total {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.report-card > .muted {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.875rem;
+}
+
+.report-reasons-summary {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.report-notes {
+  margin: 0 0 0.75rem;
+  padding-left: 1.125rem;
+  font-size: 0.875rem;
+}
+
+.report-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.removed-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.removed-row p {
+  margin: 0.125rem 0 0;
+  font-size: 0.875rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: var(--card);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (max-width: 600px) {
+  .report-actions {
+    justify-content: stretch;
+  }
+
+  .report-actions > * {
+    flex: 1;
+  }
+
+  .removed-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

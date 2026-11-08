@@ -35,6 +35,7 @@ _The demo and screenshots are recorded automatically by CI on the live site with
 - **Everyone:** browse with filters for neighborhood, rent range, minimum area, and amenities; a 1 Line strip with real room counts per stop; three sort orders; the filters live in the URL so a search can be shared; every filter in use is a chip you can remove.
 - **Listing page:** photo grid, amenities, the nearest 1 Line stations, and a contact card with the landlord's phone (a call bar on phones); hidden listings are visible only to their owner.
 - **Tenants:** save rooms with the heart and find them under Saved rooms.
+- **Moderation:** any signed-in user can report a listing; an administrator reviews reports, removes listings with a reason the landlord sees, restores them, and every action is kept in an append-only record. Administrators exist only through host configuration (`ADMIN_EMAILS`), never through sign-up.
 - **Feels finished:** a designed look ("along the line"), phone layouts checked at 375 px on every push, toasts, empty states, a progress line while the server answers, and a note when the free server is waking up.
 
 **AI search (live)**
@@ -43,7 +44,7 @@ Type *"quiet room in Ballard under $1,500 with laundry"* and an LLM turns it int
 
 **Planned**
 
-- Photo upload instead of photo links; moderation tools for a public site.
+- Photo upload instead of photo links.
 
 ## How it is built
 
@@ -65,7 +66,7 @@ flowchart LR
 
 **Engineering highlights**
 
-- **Tests on every push:** 145 backend tests against a real PostgreSQL, 146 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 50 checks on the production build: every page at 375 px, AI search against a fake provider (including timeouts, rate limits and broken replies), and the demo content's photos. A separate workflow checks the live site.
+- **Tests on every push:** 168 backend tests against a real PostgreSQL, 154 frontend tests, and a smoke workflow that builds the backend's Docker image, runs it with a 512 MB limit, and drives Chrome through about 50 checks on the production build: every page at 375 px, AI search against a fake provider (including timeouts, rate limits and broken replies), and the demo content's photos, and a full moderation flow (report, remove, landlord view, restore). A separate workflow checks the live site.
 - **Measured performance:** with 10,000 listings, browse requests take 40.8 ms at the 95th percentile (target: under 500 ms). The query plans are printed in every build, and no index was added before measuring.
 - **AI that cannot break search:** the model only proposes filters; strict schema, our own validation, visible removable chips, per-address and global limits under the free tier, and manual search that never depends on it (NFR-04).
 - **Security:** BCrypt passwords; failed-login and sign-up limits per client address, taken only from a header the host sets, never from forgeable `X-Forwarded-For`; CORS limited to the exact frontend origin; Content Security Policy; security headers at the host; request size limit; no secrets in the repository.

@@ -38,7 +38,7 @@ export function TicketCard({
   return (
     <article
       className={
-        listing.status === "HIDDEN" ? "ticket ticket-hidden" : "ticket"
+        listing.status === "ACTIVE" ? "ticket" : "ticket ticket-hidden"
       }
     >
       <div className="ticket-photo">
@@ -47,7 +47,9 @@ export function TicketCard({
           alt={listing.title}
           linkToFullSize={false}
         />
-        {listing.status === "HIDDEN" ? (
+        {listing.status === "REMOVED" ? (
+          <span className="badge-hidden badge-removed">Removed</span>
+        ) : listing.status === "HIDDEN" ? (
           <span className="badge-hidden">Hidden</span>
         ) : (
           isNew(listing) && <span className="badge-new">New</span>
