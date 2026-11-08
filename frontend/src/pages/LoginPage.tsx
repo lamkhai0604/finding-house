@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { ApiError } from "../api/client";
-import { homePathFor } from "../auth/homePath";
+import { homePathFor, roleLabel } from "../auth/homePath";
+import { useToast } from "../toast/toast";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
 import { BackButton } from "../components/BackButton";
@@ -20,6 +21,7 @@ export function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   // A page that sent the visitor here wins; otherwise each role starts on its own home.
+  const toast = useToast();
   const returnTo = (location.state as { from?: string } | null)?.from;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -28,6 +30,10 @@ export function LoginPage() {
     setBusy(true);
     try {
       const profile = await login(email, password);
+      // UX-01: confirm the sign-in and which account it is, whichever page comes next.
+      toast.show(
+        `Signed in as ${profile.displayName} (${roleLabel(profile)}).`,
+      );
       navigate(returnTo ?? homePathFor(profile), { replace: true });
     } catch (e) {
       setError(

@@ -45,6 +45,10 @@ describe("Login page (FR-01)", () => {
     const header = screen.getByRole("banner");
     expect(within(header).getByText("Maya Chen")).toBeInTheDocument();
     expect(within(header).getByText("Landlord")).toBeInTheDocument();
+    // UX-01 (T-221): the sign-in is confirmed even on a page without a greeting.
+    expect(
+      screen.getByText("Signed in as Maya Chen (Landlord)."),
+    ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBe("tok-1");
   });
 
@@ -137,6 +141,8 @@ describe("Login page (FR-01)", () => {
       }),
     ).toBeInTheDocument();
     expect(window.sessionStorage.getItem(TOKEN_STORAGE_KEY)).toBeNull();
+    // UX-01 (T-221): signing out is confirmed.
+    expect(screen.getByText("You are signed out.")).toBeInTheDocument();
   });
 
   it("drops an expired stored token", async () => {
