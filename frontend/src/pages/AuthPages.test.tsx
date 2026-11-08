@@ -245,7 +245,11 @@ describe("Register page (FR-01)", () => {
       "POST /api/v1/auth/register": () =>
         Response.json(tenantSam, { status: 201 }),
       "POST /api/v1/auth/login": () =>
-        Response.json({ accessToken: "tok-5", tokenType: "Bearer", expiresIn: 7200 }),
+        Response.json({
+          accessToken: "tok-5",
+          tokenType: "Bearer",
+          expiresIn: 7200,
+        }),
       "GET /api/v1/me": () => Response.json(tenantSam),
       "GET /api/v1/me/favorites/ids": () => Response.json([]),
     });

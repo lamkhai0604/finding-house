@@ -65,7 +65,10 @@ export function RegisterPage() {
       toast.show(
         `Welcome to Finding House, ${profile.displayName}! Your ${roleLabel(profile).toLowerCase()} account is ready.`,
       );
-      navigate(homePathFor(profile), { replace: true, state: { newAccount: true } });
+      navigate(homePathFor(profile), {
+        replace: true,
+        state: { newAccount: true },
+      });
     } catch (e) {
       if (e instanceof ApiError && e.body.code === "EMAIL_TAKEN") {
         setFieldErrors({ email: e.body.message });
