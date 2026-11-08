@@ -33,9 +33,12 @@ export function ReportListingDialog({
       await reportListing(listingId, reason, note);
     } catch (e) {
       if (e instanceof ApiError && e.status === 409) {
-        throw new Error("You already reported this listing. A moderator will look at it.", {
-          cause: e,
-        });
+        throw new Error(
+          "You already reported this listing. A moderator will look at it.",
+          {
+            cause: e,
+          },
+        );
       }
       throw new Error(
         e instanceof ApiError ? e.body.message : "Could not send the report.",

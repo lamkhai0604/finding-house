@@ -124,11 +124,7 @@ export interface NeighborhoodStats {
 // --- FR-08 moderation -------------------------------------------------------------------------
 
 export type ReportReason =
-  | "SCAM"
-  | "WRONG_INFO"
-  | "UNAVAILABLE"
-  | "OFFENSIVE"
-  | "OTHER";
+  "SCAM" | "WRONG_INFO" | "UNAVAILABLE" | "OFFENSIVE" | "OTHER";
 
 export interface ModerationListing {
   id: number;

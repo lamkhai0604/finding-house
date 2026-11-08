@@ -39,7 +39,11 @@ type Pending =
   | null;
 
 const REASON_LIMIT = 200;
-const ACTION_LABEL = { REMOVE: "Removed", RESTORE: "Restored", DISMISS: "Dismissed" };
+const ACTION_LABEL = {
+  REMOVE: "Removed",
+  RESTORE: "Restored",
+  DISMISS: "Dismissed",
+};
 
 /** FR-08 AC2 to AC4: the report queue, removed listings and the moderation record. */
 export function AdminPage() {
@@ -54,7 +58,11 @@ export function AdminPage() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([getReportQueue(), getRemovedListings(), getModerationActions()])
+    Promise.all([
+      getReportQueue(),
+      getRemovedListings(),
+      getModerationActions(),
+    ])
       .then(([queue, removed, actions]) => {
         if (!active) return;
         setData({ queue, removed, actions });
@@ -62,7 +70,9 @@ export function AdminPage() {
       })
       .catch((e: unknown) => {
         if (!active) return;
-        setError(e instanceof ApiError ? e.body.message : "Could not load moderation.");
+        setError(
+          e instanceof ApiError ? e.body.message : "Could not load moderation.",
+        );
       });
     return () => {
       active = false;
@@ -98,7 +108,8 @@ export function AdminPage() {
 
       <section className="admin-section" aria-labelledby="admin-reports">
         <h2 id="admin-reports" className="display">
-          Reported listings <span className="admin-count">{data.queue.length}</span>
+          Reported listings{" "}
+          <span className="admin-count">{data.queue.length}</span>
         </h2>
         {data.queue.length === 0 ? (
           <EmptyState title="No open reports">
@@ -117,7 +128,9 @@ export function AdminPage() {
                       suggested: reasonLabel(topReason(group)),
                     })
                   }
-                  onDismiss={() => setPending({ kind: "dismiss", listing: group.listing })}
+                  onDismiss={() =>
+                    setPending({ kind: "dismiss", listing: group.listing })
+                  }
                 />
               </li>
             ))}
@@ -127,7 +140,8 @@ export function AdminPage() {
 
       <section className="admin-section" aria-labelledby="admin-removed">
         <h2 id="admin-removed" className="display">
-          Removed listings <span className="admin-count">{data.removed.length}</span>
+          Removed listings{" "}
+          <span className="admin-count">{data.removed.length}</span>
         </h2>
         {data.removed.length === 0 ? (
           <p className="muted">Nothing has been removed.</p>
@@ -138,7 +152,8 @@ export function AdminPage() {
                 <div>
                   <Link to={`/listings/${listing.id}`}>{listing.title}</Link>
                   <p className="muted">
-                    {listing.neighborhood} · {listing.landlordName} · {listing.removedReason}
+                    {listing.neighborhood} · {listing.landlordName} ·{" "}
+                    {listing.removedReason}
                   </p>
                 </div>
                 <Button
@@ -337,7 +352,9 @@ function RemoveDialog({
 
 function topReason(group: ReportGroup): ReportReason {
   const entries = Object.entries(group.reasons) as [ReportReason, number][];
-  return entries.reduce((best, entry) => (entry[1] > best[1] ? entry : best))[0];
+  return entries.reduce((best, entry) =>
+    entry[1] > best[1] ? entry : best,
+  )[0];
 }
 
 /** Turns an API error into the message ConfirmDialog shows. */
@@ -345,8 +362,11 @@ async function run(action: () => Promise<unknown>) {
   try {
     await action();
   } catch (e) {
-    throw new Error(e instanceof ApiError ? e.body.message : "Something went wrong.", {
-      cause: e,
-    });
+    throw new Error(
+      e instanceof ApiError ? e.body.message : "Something went wrong.",
+      {
+        cause: e,
+      },
+    );
   }
 }

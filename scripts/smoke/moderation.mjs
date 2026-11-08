@@ -38,7 +38,12 @@ async function logIn(page, email, password, landing) {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Log in" }).click();
-  await page.waitForURL((url) => url.pathname === landing, { timeout: 15000 });
+  try {
+    await page.waitForURL((url) => url.pathname === landing, { timeout: 15000 });
+  } catch (error) {
+    await page.screenshot({ path: `${outDir}/login-failed-${landing.replaceAll("/", "_")}.jpg`, type: "jpeg", quality: 70 });
+    throw new Error(`login as ${email} stayed on ${new URL(page.url()).pathname}, expected ${landing}`, { cause: error });
+  }
 }
 
 const search = await fetch(`${api}/api/v1/listings?neighborhood=Northgate&size=50`).then((r) => r.json());

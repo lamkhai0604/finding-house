@@ -142,25 +142,25 @@ export function MyListingsPage() {
                         {listing.removedReason}
                       </p>
                     ) : (
-                    <>
-                      <ButtonLink to={`/listings/${listing.id}/edit`}>
-                        Edit
-                      </ButtonLink>
-                      <Button
-                        variant="secondary"
-                        busy={busyId === listing.id}
-                        onClick={() => toggleStatus(listing)}
-                      >
-                        {listing.status === "ACTIVE" ? "Hide" : "Unhide"}
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        className="button-danger-outline"
-                        onClick={() => setToDelete(listing)}
-                      >
-                        Delete
-                      </Button>
-                    </>
+                      <>
+                        <ButtonLink to={`/listings/${listing.id}/edit`}>
+                          Edit
+                        </ButtonLink>
+                        <Button
+                          variant="secondary"
+                          busy={busyId === listing.id}
+                          onClick={() => toggleStatus(listing)}
+                        >
+                          {listing.status === "ACTIVE" ? "Hide" : "Unhide"}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className="button-danger-outline"
+                          onClick={() => setToDelete(listing)}
+                        >
+                          Delete
+                        </Button>
+                      </>
                     )
                   }
                 />

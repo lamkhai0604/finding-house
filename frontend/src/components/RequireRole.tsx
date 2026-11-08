@@ -31,15 +31,19 @@ export function RequireRole({ role, children }: RequireRoleProps) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
   if (user.role !== role) {
-    const who = { LANDLORD: "landlord", TENANT: "tenant", ADMIN: "administrator" }[
-      role
-    ];
+    const who = {
+      LANDLORD: "landlord",
+      TENANT: "tenant",
+      ADMIN: "administrator",
+    }[role];
     return (
       <StatusMessage
         title={
-          { LANDLORD: "Landlords only", TENANT: "Tenants only", ADMIN: "Administrators only" }[
-            role
-          ]
+          {
+            LANDLORD: "Landlords only",
+            TENANT: "Tenants only",
+            ADMIN: "Administrators only",
+          }[role]
         }
       >
         <p>This page is for {who} accounts.</p>
