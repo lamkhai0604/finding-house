@@ -166,6 +166,13 @@ describe("Register page (FR-01)", () => {
     ).not.toBeInTheDocument();
 
     expect(screen.getByRole("radio", { name: /Find a room/ })).toBeChecked();
+    // T-219: each card names the account type the header badge will show.
+    expect(
+      screen.getByRole("radio", { name: /Find a room.*Tenant account/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /Rent out a room.*Landlord account/ }),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("radio", { name: /Rent out a room/ }));
 
     expect(
