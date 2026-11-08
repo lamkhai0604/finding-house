@@ -6,6 +6,7 @@ import com.findinghouse.auth.AuthExceptions.EmailAlreadyRegisteredException;
 import com.findinghouse.auth.AuthExceptions.InvalidCredentialsException;
 import com.findinghouse.auth.AuthExceptions.TooManyLoginAttemptsException;
 import com.findinghouse.auth.AuthExceptions.TooManyRegistrationsException;
+import com.findinghouse.moderation.TooManyReportsException;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
@@ -75,6 +76,16 @@ public class ApiExceptionHandler {
   ResponseEntity<ApiError> forbidden(ForbiddenException e) {
     return ResponseEntity.status(HttpStatus.FORBIDDEN)
         .body(ApiError.of("FORBIDDEN", e.getMessage()));
+  }
+
+  @ExceptionHandler(ConflictException.class)
+  ResponseEntity<ApiError> conflict(ConflictException e) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError.of("CONFLICT", e.getMessage()));
+  }
+
+  @ExceptionHandler(TooManyReportsException.class)
+  ResponseEntity<ApiError> tooManyReports(TooManyReportsException e) {
+    return tooManyAttempts("You have reached today's limit of reports.", e.getRetryAfter());
   }
 
   @ExceptionHandler(EmailAlreadyRegisteredException.class)
