@@ -75,8 +75,9 @@ jobs:
         run: |
           # Host network so the container reaches the Compose database on localhost:5432.
           # Memory capped like the free hosting instance (512 MB).
+          # T-605: the smoke-only administrator (D-036); the account is created before a restart.
           docker run -d --name finding-house-backend --network host --memory 512m \
-            --env-file .env finding-house-backend
+            --env-file .env -e ADMIN_EMAILS=moderator.smoke@example.com finding-house-backend
           for i in $(seq 1 90); do
             curl -sf localhost:8080/actuator/health > /dev/null && echo "backend up after ${i}s" && exit 0
             sleep 1
@@ -177,6 +178,24 @@ jobs:
           cp scripts/smoke/demo-shots.mjs /tmp/e2e/
           cd /tmp/e2e && FRONTEND_URL=http://localhost:4173 node demo-shots.mjs /tmp/e2e/demo
 
+      # T-605 (FR-08): report, remove, landlord view, restore; desktop and phone. The administrator
+      # exists only on this throwaway stack: a tenant account promoted by ADMIN_EMAILS on restart.
+      - name: Moderation end to end
+        working-directory: /tmp/e2e
+        env:
+          MODERATOR_PASSWORD: smoke-moderator-password
+        run: |
+          curl -sf -X POST localhost:8080/api/v1/auth/register -H 'Content-Type: application/json' \
+            -d "{\"email\":\"moderator.smoke@example.com\",\"password\":\"$MODERATOR_PASSWORD\",\"displayName\":\"Smoke Moderator\",\"role\":\"TENANT\"}" > /dev/null
+          docker restart finding-house-backend > /dev/null
+          for i in $(seq 1 90); do
+            curl -sf localhost:8080/actuator/health > /dev/null && break
+            sleep 1
+          done
+          docker logs finding-house-backend 2>&1 | grep "Administrators from ADMIN_EMAILS"
+          cp "$GITHUB_WORKSPACE/scripts/smoke/moderation.mjs" .
+          FRONTEND_URL=http://localhost:4173 API_URL=http://localhost:8080 node moderation.mjs /tmp/e2e/moderation
+
       - name: Browser check with backend stopped
         working-directory: /tmp/e2e
         run: |
@@ -188,7 +207,7 @@ jobs:
       - name: Print screenshots (gzip + base64)
         if: always()
         run: |
-          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg /tmp/e2e/phone/*.jpg /tmp/e2e/ai/*.jpg; do
+          for f in /tmp/e2e/up.png /tmp/e2e/down.png /tmp/e2e/pages/*.jpg /tmp/e2e/demo/*.jpg /tmp/e2e/phone/*.jpg /tmp/e2e/ai/*.jpg /tmp/e2e/moderation/*.jpg; do
             [ -f "$f" ] || continue
             echo "SCREENSHOT-BEGIN $(basename "$f")"
             gzip -9 -c "$f" | base64 -w 1000

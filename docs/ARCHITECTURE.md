@@ -122,6 +122,13 @@ Schema changes are made only through Flyway migrations (CODE-11). Planned indexe
 | GET | `/api/v1/reference-data` | — | FR-02, FR-03 (neighborhoods and amenities for forms and filters) |
 | GET | `/api/v1/neighborhoods` | — | T-210 (every neighborhood with its count of shown rooms and lowest monthly rent, for the home page; hidden rooms are not counted) |
 | GET | `/api/v1/search/interpret` | — | T-302 (`{"available": bool}`: whether AI search is configured) |
+| POST | `/api/v1/listings/{id}/reports` | any signed-in user | FR-08 / T-602 (`{"reason", "note"?}`; not your own listing 403, not active 404, one open report per listing 409, 10 per day 429) |
+| GET | `/api/v1/admin/reports` | ADMIN | FR-08 / T-603 (open reports grouped by listing) |
+| GET | `/api/v1/admin/listings/removed` | ADMIN | FR-08 / T-603 |
+| GET | `/api/v1/admin/actions` | ADMIN | FR-08 / T-603 (latest 50 moderation actions) |
+| POST | `/api/v1/admin/listings/{id}/remove` | ADMIN | FR-08 / T-603 (`{"reason"}` 1–200; status REMOVED, open reports ACTIONED, record written) |
+| POST | `/api/v1/admin/listings/{id}/restore` | ADMIN | FR-08 / T-603 (back to HIDDEN, record written) |
+| POST | `/api/v1/admin/listings/{id}/dismiss` | ADMIN | FR-08 / T-603 (open reports DISMISSED, record written) |
 | POST | `/api/v1/search/interpret` | — | FR-05 / T-302 (`{"query"}` 1–200 chars → `{understood, filters, notes}`; filters use the browse API's fields and units and pass the same validation; 20 per address per hour, 8/min and 800/day overall; errors `AI_UNAVAILABLE` 503, `AI_TIMEOUT` 504, `AI_BUSY` 429, `AI_FAILED` 502) |
 | POST | `/api/v1/search/ai` | — (rate-limited) | FR-05 |
 | GET | `/api/v1/me/favorites` (saved, still-visible listings, newest saved first) and `/api/v1/me/favorites/ids` | TENANT | FR-06 |

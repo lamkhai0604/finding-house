@@ -82,6 +82,11 @@ export function AccountMenu({ user, onLogout }: AccountMenuProps) {
               Saved rooms
             </Link>
           )}
+          {user.role === "ADMIN" && (
+            <Link to="/admin" onClick={() => setOpen(false)}>
+              Moderation
+            </Link>
+          )}
           <button
             type="button"
             onClick={() => {

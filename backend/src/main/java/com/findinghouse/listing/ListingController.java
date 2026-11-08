@@ -40,7 +40,11 @@ public class ListingController {
   /** Public. A valid token is optional and only matters for the owner viewing a hidden listing. */
   @GetMapping("/listings/{id}")
   public ListingDetailResponse detail(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
-    Listing listing = listingService.getVisible(id, jwt == null ? null : userId(jwt));
+    Listing listing =
+        listingService.getVisible(
+            id,
+            jwt == null ? null : userId(jwt),
+            jwt != null && "ADMIN".equals(jwt.getClaimAsString("role")));
     UserAccount landlord =
         users
             .findById(listing.getLandlordId())

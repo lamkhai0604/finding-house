@@ -16,6 +16,8 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   /** "danger" styles the confirm button for destructive actions such as delete. */
   tone?: "danger" | "primary";
+  /** Disables the confirm button, e.g. until a required field is filled. */
+  confirmDisabled?: boolean;
   /** May return a promise; the dialog shows a busy state and any error message. */
   onConfirm: () => void | Promise<void>;
   onCancel: () => void;
@@ -38,6 +40,7 @@ function OpenDialog({
   confirmLabel,
   cancelLabel = "Cancel",
   tone = "danger",
+  confirmDisabled = false,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -62,7 +65,7 @@ function OpenDialog({
     }
     if (event.key === "Tab") {
       const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-        "button:not([disabled])",
+        "button:not([disabled]), input:not([disabled]), textarea:not([disabled])",
       );
       if (!focusable || focusable.length === 0) return;
       const first = focusable[0];
@@ -122,7 +125,12 @@ function OpenDialog({
           >
             {cancelLabel}
           </Button>
-          <Button variant={tone} busy={busy} onClick={confirm}>
+          <Button
+            variant={tone}
+            busy={busy}
+            disabled={confirmDisabled}
+            onClick={confirm}
+          >
             {confirmLabel}
           </Button>
         </div>
