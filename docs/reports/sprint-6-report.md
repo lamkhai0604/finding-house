@@ -7,7 +7,7 @@
 | Period | 2026-11-07 (planned 1 week; code finished the same day) |
 | Product Owner / reviewer | Khai (lamkhai0604) |
 | Implementer | Claude |
-| Result | **Code complete.** Reporting and moderation (FR-08) are on `dev` with backend, frontend and browser tests. Live use needs one setting on Render (T-606) |
+| Result | **Done.** Reporting and moderation (FR-08) are on `dev` with backend, frontend and browser tests, and enabled on the live site (T-606, 2026-11-07) |
 
 ## 1. Summary
 
@@ -51,7 +51,7 @@ There is no public way to become an administrator. An existing tenant account is
 
 ## 6. Not Done / Carried Over
 
-- **T-606:** Khai signs up a tenant account for moderation on the live site, then sets `ADMIN_EMAILS` to its address on Render.
+- None. T-606 (live enablement) was completed on 2026-11-07: `ADMIN_EMAILS` set on Render, `/admin` opened by Khai, live-smoke run 42449705434 green.
 - Not planned: banning users, notifications, appeals, photo upload (T-404).
 
 ## 7. Metrics
