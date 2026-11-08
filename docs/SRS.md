@@ -102,6 +102,14 @@ Acceptance criteria:
 2. A successful delete returns HTTP 204; afterwards the listing returns 404 for everyone, including the owner, and is gone from "my listings".
 3. The UI asks for confirmation in a dialog that names the listing and states that deletion cannot be undone; cancelling changes nothing.
 
+### FR-08 — Reporting and moderation (Should; Sprint 6, D-036 to D-038)
+
+1. A signed-in tenant or landlord can report another user's active listing with a reason (Scam or fraud, Wrong information, No longer available, Offensive, Other) and an optional note of up to 500 characters. One open report per user per listing; at most 10 reports per user per day.
+2. An administrator sees open reports grouped by listing (number of reports, reasons, newest first) and can remove the listing (with a reason), dismiss the reports, or open the listing.
+3. A removed listing disappears from browse, AI search and favorites. Its landlord still sees it in My listings, marked "Removed by a moderator" with the reason, and cannot edit, unhide or delete it. An administrator can restore it.
+4. Every remove, restore and dismiss is recorded with the administrator, time, listing and reason; the record is never edited or deleted.
+5. Administrator accounts cannot be created through sign-up or any public endpoint.
+
 ### FR-06 — Favorites (Could)
 
 A logged-in Tenant can save listings and see a list of saved listings.
