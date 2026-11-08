@@ -108,4 +108,4 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-603 | Admin API: report queue, remove, restore, dismiss, audit record; removed listings hidden everywhere | FR-08, D-037 | P1 | Done — backend run 42432368426 (7 tests including the permission matrix) |
 | T-604 | Frontend: report dialog, removed state in My listings, `/admin` page, Admin badge | FR-08 | P1 | Done — frontend run 42433035828: 154 tests (8 new); smoke run 42433657800 |
 | T-605 | Smoke flow and docs (demo administrator on the smoke stack only) | FR-08 | P2 | Done — smoke run 42433657800: moderation.mjs M01 to M07 on desktop and phone; ARCHITECTURE, DEPLOYMENT, README, SRS |
-| T-606 | Live enablement: `ADMIN_EMAILS` on Render | FR-08 | P2 | Ready (Khai) |
+| T-606 | Live enablement: `ADMIN_EMAILS` on Render | FR-08 | P2 | Done — Khai set `ADMIN_EMAILS` and opened `/admin` on the live site, 2026-11-07; live-smoke run 42449705434 green |
