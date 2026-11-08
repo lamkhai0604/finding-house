@@ -11,6 +11,9 @@ public interface ListingRepository
 
   List<Listing> findByLandlordIdOrderByCreatedAtDescIdDesc(Long landlordId);
 
+  /** FR-08: removed listings for the admin page, most recently changed first. */
+  List<Listing> findByStatusOrderByUpdatedAtDescIdDesc(ListingStatus status);
+
   /** T-210: one row per neighborhood that has listings in the given status. */
   @Query(
       """

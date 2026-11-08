@@ -59,9 +59,13 @@ public final class ListingDtos {
       List<Amenity> amenities,
       List<String> imageUrls,
       ListingStatus status,
+      String removedReason,
       Instant createdAt,
       Instant updatedAt) {
 
+    /**
+     * {@code removedReason} is set only on a REMOVED listing, which only its owner and admins see.
+     */
     public static ListingResponse from(Listing listing) {
       return new ListingResponse(
           listing.getId(),
@@ -76,6 +80,7 @@ public final class ListingDtos {
           listing.getAmenities().stream().sorted().toList(),
           listing.getImageUrls(),
           listing.getStatus(),
+          listing.getRemovedReason(),
           listing.getCreatedAt(),
           listing.getUpdatedAt());
     }

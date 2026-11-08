@@ -81,6 +81,9 @@ public class SecurityConfig {
                     .hasRole("LANDLORD")
                     .requestMatchers(HttpMethod.GET, "/api/v1/me/listings")
                     .hasRole("LANDLORD")
+                    // FR-08, D-036: moderation is for administrators only.
+                    .requestMatchers("/api/v1/admin/**")
+                    .hasRole("ADMIN")
                     // FR-06: favorites belong to tenants.
                     .requestMatchers("/api/v1/me/favorites", "/api/v1/me/favorites/**")
                     .hasRole("TENANT")

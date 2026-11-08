@@ -55,14 +55,14 @@ public class ListingService {
   /**
    * FR-04 AC2/AC3: a hidden listing is visible only to its owner; to everyone else it does not
    * exist (404), so its existence is not revealed. A removed listing (FR-08) is treated the same
-   * way; administrators are added in T-603.
+   * way. Administrators see every listing, so they can review what was reported or removed.
    */
   @Transactional(readOnly = true)
-  public Listing getVisible(long listingId, Long viewerId) {
+  public Listing getVisible(long listingId, Long viewerId, boolean viewerIsAdmin) {
     Listing listing =
         listings.findById(listingId).orElseThrow(() -> new NotFoundException("Listing not found"));
     boolean ownerIsViewing = viewerId != null && listing.isOwnedBy(viewerId);
-    if (listing.getStatus() != ListingStatus.ACTIVE && !ownerIsViewing) {
+    if (listing.getStatus() != ListingStatus.ACTIVE && !ownerIsViewing && !viewerIsAdmin) {
       throw new NotFoundException("Listing not found");
     }
     return listing;
