@@ -56,6 +56,7 @@ Rules for every step:
    | `JWT_SECRET` | a **new** random value, not the one in your local `.env`: `openssl rand -base64 48` (Windows PowerShell: see the README) |
    | `CLIENT_IP_HEADER` | `CF-Connecting-IP` |
    | `CORS_ALLOWED_ORIGINS` | leave out for now; added in step 4 |
+   | `ADMIN_EMAILS` | optional (D-036): e-mail of an **existing tenant account** to make administrator, comma-separated for several. Sign up first, then set this; it applies when the service restarts. Removing an address does not demote the account |
 
 5. **Create Web Service**. The first build takes a few minutes. When the service shows **Live**, open `https://<service>.onrender.com/actuator/health`: it must show `{"status":"UP"}`.
 

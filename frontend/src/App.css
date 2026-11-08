@@ -2312,6 +2312,12 @@ a.save-heart:not(.button):hover {
   background: var(--card);
 }
 
+/* T-604: a fourth count (removed by a moderator) only when there is one. */
+.listing-counts:has(> div:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 48rem;
+}
+
 .listing-counts > div {
   padding: 0.875rem 1.25rem;
 }

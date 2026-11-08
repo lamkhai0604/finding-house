@@ -99,9 +99,9 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 | ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
-| T-601 | V5 migration (role `ADMIN`, status `REMOVED`, reports, moderation actions); `ADMIN_EMAILS` promotion at startup; sign-up refuses `ADMIN` | FR-08, D-036 | P1 | Ready |
-| T-602 | Report a listing API with D-038 limits | FR-08, D-038 | P1 | Ready |
-| T-603 | Admin API: report queue, remove, restore, dismiss, audit record; removed listings hidden everywhere | FR-08, D-037 | P1 | Ready |
-| T-604 | Frontend: report dialog, removed state in My listings, `/admin` page, Admin badge | FR-08 | P1 | Ready |
-| T-605 | Smoke flow and docs (demo administrator on the smoke stack only) | FR-08 | P2 | Ready |
+| T-601 | V5 migration (role `ADMIN`, status `REMOVED`, reports, moderation actions); `ADMIN_EMAILS` promotion at startup; sign-up refuses `ADMIN` | FR-08, D-036 | P1 | Done — backend runs 42432207596 and 42433366168 (startup promotion saved; found by the smoke run) |
+| T-602 | Report a listing API with D-038 limits | FR-08, D-038 | P1 | Done — backend run 42432231144 (7 tests) |
+| T-603 | Admin API: report queue, remove, restore, dismiss, audit record; removed listings hidden everywhere | FR-08, D-037 | P1 | Done — backend run 42432368426 (7 tests including the permission matrix) |
+| T-604 | Frontend: report dialog, removed state in My listings, `/admin` page, Admin badge | FR-08 | P1 | Done — frontend run 42433035828: 154 tests (8 new); smoke run 42433657800 |
+| T-605 | Smoke flow and docs (demo administrator on the smoke stack only) | FR-08 | P2 | Done — smoke run 42433657800: moderation.mjs M01 to M07 on desktop and phone; ARCHITECTURE, DEPLOYMENT, README, SRS |
 | T-606 | Live enablement: `ADMIN_EMAILS` on Render | FR-08 | P2 | Ready (Khai) |
