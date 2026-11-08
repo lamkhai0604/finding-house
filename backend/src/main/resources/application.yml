@@ -38,6 +38,9 @@ management:
       show-details: never
 
 app:
+  # D-036: existing tenant accounts promoted to administrator at startup (comma-separated).
+  admin:
+    emails: ${ADMIN_EMAILS:}
   jwt:
     # Required, at least 32 bytes. No default on purpose (D-009, CODE-08).
     secret: ${JWT_SECRET}

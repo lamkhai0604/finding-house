@@ -57,6 +57,10 @@ public class Listing {
   @Column(nullable = false, length = 10)
   private ListingStatus status;
 
+  /** D-037: why a moderator removed it; set exactly when the status is REMOVED. */
+  @Column(name = "removed_reason", length = 200)
+  private String removedReason;
+
   // Loaded for up to 50 listings per query, so a page of results costs a few queries instead of
   // two per listing (review finding O4).
   @BatchSize(size = 50)
@@ -109,6 +113,26 @@ public class Listing {
   public void changeStatus(ListingStatus newStatus, Instant now) {
     this.status = newStatus;
     this.updatedAt = now;
+  }
+
+  /** FR-08: a moderator takes the listing down; only {@link #restore} brings it back. */
+  public void remove(String reason, Instant now) {
+    this.status = ListingStatus.REMOVED;
+    this.removedReason = reason;
+    this.updatedAt = now;
+  }
+
+  /**
+   * FR-08: a moderator restores a removed listing as hidden, so the owner decides when to show it.
+   */
+  public void restore(Instant now) {
+    this.status = ListingStatus.HIDDEN;
+    this.removedReason = null;
+    this.updatedAt = now;
+  }
+
+  public String getRemovedReason() {
+    return removedReason;
   }
 
   public boolean isOwnedBy(long userId) {

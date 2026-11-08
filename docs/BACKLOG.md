@@ -97,7 +97,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 
 ## Sprint 6 — "Keep the site clean" ([plan](sprints/sprint-6.md))
 
-| ID | Task | Req | Priority | Status |
+| ID | Title | Req | Priority | Status |
 | --- | --- | --- | --- | --- |
 | T-601 | V5 migration (role `ADMIN`, status `REMOVED`, reports, moderation actions); `ADMIN_EMAILS` promotion at startup; sign-up refuses `ADMIN` | FR-08, D-036 | P1 | Ready |
 | T-602 | Report a listing API with D-038 limits | FR-08, D-038 | P1 | Ready |
