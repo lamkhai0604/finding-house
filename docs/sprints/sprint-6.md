@@ -4,9 +4,9 @@
 | --- | --- |
 | Goal | Signed-in users can report a listing; an administrator reviews reports, removes or restores listings, and every moderation action is recorded. Needed before the site is promoted beyond a demo |
 | Dates | 2026-11-08 → 2026-11-15 (1 week, proposed) |
-| Requirements | FR-08 (new, below), NFR-01; D-036 to D-038 (proposed) |
+| Requirements | FR-08 (new, below), NFR-01; D-036 to D-038 |
 | Tasks | T-601 to T-606 |
-| Approved | Pending: Khai |
+| Approved | Plan and D-036 to D-038: Khai, 2026-11-07 |
 
 ## FR-08 — Reporting and moderation (Should)
 
@@ -16,7 +16,7 @@
 4. Every remove, restore and dismiss is recorded with the administrator, time, listing and reason; the record is never edited or deleted.
 5. Administrator accounts cannot be created through sign-up or any public endpoint.
 
-## Decisions (proposed)
+## Decisions
 
 | ID | Decision | Alternatives | Why |
 | --- | --- | --- | --- |

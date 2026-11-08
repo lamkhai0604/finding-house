@@ -94,3 +94,14 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-304 | Failure-path tests: timeout, invalid JSON, not understood, 429 | FR-05, NFR-04 | P2 | Done — backend: parser unit tests and AiSearchIntegrationTest (timeout 504, provider 429 → AI_BUSY, 5xx/HTML/not JSON/schema mismatch → AI_FAILED, no key → 503 with browse working); smoke run 42328368317: not understood, timeout, busy and unreadable replies in Chrome, each with manual search still working |
 | T-305 | Evaluation set of 30 sentences run against the real model by a manual workflow (`ai-eval`), reported as accuracy | FR-05 | P3 | Done — [report](reports/ai-eval-report.md): 29/30 (97%) all filters right after fixes (run 42414603562), 26/30 before (run 42397569522); backend run 42414603659 (145 tests) |
 | T-306 | Live AI check and token-limit fix: live-smoke asks the real model three fixed sentences; `max_tokens` configurable (default 1024, was 300) and optional `reasoning_effort`, because gpt-oss reasoning used up the old limit; replies cut off at the limit are reported as such | FR-05, NFR-04 | P1 | Done — backend run 42389077578 (143 tests, 3 new); live run 42388846487 found the failure (2 of 3 sentences passed); after the fix and `AI_REASONING_EFFORT=low`, live run 42393151023: 3 of 3 sentences give the expected filters | T-301 |
+
+## Sprint 6 — "Keep the site clean" ([plan](sprints/sprint-6.md))
+
+| ID | Task | Req | Priority | Status |
+| --- | --- | --- | --- | --- |
+| T-601 | V5 migration (role `ADMIN`, status `REMOVED`, reports, moderation actions); `ADMIN_EMAILS` promotion at startup; sign-up refuses `ADMIN` | FR-08, D-036 | P1 | Ready |
+| T-602 | Report a listing API with D-038 limits | FR-08, D-038 | P1 | Ready |
+| T-603 | Admin API: report queue, remove, restore, dismiss, audit record; removed listings hidden everywhere | FR-08, D-037 | P1 | Ready |
+| T-604 | Frontend: report dialog, removed state in My listings, `/admin` page, Admin badge | FR-08 | P1 | Ready |
+| T-605 | Smoke flow and docs (demo administrator on the smoke stack only) | FR-08 | P2 | Ready |
+| T-606 | Live enablement: `ADMIN_EMAILS` on Render | FR-08 | P2 | Ready (Khai) |
