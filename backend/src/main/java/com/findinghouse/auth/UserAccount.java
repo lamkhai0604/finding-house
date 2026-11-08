@@ -57,6 +57,14 @@ public class UserAccount {
     this.createdAt = createdAt;
   }
 
+  /** D-036: only tenant accounts are promoted, so no listing or phone is left on an admin. */
+  public void promoteToAdmin() {
+    if (role != Role.TENANT) {
+      throw new IllegalStateException("Only tenant accounts can become administrators");
+    }
+    this.role = Role.ADMIN;
+  }
+
   public Long getId() {
     return id;
   }

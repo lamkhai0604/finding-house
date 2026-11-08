@@ -37,28 +37,32 @@ public class ListingService {
 
   @Transactional
   public Listing update(long listingId, long actorId, ListingRequest request) {
-    Listing listing = findOwned(listingId, actorId);
+    Listing listing = findOwnedAndChangeable(listingId, actorId);
     listing.apply(toDetails(request), clock.instant());
     return listing;
   }
 
   @Transactional
   public Listing changeStatus(long listingId, long actorId, ListingStatus status) {
-    Listing listing = findOwned(listingId, actorId);
+    if (!status.ownerCanSet()) {
+      throw new BadRequestException("status", "must be ACTIVE or HIDDEN");
+    }
+    Listing listing = findOwnedAndChangeable(listingId, actorId);
     listing.changeStatus(status, clock.instant());
     return listing;
   }
 
   /**
    * FR-04 AC2/AC3: a hidden listing is visible only to its owner; to everyone else it does not
-   * exist (404), so its existence is not revealed.
+   * exist (404), so its existence is not revealed. A removed listing (FR-08) is treated the same
+   * way; administrators are added in T-603.
    */
   @Transactional(readOnly = true)
   public Listing getVisible(long listingId, Long viewerId) {
     Listing listing =
         listings.findById(listingId).orElseThrow(() -> new NotFoundException("Listing not found"));
     boolean ownerIsViewing = viewerId != null && listing.isOwnedBy(viewerId);
-    if (listing.getStatus() == ListingStatus.HIDDEN && !ownerIsViewing) {
+    if (listing.getStatus() != ListingStatus.ACTIVE && !ownerIsViewing) {
       throw new NotFoundException("Listing not found");
     }
     return listing;
@@ -67,12 +71,21 @@ public class ListingService {
   /** FR-07: permanent delete by the owner; amenities and photo links go with it. */
   @Transactional
   public void delete(long listingId, long actorId) {
-    listings.delete(findOwned(listingId, actorId));
+    listings.delete(findOwnedAndChangeable(listingId, actorId));
   }
 
   @Transactional(readOnly = true)
   public List<Listing> listOwnedBy(long landlordId) {
     return listings.findByLandlordIdOrderByCreatedAtDescIdDesc(landlordId);
+  }
+
+  /** D-037: the owner cannot edit, unhide or delete a listing a moderator removed. */
+  private Listing findOwnedAndChangeable(long listingId, long actorId) {
+    Listing listing = findOwned(listingId, actorId);
+    if (listing.getStatus() == ListingStatus.REMOVED) {
+      throw new ForbiddenException("A moderator removed this listing");
+    }
+    return listing;
   }
 
   private Listing findOwned(long listingId, long actorId) {

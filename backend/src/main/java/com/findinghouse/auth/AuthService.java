@@ -56,6 +56,10 @@ public class AuthService {
       throw new BadRequestException(
           "password", "must be at most " + MAX_PASSWORD_BYTES + " bytes (fewer accented letters)");
     }
+    if (request.role() == Role.ADMIN) {
+      // D-036: administrators are granted only by configuration (ADMIN_EMAILS).
+      throw new BadRequestException("role", "must be TENANT or LANDLORD");
+    }
     if (phone != null && request.role() != Role.LANDLORD) {
       throw new BadRequestException("phone", "only landlords can add a contact phone number");
     }
