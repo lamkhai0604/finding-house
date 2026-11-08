@@ -20,7 +20,8 @@ class ReportIntegrationTest {
       {"title":"Room to report","monthlyPriceCents":120000,"areaSqft":180,
        "neighborhood":"Ballard","address":"3 Sample St","amenities":[],"imageUrls":[]}
       """;
-  private static final String SCAM = "{\"reason\":\"SCAM\",\"note\":\"  Asked for a deposit by wire  \"}";
+  private static final String SCAM =
+      "{\"reason\":\"SCAM\",\"note\":\"  Asked for a deposit by wire  \"}";
 
   @Value("${local.server.port}")
   int port;

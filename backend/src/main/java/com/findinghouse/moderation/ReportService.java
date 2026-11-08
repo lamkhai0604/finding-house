@@ -41,8 +41,7 @@ public class ReportService {
     if (listing.isOwnedBy(reporterId)) {
       throw new ForbiddenException("You cannot report your own listing");
     }
-    if (reports.existsByListingIdAndReporterIdAndStatus(
-        listingId, reporterId, ReportStatus.OPEN)) {
+    if (reports.existsByListingIdAndReporterIdAndStatus(listingId, reporterId, ReportStatus.OPEN)) {
       throw new ConflictException("You already reported this listing");
     }
     Instant now = clock.instant();
