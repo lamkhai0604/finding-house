@@ -80,6 +80,31 @@ try {
   // The quick-contact bar stays on screen while reading the top of the page.
   await page.getByRole("region", { name: "Quick contact" }).getByRole("link", { name: "Call" }).waitFor({ timeout: 5000 });
   await page.screenshot({ path: `${outDir}/P04b-listing-first-screen.jpg`, type: "jpeg", quality: 70 });
+  // T-222: the three facts must fit their cells with the longest values they can show
+  // ("Yesterday" overflowed a 375 px screen). Each value is tried in place, then restored.
+  {
+    const overflow = await page.evaluate(() => {
+      const samples = [["$10,000", "$1,450"], ["1,000 sq ft", "190 sq ft"], ["27 days ago", "Yesterday", "Dec 31, 2026"]];
+      const cells = [...document.querySelectorAll(".detail-facts > div")];
+      const bad = [];
+      cells.forEach((cell, i) => {
+        const dd = cell.querySelector("dd");
+        const original = dd.textContent;
+        for (const value of samples[i] ?? []) {
+          dd.textContent = value;
+          if (dd.scrollWidth > dd.clientWidth + 1 || cell.scrollWidth > cell.clientWidth + 1) bad.push(value);
+        }
+        dd.textContent = original;
+      });
+      return bad;
+    });
+    if (overflow.length === 0) {
+      console.log("ok   P04c: listing facts fit at 375 px with the longest values");
+    } else {
+      failures += 1;
+      console.error(`FAIL P04c: listing facts overflow at 375 px: ${overflow.join(", ")}`);
+    }
+  }
 
   await page.goto(`${frontend}/login`);
   await phoneShot(page, "P05-login", page.getByRole("button", { name: "Log in" }));

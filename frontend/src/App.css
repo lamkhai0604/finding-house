@@ -2183,12 +2183,24 @@ a.save-heart:not(.button):hover {
     grid-template-rows: 15rem;
   }
 
+  /* T-222: the expanded display face made "Yesterday" and "190 sq ft" overflow a third of a
+     375 px screen. On phones the values use the text face, which is narrower, and never break. */
   .detail-facts dd {
-    font-size: 1.0625rem;
+    font-family: var(--font-text);
+    font-stretch: 100%;
+    font-size: 1rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  /* Columns sized by their content, so a long date takes room from a short price. */
+  .detail-facts {
+    grid-template-columns: repeat(3, auto);
   }
 
   .detail-facts > div {
-    padding: 0.75rem;
+    min-width: 0;
+    padding: 0.75rem 0.625rem;
   }
 
   .amenity-list {
