@@ -113,6 +113,8 @@ try {
   await row.getByRole("button", { name: "Restore" }).click();
   await admin.getByRole("dialog").getByRole("button", { name: "Restore" }).click();
   await admin.getByText(`"${TITLE}" was restored as hidden.`).waitFor();
+  // The table reloads after the toast; wait for the new row before reading it.
+  await admin.getByRole("cell", { name: "Restored", exact: true }).waitFor();
   const table = await admin.getByRole("table").textContent();
   check("M07: actions record shows Removed and Restored", table.includes("Removed") && table.includes("Restored"));
   await shot(admin, "M07-admin-restored");
