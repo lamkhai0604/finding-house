@@ -35,19 +35,24 @@ const KEY_ICON = (
 const CHOICES: {
   role: Role;
   title: string;
+  badge: string;
   detail: string;
   icon: ReactNode;
 }[] = [
   {
     role: "TENANT",
     title: "Find a room",
-    detail: "Browse rooms, ask in plain words and save the ones you like.",
+    badge: "Tenant",
+    detail:
+      "I'm looking for a place to rent. Browse rooms, ask in plain words and save the ones I like.",
     icon: SEARCH_ICON,
   },
   {
     role: "LANDLORD",
     title: "Rent out a room",
-    detail: "Post rooms with photos and manage your listings.",
+    badge: "Landlord",
+    detail:
+      "I have a room or home to rent out. Post it with photos and manage my listings.",
     icon: KEY_ICON,
   },
 ];
@@ -83,6 +88,12 @@ export function RoleChoice({ value, onChange, error }: RoleChoiceProps) {
               {choice.icon}
             </span>
             <span className="role-card-title">{choice.title}</span>
+            {/* T-219: the same word and colour as the badge next to the name after sign-up. */}
+            <span
+              className={`role-badge role-${choice.role.toLowerCase()} role-card-badge`}
+            >
+              {choice.badge} account
+            </span>
             <span className="role-card-detail">{choice.detail}</span>
           </label>
         ))}
