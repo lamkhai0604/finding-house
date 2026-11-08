@@ -31,7 +31,9 @@ export function LoginPage() {
     try {
       const profile = await login(email, password);
       // UX-01: confirm the sign-in and which account it is, whichever page comes next.
-      toast.show(`Signed in as ${profile.displayName} (${roleLabel(profile)}).`);
+      toast.show(
+        `Signed in as ${profile.displayName} (${roleLabel(profile)}).`,
+      );
       navigate(returnTo ?? homePathFor(profile), { replace: true });
     } catch (e) {
       setError(
