@@ -96,7 +96,7 @@ class AuthIntegrationTest {
   void rejectsUnknownRole() {
     String body =
         """
-        {"email":"%s","password":"%s","displayName":"Dee","role":"ADMIN"}
+        {"email":"%s","password":"%s","displayName":"Dee","role":"OWNER"}
         """
             .formatted(uniqueEmail(), PASSWORD);
 
