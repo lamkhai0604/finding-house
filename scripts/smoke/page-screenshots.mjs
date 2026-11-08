@@ -372,7 +372,12 @@ try {
         `Save ${room}`,
       );
     }
-    await saveButton.click();
+    // Wait for the server, not only the heart: Saved rooms loads its list from the server, and
+    // opening it before the save is stored made this check flaky.
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/v1/me/favorites/") && r.request().method() === "PUT"),
+      saveButton.click(),
+    ]);
     await page.waitForFunction(
       (name) => document.querySelector(`[aria-label="${name}"]`)?.getAttribute("aria-pressed") === "true",
       `Save ${room}`,
@@ -380,7 +385,7 @@ try {
   });
   await page.getByRole("button", { name: /Account menu/ }).click();
   await page.getByRole("link", { name: "Saved rooms" }).click();
-  await shot(page, "23-saved-rooms", room, page.getByRole("heading", { name: "Saved rooms" }));
+  await shot(page, "23-saved-rooms", room, page.getByRole("heading", { level: 1, name: "Saved rooms" }));
   await check("23b: unsaving removes the room from Saved rooms", async () => {
     await page.getByRole("button", { name: `Save ${room}` }).click();
     await page.getByRole("heading", { name: "No saved rooms yet" }).waitFor({ timeout: 15000 });

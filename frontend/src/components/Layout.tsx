@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { useSession } from "../auth/session";
+import { useToast } from "../toast/toast";
 import { AccountMenu } from "./AccountMenu";
 import { BrandMark } from "./BrandMark";
 import { ButtonLink } from "./ButtonLink";
@@ -9,6 +10,12 @@ import { Footer } from "./Footer";
 /** Sticky header, the current page, and the footer (D-027). */
 export function Layout() {
   const { status, user, logout } = useSession();
+  const toast = useToast();
+  // UX-01: signing out is confirmed like any other change of state.
+  const signOut = () => {
+    logout();
+    toast.show("You are signed out.");
+  };
   const location = useLocation();
   // The mobile menu belongs to the page it was opened on, so navigating closes it.
   const [menuOpenOn, setMenuOpenOn] = useState<string | null>(null);
@@ -44,7 +51,7 @@ export function Layout() {
                     Post a room
                   </ButtonLink>
                 )}
-                <AccountMenu user={user} onLogout={logout} />
+                <AccountMenu user={user} onLogout={signOut} />
               </>
             ) : (
               <>

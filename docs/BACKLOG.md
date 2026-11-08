@@ -75,6 +75,7 @@ Task IDs are stable identifiers; their numbers do not change when work moves bet
 | T-218 | Role clarity: role badge in the header and "Signed in as" in the account menu; sign-up role as two cards; landlords start on My listings after logging in or signing up, unless a page asked for the login | FR-01, FR-07 | P2 | Done — frontend run 42341275830: 146 tests passed (4 new or changed: landlord and tenant landing pages, return to the requesting page, role cards); smoke run 42341275869: role cards on desktop and phone (02a, P05b), landlord lands on My listings with the Landlord badge (04, 04b) |
 | T-219 | Sign-up role cards name the account type ("Tenant account" / "Landlord account", same colours as the header badge) and describe it in the first person | FR-01 | P2 | Done — frontend run 42444572807; smoke run 42444572492 |
 | T-220 | Sign-up confirmation: a toast names the new account type; the home page greets a first visit with "Welcome" instead of "Welcome back" | FR-01 | P2 | Done — frontend run 42446753909; smoke screenshot 02b |
+| T-221 | Feedback audit against standard v1.6 Section 21: sign-in and sign-out confirmed with a toast (UX-01); other actions already confirmed (post, save, hide, delete, report, moderation, favorites by the heart state) | FR-01, NFR-07, D-039 | P2 | In progress |
 
 ## Sprint 3 — "Go live with the core features" (D-019)
 
