@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { getNeighborhoodStats, searchListings } from "../api/listings";
 import type { Listing, NeighborhoodStats } from "../api/types";
 import { useSession } from "../auth/session";
@@ -52,16 +52,28 @@ function loadNewest() {
 export function HomePage() {
   usePageTitle(null);
   const { status, user } = useSession();
+  const location = useLocation();
   // Wait until a stored token has been checked: an expired token would otherwise turn these
   // public requests into 401s (the same reason the listing page waits).
   const sessionKnown = status !== "loading";
   const newest = useHomeData(loadNewest, sessionKnown);
   const stats = useHomeData(getNeighborhoodStats, sessionKnown);
 
+  // T-220: right after sign-up it is a first visit, not a return.
+  const newAccount = Boolean(
+    (location.state as { newAccount?: boolean } | null)?.newAccount,
+  );
+
   return (
     <div className="home">
       <Hero
-        greeting={user ? `Welcome back, ${user.displayName}.` : null}
+        greeting={
+          user
+            ? newAccount
+              ? `Welcome, ${user.displayName}.`
+              : `Welcome back, ${user.displayName}.`
+            : null
+        }
         neighborhoods={
           stats.kind === "ready"
             ? stats.data.map((s) => s.neighborhood)
