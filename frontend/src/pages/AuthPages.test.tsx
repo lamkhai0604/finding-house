@@ -225,6 +225,12 @@ describe("Register page (FR-01)", () => {
     expect(
       await screen.findByRole("heading", { name: "My listings", level: 1 }),
     ).toBeInTheDocument();
+    // T-220: a confirmation that the account exists and which kind it is.
+    expect(
+      screen.getByText(
+        "Welcome to Finding House, Maya Chen! Your landlord account is ready.",
+      ),
+    ).toBeInTheDocument();
     expect(registered).toEqual({
       displayName: "Maya Chen",
       email: landlordMaya.email,
@@ -232,6 +238,35 @@ describe("Register page (FR-01)", () => {
       role: "LANDLORD",
       phone: "(206) 555-0101",
     });
+  });
+
+  it("confirms a tenant's new account and greets a first visit (T-220)", async () => {
+    mockApi({
+      "POST /api/v1/auth/register": () =>
+        Response.json(tenantSam, { status: 201 }),
+      "POST /api/v1/auth/login": () =>
+        Response.json({
+          accessToken: "tok-5",
+          tokenType: "Bearer",
+          expiresIn: 7200,
+        }),
+      "GET /api/v1/me": () => Response.json(tenantSam),
+      "GET /api/v1/me/favorites/ids": () => Response.json([]),
+    });
+    renderApp("/register");
+
+    fill("Name", tenantSam.displayName);
+    fill("Email", tenantSam.email);
+    fill("Password", "sample-pass-sam");
+    fireEvent.click(screen.getByRole("button", { name: "Sign up" }));
+
+    expect(
+      await screen.findByText(
+        "Welcome to Finding House, Sam Rivera! Your tenant account is ready.",
+      ),
+    ).toBeInTheDocument();
+    expect(await screen.findByText("Welcome, Sam Rivera.")).toBeInTheDocument();
+    expect(screen.queryByText(/Welcome back/)).not.toBeInTheDocument();
   });
 
   it("shows 'email already exists' next to the email field", async () => {

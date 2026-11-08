@@ -2492,6 +2492,8 @@ a.save-heart:not(.button):hover {
   border-radius: 12px;
   background: var(--text);
   color: #fff;
+  /* T-220: a bright edge so the toast stands out over the dark footer on short pages. */
+  border: 2px solid var(--hero);
   box-shadow: 0 12px 30px rgb(11 43 41 / 0.28);
   pointer-events: auto;
   animation: toast-in 180ms ease-out;

@@ -2,7 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { ApiError } from "../api/client";
 import type { Role } from "../api/types";
-import { homePathFor } from "../auth/homePath";
+import { homePathFor, roleLabel } from "../auth/homePath";
+import { useToast } from "../toast/toast";
 import { useSession } from "../auth/session";
 import { Button } from "../components/Button";
 import { BackButton } from "../components/BackButton";
@@ -26,6 +27,7 @@ export function RegisterPage() {
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
   const [busy, setBusy] = useState(false);
 
   function update(field: keyof typeof form, value: string) {
@@ -59,7 +61,14 @@ export function RegisterPage() {
             ? form.phone
             : undefined,
       });
-      navigate(homePathFor(profile), { replace: true });
+      // T-220: say that the account exists and which kind it is.
+      toast.show(
+        `Welcome to Finding House, ${profile.displayName}! Your ${roleLabel(profile).toLowerCase()} account is ready.`,
+      );
+      navigate(homePathFor(profile), {
+        replace: true,
+        state: { newAccount: true },
+      });
     } catch (e) {
       if (e instanceof ApiError && e.body.code === "EMAIL_TAKEN") {
         setFieldErrors({ email: e.body.message });
