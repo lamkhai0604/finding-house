@@ -23,6 +23,7 @@ class AdminRoleIntegrationTest {
   int port;
 
   @Autowired AdminPromotion promotion;
+  @Autowired UserAccountRepository users;
 
   ApiClient api;
   TestAccounts accounts;
@@ -56,6 +57,18 @@ class AdminRoleIntegrationTest {
 
     assertThat(me.statusCode()).isEqualTo(200);
     assertThat(JsonPath.<String>read(me.body(), "$.role")).isEqualTo("ADMIN");
+  }
+
+  @Test
+  void startupPromotionIsSavedEvenWithoutATransaction() {
+    // Like ApplicationReadyEvent: the configured list, called on the bean itself, not a proxy.
+    Account tenant = accounts.tenant();
+    AdminPromotion startup =
+        new AdminPromotion(users, new AdminProperties(List.of(tenant.email())));
+
+    startup.promoteConfigured();
+
+    assertThat(users.findById(tenant.id()).orElseThrow().getRole()).isEqualTo(Role.ADMIN);
   }
 
   @Test

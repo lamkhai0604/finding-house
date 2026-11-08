@@ -61,6 +61,10 @@ public class AdminPromotion {
         skipped++;
       } else {
         user.promoteToAdmin();
+        // Saved explicitly: promoteConfigured() calls this method directly, which bypasses the
+        // transactional proxy, so dirty checking alone would not write the change (found by the
+        // T-605 smoke run).
+        users.save(user);
         promoted++;
       }
     }
