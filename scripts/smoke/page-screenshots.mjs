@@ -140,6 +140,14 @@ try {
   await page.getByRole("radio", { name: /Rent out a room/ }).check();
   await shot(page, "02-register-landlord", "Contact phone (optional)");
 
+  // T-220: a real sign-up ends with a confirmation of the account type.
+  await page.getByLabel("Name").fill("Smoke Signup");
+  await page.getByLabel("Email").fill(`signup-${Date.now()}@example.com`);
+  await page.getByLabel("Password").fill("smoke-signup-password");
+  await page.getByRole("button", { name: "Sign up" }).click();
+  await shot(page, "02b-signup-confirmed", "Your landlord account is ready.");
+  await page.evaluate(() => window.sessionStorage.clear());
+
   await page.goto(`${frontend}/login`);
   await page.getByLabel("Email").fill(MAYA.email);
   await page.getByLabel("Password").fill("wrong-password");
