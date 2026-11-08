@@ -1,6 +1,7 @@
 // Shapes of the backend's JSON (ARCHITECTURE §5). Keep in sync with the Java DTOs.
 
-export type Role = "TENANT" | "LANDLORD";
+/** ADMIN (FR-08, D-036) is never chosen at sign-up; it is granted by configuration. */
+export type Role = "TENANT" | "LANDLORD" | "ADMIN";
 
 export type Amenity =
   | "AIR_CONDITIONING"
@@ -12,7 +13,8 @@ export type Amenity =
   | "FURNISHED"
   | "PETS_ALLOWED";
 
-export type ListingStatus = "ACTIVE" | "HIDDEN";
+/** REMOVED (FR-08, D-037) is set only by a moderator. */
+export type ListingStatus = "ACTIVE" | "HIDDEN" | "REMOVED";
 
 export interface UserProfile {
   id: number;
@@ -49,6 +51,8 @@ export interface Listing {
   amenities: Amenity[];
   imageUrls: string[];
   status: ListingStatus;
+  /** Why a moderator removed it; only on REMOVED listings, which only owners and admins see. */
+  removedReason?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -115,4 +119,41 @@ export interface NeighborhoodStats {
   neighborhood: string;
   activeListings: number;
   lowestMonthlyPriceCents: number | null;
+}
+
+// --- FR-08 moderation -------------------------------------------------------------------------
+
+export type ReportReason =
+  | "SCAM"
+  | "WRONG_INFO"
+  | "UNAVAILABLE"
+  | "OFFENSIVE"
+  | "OTHER";
+
+export interface ModerationListing {
+  id: number;
+  title: string;
+  neighborhood: string;
+  status: ListingStatus;
+  landlordName: string | null;
+  removedReason: string | null;
+}
+
+/** Open reports for one listing (GET /api/v1/admin/reports), newest report first. */
+export interface ReportGroup {
+  listing: ModerationListing;
+  reportCount: number;
+  reasons: Partial<Record<ReportReason, number>>;
+  reports: { reason: ReportReason; note: string | null; createdAt: string }[];
+  latestReportAt: string;
+}
+
+export interface ModerationActionItem {
+  id: number;
+  listingId: number;
+  listingTitle: string;
+  adminName: string | null;
+  action: "REMOVE" | "RESTORE" | "DISMISS";
+  reason: string | null;
+  createdAt: string;
 }

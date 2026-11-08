@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import { Layout } from "./components/Layout";
 import { RequireRole } from "./components/RequireRole";
 import { FavoritesProvider } from "./favorites/FavoritesProvider";
+import { AdminPage } from "./pages/AdminPage";
 import { BrowsePage } from "./pages/BrowsePage";
 import { HomePage } from "./pages/HomePage";
 import { ListingDetailPage } from "./pages/ListingDetailPage";
@@ -56,6 +57,14 @@ export function AppRoutes() {
                 element={
                   <RequireRole role="TENANT">
                     <SavedRoomsPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="admin"
+                element={
+                  <RequireRole role="ADMIN">
+                    <AdminPage />
                   </RequireRole>
                 }
               />

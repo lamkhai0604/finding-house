@@ -85,8 +85,11 @@ export function MyListingsPage() {
     );
   }
 
-  const shown = loaded.listings.filter((l) => l.status === "ACTIVE").length;
-  const hidden = loaded.listings.length - shown;
+  const count = (status: Listing["status"]) =>
+    loaded.listings.filter((l) => l.status === status).length;
+  const shown = count("ACTIVE");
+  const hidden = count("HIDDEN");
+  const removed = count("REMOVED");
 
   return (
     <section className="my-listings">
@@ -118,6 +121,12 @@ export function MyListingsPage() {
               <dt>Hidden</dt>
               <dd className="display">{hidden}</dd>
             </div>
+            {removed > 0 && (
+              <div>
+                <dt>Removed by a moderator</dt>
+                <dd className="display">{removed}</dd>
+              </div>
+            )}
           </dl>
           <ul className="ticket-grid">
             {loaded.listings.map((listing) => (
@@ -126,6 +135,13 @@ export function MyListingsPage() {
                   listing={listing}
                   headingLevel={2}
                   footer={
+                    listing.status === "REMOVED" ? (
+                      // D-037: the moderator's decision; the owner cannot change it.
+                      <p className="removed-note" role="note">
+                        <strong>Removed by a moderator.</strong>{" "}
+                        {listing.removedReason}
+                      </p>
+                    ) : (
                     <>
                       <ButtonLink to={`/listings/${listing.id}/edit`}>
                         Edit
@@ -145,6 +161,7 @@ export function MyListingsPage() {
                         Delete
                       </Button>
                     </>
+                    )
                   }
                 />
               </li>
